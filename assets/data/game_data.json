@@ -1,0 +1,790 @@
+{
+    "rejection_reasons": {
+        "application": {
+            "general": [
+                "Başvuru reddedildi: 'Tecrübeniz yetersiz, ama stajyer olarak alabiliriz (maaş yok)'.",
+                "Başvuru reddedildi: 'CV'niz çok güzel ama bizim aradığımız süper kahraman siz değilsiniz'.",
+                "Başvuru reddedildi: 'Pozisyon kapatıldı, patronun yeğeni işe başladı'.",
+                "Başvuru reddedildi: 'Şirket küçülmeye gidiyor (battık)'.",
+                "Başvuru reddedildi: 'Yapay zeka CV'nizi eledi (anahtar kelime eksik)'.",
+                "Başvuru reddedildi: 'Bu pozisyon için 10 yıl tecrübeli Junior arıyoruz'."
+            ],
+            "departments": {
+                "Bilgisayar Mühendisliği": [
+                    "Başvuru reddedildi: 'Github profilinizde yeterince yeşil kutucuk yok'.",
+                    "Başvuru reddedildi: 'Yapay zeka ile kod yazdığınız tespit edildi'.",
+                    "Başvuru reddedildi: 'Kullandığınız framework geçen hafta eskidi'."
+                ],
+                "Endüstri Mühendisliği": [
+                    "Başvuru reddedildi: 'Optimizasyon öneriniz şirketi batırabilir'.",
+                    "Başvuru reddedildi: 'Beyaz baretiniz eksik'."
+                ],
+                "İşletme": [
+                    "Başvuru reddedildi: 'Sunumlarınızda yeterince grafik yok'.",
+                    "Başvuru reddedildi: 'Liderlik vasfınız (henüz) yok'."
+                ],
+                "Mimarlık": [
+                    "Başvuru reddedildi: 'Maketleriniz rüzgarda uçuyor'.",
+                    "Başvuru reddedildi: 'Binayı ters çizmişsiniz'."
+                ]
+            }
+        },
+        "interview": {
+            "general": [
+                "Mülakat sonucu olumsuz: 'Teknik bilginiz iyi ama kültürümüze uymazsınız (çok soru soruyorsunuz)'.",
+                "Mülakat sonucu olumsuz: 'Patron sizi sevmedi, elektrik alamamış'.",
+                "Mülakat sonucu olumsuz: 'Maaş beklentiniz çok yüksek (asgari ücret istemiştiniz)'.",
+                "Mülakat sonucu olumsuz: 'Sizden daha ucuza çalışacak birini bulduk'.",
+                "Mülakat sonucu olumsuz: 'Ofisimizdeki langırt masasını kullanmayı bilmiyorsunuz'.",
+                "Mülakat sonucu olumsuz: 'Kod yazarken çok sesli nefes alıyorsunuz'.",
+                "Mülakat sonucu olumsuz: 'Takım lideri sizinle anlaşamayacağını düşündü (kıskandı)'.",
+                "Mülakat sonucu olumsuz: '23432 tane yazılım dili bilmediğiniz için elendiniz'."
+            ],
+            "departments": {
+                "Bilgisayar Mühendisliği": [
+                    "Mülakat sonucu olumsuz: 'Beyaz tahtada Binary Tree'yi ters çeviremediniz'.",
+                    "Mülakat sonucu olumsuz: 'Tab mı Space mi sorusuna Space dediniz, elendiniz'.",
+                    "Mülakat sonucu olumsuz: 'Canlı kodlama sırasında stackoverflow çöktü, kod yazamadınız'."
+                ],
+                "Endüstri Mühendisliği": [
+                    "Mülakat sonucu olumsuz: 'Tedarik zincirini karıştırıp lojistik krizi çıkardınız'.",
+                    "Mülakat sonucu olumsuz: 'Verimlilik analizinizde mülakat süresini kısaltmayı önerdiniz, kovuldunuz'."
+                ],
+                "İşletme": [
+                    "Mülakat sonucu olumsuz: 'SWOT analizini yanlış yaptınız, zayıf yönünüzü \"tembellik\" olarak yazdınız'.",
+                    "Mülakat sonucu olumsuz: 'CEO olma planlarınızı çok erken açıkladınız'."
+                ],
+                "Mimarlık": [
+                    "Mülakat sonucu olumsuz: 'Çizdiğiniz kolon kirişi taşımıyor'.",
+                    "Mülakat sonucu olumsuz: 'Estetik anlayışınız patronun zevkine uymadı'."
+                ]
+            }
+        }
+    },
+    "interview_questions": {
+        "Bilgisayar Mühendisliği": [
+            {
+                "question": "OOP (Nesne Yönelimli Programlama) nedir?",
+                "options": [
+                    "Kodları sınıflar ve nesnelerle organize etme yöntemidir.",
+                    "Bilgisayarın daha hızlı çalışmasını sağlayan bir donanımdır.",
+                    "İnternet bağlantısı sağlayan bir protokoldür."
+                ],
+                "correct_index": 0
+            },
+            {
+                "question": "Git ve GitHub arasındaki fark nedir?",
+                "options": [
+                    "Aynı şeydir, sadece isimleri farklıdır.",
+                    "Git versiyon kontrol sistemidir, GitHub depolama servisidir.",
+                    "GitHub bir programlama dilidir, Git editördür."
+                ],
+                "correct_index": 1
+            },
+            {
+                "question": "API (Application Programming Interface) ne işe yarar?",
+                "options": [
+                    "Kullanıcı arayüzü tasarlamaya yarar.",
+                    "İki yazılımın birbiriyle konuşmasını sağlar.",
+                    "Veritabanını siler."
+                ],
+                "correct_index": 1
+            },
+            {
+                "question": "Bir yazılımcının en büyük yalanı nedir?",
+                "options": [
+                    "Kodu test ettim",
+                    "Dokümantasyonu sonra yazarım",
+                    "Bu son bug",
+                    "Hepsi"
+                ],
+                "correct_index": 3
+            }
+        ],
+        "Endüstri Mühendisliği": [
+            {
+                "question": "Yalın üretim (Lean Manufacturing) nedir?",
+                "options": [
+                    "Üretimde israfı en aza indirme yöntemidir.",
+                    "Sadece zayıf işçilerin çalıştırılmasıdır.",
+                    "Ürünlerin daha hafif üretilmesidir."
+                ],
+                "correct_index": 0
+            },
+            {
+                "question": "ERP (Kurumsal Kaynak Planlaması) ne işe yarar?",
+                "options": [
+                    "Şirketin tüm kaynaklarını tek sistemde yönetir.",
+                    "Sadece muhasebe hesaplarını tutar.",
+                    "Personelin izin günlerini hesaplar."
+                ],
+                "correct_index": 0
+            },
+            {
+                "question": "Endüstri mühendisi ne yapar?",
+                "options": [
+                    "Her işten biraz anlar, yönetir.",
+                    "Sadece excel tablosu yapar.",
+                    "Makine yağlar."
+                ],
+                "correct_index": 0
+            }
+        ],
+        "İşletme": [
+            {
+                "question": "SWOT analizi ne için kullanılır?",
+                "options": [
+                    "Şirketin güçlü ve zayıf yönlerini belirlemek için.",
+                    "Borsa takibi yapmak için.",
+                    "Personel maaşlarını hesaplamak için."
+                ],
+                "correct_index": 0
+            },
+            {
+                "question": "Pazarlamanın 4P'si nedir?",
+                "options": [
+                    "Product, Price, Place, Promotion",
+                    "People, Process, Program, Performance",
+                    "Para, Para, Para, Para"
+                ],
+                "correct_index": 0
+            },
+            {
+                "question": "Bilanço nedir?",
+                "options": [
+                    "Şirketin mali durumunu gösteren tablo.",
+                    "Yemek listesi.",
+                    "Toplantı tutanağı."
+                ],
+                "correct_index": 0
+            }
+        ],
+        "Mimarlık": [
+            {
+                "question": "Altın oran nedir?",
+                "options": [
+                    "Estetik açıdan ideal kabul edilen matematiksel oran.",
+                    "Altın fiyatlarının artış oranı.",
+                    "Binanın yüksekliğinin genişliğine oranı."
+                ],
+                "correct_index": 0
+            },
+            {
+                "question": "Restorasyon ne demektir?",
+                "options": [
+                    "Eski yapıların aslına uygun onarılması.",
+                    "Yeni bina inşa etmek.",
+                    "Binayı yıkıp otopark yapmak."
+                ],
+                "correct_index": 0
+            },
+            {
+                "question": "Mimar Sinan'ın ustalık eseri hangisidir?",
+                "options": [
+                    "Selimiye Camii",
+                    "Süleymaniye Camii",
+                    "Şehzade Camii"
+                ],
+                "correct_index": 0
+            }
+        ]
+    },
+    "events": {
+        "jobless": {
+            "daily": {
+                "default_mental_delta": -1,
+                "general": [
+                    {
+                        "description": "En yakın arkadaşın iş buldu, sen hala işsizsin.",
+                        "options": [
+                            "Onu tebrik et",
+                            "Onunla kutla",
+                            "Kıskan"
+                        ]
+                    },
+                    {
+                        "description": "İş ilanlarına baktın, hepsi 3+ yıl tecrübe istiyor.",
+                        "options": [
+                            "Yine de başvur",
+                            "Geç",
+                            "Sinirlen"
+                        ]
+                    },
+                    {
+                        "description": "Staj başvurusu yaptın, 'tecrübe yetersiz' dediler.",
+                        "options": [
+                            "Devam et",
+                            "Vazgeç",
+                            "Sinirlen"
+                        ]
+                    },
+                    {
+                        "description": "Aylık bütçe bitti, annenden borç aldın.",
+                        "options": [
+                            "Kabul et",
+                            "Utandın",
+                            "Kızgın ol"
+                        ]
+                    },
+                    {
+                        "description": "Marketten alışveriş yaparken cüzdanı evde unuttun, geri döndün.",
+                        "options": [
+                            "Tekrar git",
+                            "Vazgeç",
+                            "Küfür et"
+                        ]
+                    },
+                    {
+                        "description": "Otobüs geç kaldı, iş görüşmesi kaçtı.",
+                        "options": [
+                            "Kabul et",
+                            "Üzül",
+                            "Küfür et"
+                        ]
+                    },
+                    {
+                        "description": "İnternet kesildi, iş başvurusu yapamadın.",
+                        "options": [
+                            "Kabul et",
+                            "Üzül",
+                            "Küfür et"
+                        ]
+                    },
+                    {
+                        "description": "Arkadaşların güçlü mentaline hayran kaldı, seni takdir etti.",
+                        "options": [
+                            "Teşekkür et",
+                            "Paylaş",
+                            "Motivasyon konuşması yap"
+                        ],
+                        "mental_delta": 5
+                    },
+                    {
+                        "description": "Sabah meditasyonu yaptın, zihnin biraz rahatladı.",
+                        "options": [
+                            "Nefes egzersizi yap",
+                            "Not tut",
+                            "Paylaş"
+                        ],
+                        "mental_delta": 3
+                    },
+                    {
+                        "description": "Hazırladığın CV dosyasını yanlışlıkla sildin.",
+                        "options": [
+                            "Tekrar hazırla",
+                            "Ara ver",
+                            "Ertele"
+                        ],
+                        "mental_delta": -2
+                    }
+                ],
+                "departments": {
+                    "Bilgisayar Mühendisliği": [
+                        {
+                            "description": "GitHub'da projen star aldı, ama iş hala yok.",
+                            "options": [
+                                "Sevin",
+                                "Paylaş",
+                                "Umutsuzluğa kapıl"
+                            ]
+                        },
+                        {
+                            "description": "Yeni framework çıktı, şirket onu istiyor, sen öğrenmedin.",
+                            "options": [
+                                "Hemen öğren",
+                                "Ertele",
+                                "Sinirlen"
+                            ]
+                        }
+                    ],
+                    "İşletme": [
+                        {
+                            "description": "LinkedIn'de herkes başarı hikayesi paylaşıyor, sen sadece beğeniyorsun.",
+                            "options": [
+                                "Beğen",
+                                "Yorum yap",
+                                "Kıskan"
+                            ]
+                        }
+                    ],
+                    "Mimarlık": [
+                        {
+                            "description": "Yaptığın maketi akşam kediniz yıktı.",
+                            "options": [
+                                "Tekrar yap",
+                                "Ağla",
+                                "Küfür et"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "monthly": {
+                "default_mental_delta": -1,
+                "general": [
+                    {
+                        "description": "Bu ay 10 iş görüşmesine gittin, hepsi reddetti.",
+                        "options": [
+                            "Devam et",
+                            "Vazgeç",
+                            "Sinirlen"
+                        ]
+                    },
+                    {
+                        "description": "Arkadaşların iş buldu, evlendi, sen hala işsizsin.",
+                        "options": [
+                            "Kutla",
+                            "Kıskan",
+                            "Üzül"
+                        ]
+                    },
+                    {
+                        "description": "Bu ay memlekete gittiniz, akrabalar sürekli iş sordu.",
+                        "options": [
+                            "Kabul et",
+                            "Utandın",
+                            "Kızgın ol"
+                        ]
+                    },
+                    {
+                        "description": "Bu ay doğum günün geldi, kimse hatırlamadı.",
+                        "options": [
+                            "Üzül",
+                            "Kabul et",
+                            "Kızgın ol"
+                        ]
+                    },
+                    {
+                        "description": "Yeni tanıştığın mentor seni motive etti.",
+                        "options": [
+                            "Teşekkür et",
+                            "Not al",
+                            "Paylaş"
+                        ],
+                        "mental_delta": 4
+                    },
+                    {
+                        "description": "Gönüllü olduğun etkinlikte yeni insanlara destek oldun, ruhun hafifledi.",
+                        "options": [
+                            "Paylaş",
+                            "Hedef yaz",
+                            "Kutla"
+                        ],
+                        "mental_delta": 4
+                    },
+                    {
+                        "description": "Elektrikler kesildi, tüm başvurularını ertelemek zorunda kaldın.",
+                        "options": [
+                            "Kitap oku",
+                            "Uyun",
+                            "Sinirlen"
+                        ],
+                        "mental_delta": -2
+                    }
+                ],
+                "departments": {
+                    "Bilgisayar Mühendisliği": [
+                        {
+                            "description": "Hackathon'a katıldın, derece alamadın.",
+                            "options": [
+                                "Devam et",
+                                "Pes et",
+                                "Sinirlen"
+                            ]
+                        }
+                    ],
+                    "Endüstri Mühendisliği": [
+                        {
+                            "description": "Optimizasyon sunumun aile toplantısında bile işe yaramadı.",
+                            "options": [
+                                "Anlatmaya devam",
+                                "Sus",
+                                "Kızgın ol"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "yearly": {
+                "default_mental_delta": -1,
+                "general": [
+                    {
+                        "description": "Bu yıl 100 iş görüşmesine gittin, hepsi reddetti.",
+                        "options": [
+                            "Devam et",
+                            "Vazgeç",
+                            "Sinirlen"
+                        ]
+                    },
+                    {
+                        "description": "Bu yıl aile baskısı arttı, 'ne zaman iş bulacaksın' diye sordular.",
+                        "options": [
+                            "Kabul et",
+                            "Utandın",
+                            "Kızgın ol"
+                        ]
+                    },
+                    {
+                        "description": "Bu yıl arkadaşların evlendi, düğünlerde tüm paran gitti.",
+                        "options": [
+                            "Kabul et",
+                            "Utandın",
+                            "Kızgın ol"
+                        ]
+                    },
+                    {
+                        "description": "Dayanıklılığın sayesinde yıl sonu kendini daha güçlü hissettin.",
+                        "options": [
+                            "Kutla",
+                            "Plan yap",
+                            "Paylaş"
+                        ],
+                        "mental_delta": 5
+                    },
+                    {
+                        "description": "Psikolojik destek aldın, terapi sana iyi geldi.",
+                        "options": [
+                            "Devam et",
+                            "Not tut",
+                            "Arkadaşlarınla paylaş"
+                        ],
+                        "mental_delta": 6
+                    },
+                    {
+                        "description": "Uzun süre işsiz kaldığın için kendini çevrenden kopmuş hissettin.",
+                        "options": [
+                            "Kendine bak",
+                            "Görmezden gel",
+                            "Bağır"
+                        ],
+                        "mental_delta": -3
+                    }
+                ],
+                "departments": {
+                    "Bilgisayar Mühendisliği": [
+                        {
+                            "description": "Bir yıl boyunca bootcamp'te okudun, sertifika aldın, hala iş yok.",
+                            "options": [
+                                "Devam et",
+                                "Pes et",
+                                "Sinirlen"
+                            ]
+                        }
+                    ],
+                    "İşletme": [
+                        {
+                            "description": "Yıl sonu raporlarını hobin olarak hazırladın, kimse okumadı.",
+                            "options": [
+                                "Paylaş",
+                                "Sakla",
+                                "Kız"
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "working": {
+            "daily": {
+                "default_mental_delta": -1,
+                "general": [
+                    {
+                        "description": "Sabah işe geç kaldın, patron kızdı.",
+                        "options": [
+                            "Özür dile",
+                            "Mazeret uydur",
+                            "Kabul et"
+                        ]
+                    },
+                    {
+                        "description": "Toplantıda patronun fikri değişti, tüm projeyi baştan yaptın.",
+                        "options": [
+                            "Kabul et",
+                            "İtiraz et",
+                            "Küfür et"
+                        ]
+                    },
+                    {
+                        "description": "Müşteri aradı, şikayet etti, sen çözemedin.",
+                        "options": [
+                            "Özür dile",
+                            "Yöneticiye sor",
+                            "Kabul et"
+                        ]
+                    },
+                    {
+                        "description": "Akşam mesai saatinde çıkmak istedin, patron izin vermedi.",
+                        "options": [
+                            "Kabul et",
+                            "İtiraz et",
+                            "Küfür et"
+                        ]
+                    },
+                    {
+                        "description": "Maaş gecikti, patron 'biraz bekleyin' dedi.",
+                        "options": [
+                            "Kabul et",
+                            "İtiraz et",
+                            "Kızgın ol"
+                        ]
+                    },
+                    {
+                        "description": "Ekip güçlü mentalini konuştu, sürpriz kahve ısmarladı.",
+                        "options": [
+                            "Teşekkür et",
+                            "Takıma moral konuşması yap",
+                            "Paylaş"
+                        ],
+                        "mental_delta": 5
+                    },
+                    {
+                        "description": "Öğle arasında kısa bir yoga yaptın, enerjin tazelendi.",
+                        "options": [
+                            "Devam et",
+                            "Arkadaşını çağır",
+                            "Sosyal medyada paylaş"
+                        ],
+                        "mental_delta": 3
+                    },
+                    {
+                        "description": "Sunum sırasında bilgisayar çöktü, herkes sana baktı.",
+                        "options": [
+                            "Toparlan",
+                            "Şaka yap",
+                            "Panikle"
+                        ],
+                        "mental_delta": -2
+                    }
+                ],
+                "departments": {
+                    "Bilgisayar Mühendisliği": [
+                        {
+                            "description": "Repo'da conflict çözerken yanlış branch'i sildin.",
+                            "options": [
+                                "Geri dön",
+                                "İtiraf et",
+                                "Kaç"
+                            ]
+                        }
+                    ],
+                    "Mimarlık": [
+                        {
+                            "description": "Sunumda render aldığın görsel açılmadı.",
+                            "options": [
+                                "Açıklama yap",
+                                "Tekrar dene",
+                                "Kaç"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "monthly": {
+                "default_mental_delta": -1,
+                "general": [
+                    {
+                        "description": "Bu ay fazla mesai yaptın, ekstra para vermediler.",
+                        "options": [
+                            "Kabul et",
+                            "İtiraz et",
+                            "Kızgın ol"
+                        ]
+                    },
+                    {
+                        "description": "Bu ay patron senden memnun kaldı, zam yok ama teşekkür etti.",
+                        "options": [
+                            "Sevin",
+                            "Kabul et",
+                            "Kızgın ol"
+                        ]
+                    },
+                    {
+                        "description": "Bu ay projeleri yetiştiremedin, patron kızdı.",
+                        "options": [
+                            "Özür dile",
+                            "Kabul et",
+                            "Küfür et"
+                        ]
+                    },
+                    {
+                        "description": "Bu ay iş arkadaşın işten ayrıldı, iş yükün arttı.",
+                        "options": [
+                            "Kabul et",
+                            "İtiraz et",
+                            "Kızgın ol"
+                        ]
+                    },
+                    {
+                        "description": "Patron mental dayanıklılığını örnek gösterdi, tüm ekip alkışladı.",
+                        "options": [
+                            "Utangaçça gül",
+                            "Motivasyon konuşması yap",
+                            "Kutla"
+                        ],
+                        "mental_delta": 4
+                    },
+                    {
+                        "description": "Şirket psikoloğu ile yaptığın görüşme seni rahatlattı.",
+                        "options": [
+                            "Not al",
+                            "Arkadaşına öner",
+                            "Sessizce düşün"
+                        ],
+                        "mental_delta": 5
+                    },
+                    {
+                        "description": "Projede kullanılan sunucu çöktü ve hafta sonu çalışmak zorunda kaldın.",
+                        "options": [
+                            "Plan yap",
+                            "Şikayet et",
+                            "Sessiz kal"
+                        ],
+                        "mental_delta": -3
+                    }
+                ],
+                "departments": {
+                    "Bilgisayar Mühendisliği": [
+                        {
+                            "description": "Sprint sonunda tüm bug'lar sana kaldı.",
+                            "options": [
+                                "Çöz",
+                                "Ertele",
+                                "İtiraz et"
+                            ]
+                        }
+                    ],
+                    "Endüstri Mühendisliği": [
+                        {
+                            "description": "Verimlilik raporun üst yönetimde viral oldu, herkes senden rapor istedi.",
+                            "options": [
+                                "Sevin",
+                                "Kabul et",
+                                "Kaç"
+                            ]
+                        }
+                    ]
+                }
+            },
+            "yearly": {
+                "default_mental_delta": -1,
+                "general": [
+                    {
+                        "description": "Bu yıl işte çok çalıştın, zam alamadın.",
+                        "options": [
+                            "Kabul et",
+                            "İtiraz et",
+                            "Kızgın ol"
+                        ]
+                    },
+                    {
+                        "description": "Bu yıl patron senden memnun kaldı, küçük bir zam aldın.",
+                        "options": [
+                            "Sevin",
+                            "Kabul et",
+                            "Yetersiz bul"
+                        ]
+                    },
+                    {
+                        "description": "Bu yıl iş arkadaşların terfi aldı, sen alamadın.",
+                        "options": [
+                            "Kabul et",
+                            "Kıskan",
+                            "Kızgın ol"
+                        ]
+                    },
+                    {
+                        "description": "Bu yıl iş yerinde çok çalıştın, sosyal hayatın bitti.",
+                        "options": [
+                            "Kabul et",
+                            "İtiraz et",
+                            "Kızgın ol"
+                        ]
+                    },
+                    {
+                        "description": "Yıl sonu değerlendirmesinde güçlü mental dayanıklılığın ödüllendirildi.",
+                        "options": [
+                            "Kutla",
+                            "Paylaş",
+                            "Sessizce gülümse"
+                        ],
+                        "mental_delta": 5
+                    },
+                    {
+                        "description": "Şirket, çalışanların mental sağlığı için sana terapi paketi hediye etti.",
+                        "options": [
+                            "Katıl",
+                            "Arkadaşını da yazdır",
+                            "Sessizce kabul et"
+                        ],
+                        "mental_delta": 7
+                    },
+                    {
+                        "description": "Projede yapılan hatadan seni sorumlu tuttular, bütün yılın stresini hissettin.",
+                        "options": [
+                            "Düzelt",
+                            "Savun",
+                            "İçe at"
+                        ],
+                        "mental_delta": -4
+                    }
+                ],
+                "departments": {
+                    "Bilgisayar Mühendisliği": [
+                        {
+                            "description": "Yıl sonu değerlendirmesinde kod review yorumların kitap oldu.",
+                            "options": [
+                                "Oku",
+                                "Atla",
+                                "Kız"
+                            ]
+                        }
+                    ],
+                    "İşletme": [
+                        {
+                            "description": "CEO sunumunu sen hazırladın, ama sahneye o çıktı.",
+                            "options": [
+                                "Sevin",
+                                "İtiraz et",
+                                "Kız"
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "mental_events": {
+        "low_threshold": {
+            "threshold": 30,
+            "events": [
+                {
+                    "description": "Mental sağlığın dibe vurdu, odana kapanıp tavana bakıyorsun.",
+                    "options": [
+                        "Derin nefes al",
+                        "Günlük tut",
+                        "Hiçbir şey yapmak istemiyorum"
+                    ],
+                    "mental_delta": 8
+                },
+                {
+                    "description": "Göğsünde sıkışma hissediyorsun, kalbin hızlı atıyor.",
+                    "options": [
+                        "Bir arkadaşını ara",
+                        "Kısa yürüyüş yap",
+                        "Yatakta kal"
+                    ],
+                    "mental_delta": 6
+                },
+                {
+                    "description": "Kendini değersiz hissediyorsun, düşüncelerini susturamıyorsun.",
+                    "options": [
+                        "Profesyonel destek al",
+                        "Meditasyon dene",
+                        "Hiç kimseye anlatma"
+                    ],
+                    "mental_delta": 5
+                }
+            ]
+        }
+    }
+}
