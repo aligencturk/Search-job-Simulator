@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../core/enums.dart';
 import '../viewmodels/game_view_model.dart';
 import '../models/job_application_model.dart';
 import 'interviews_view.dart'; // Mülakat sayfasına yönlendirme için
@@ -14,12 +15,27 @@ class ApplicationsView extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Başvurularım"),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.red,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          "Başvurularım",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ),
+      backgroundColor: const Color(0xFFF5F5F5),
       body: applications.isEmpty
-          ? const Center(
-              child: Text("Henüz bir iş başvurusu yapmadınız."),
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.folder_off, size: 64, color: Colors.grey.shade400),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Henüz bir iş başvurusu yapmadınız.",
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
             )
           : ListView.builder(
               padding: const EdgeInsets.all(16.0),
@@ -58,7 +74,7 @@ class ApplicationsView extends ConsumerWidget {
         break;
       case ApplicationStatus.Accepted:
         statusColor = Colors.green;
-        statusText = "Kabul Edildi (İş Teklifi)";
+        statusText = "Kabul Edildi";
         statusIcon = Icons.check_circle;
         break;
       case ApplicationStatus.Rejected:
@@ -73,8 +89,19 @@ class ApplicationsView extends ConsumerWidget {
         break;
     }
 
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -88,6 +115,7 @@ class ApplicationsView extends ConsumerWidget {
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black87,
                     ),
                   ),
                 ),
@@ -96,12 +124,12 @@ class ApplicationsView extends ConsumerWidget {
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: statusColor),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: statusColor.withOpacity(0.5)),
                   ),
                   child: Row(
                     children: [
-                      Icon(statusIcon, size: 16, color: statusColor),
+                      Icon(statusIcon, size: 14, color: statusColor),
                       const SizedBox(width: 4),
                       Text(
                         statusText,
@@ -117,13 +145,23 @@ class ApplicationsView extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 8),
-            Text("Maaş: ${app.job.salary} TL"),
-            Text("Şirket Türü: ${app.job.type.name}"),
+            Text(
+              "Maaş: ${app.job.salary.toStringAsFixed(0)} TL",
+              style: TextStyle(color: Colors.grey.shade700),
+            ),
+            Text(
+              "Şirket Türü: ${_getJobTypeText(app.job.type)}",
+              style: TextStyle(color: Colors.grey.shade700),
+            ),
             if (app.message != null) ...[
               const SizedBox(height: 8),
               Text(
                 "Durum: ${app.message}",
-                style: const TextStyle(fontStyle: FontStyle.italic),
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: Colors.grey.shade600,
+                  fontSize: 12,
+                ),
               ),
             ],
             if (canNavigateToInterview) ...[
@@ -144,6 +182,9 @@ class ApplicationsView extends ConsumerWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 ),
               ),
@@ -153,6 +194,15 @@ class ApplicationsView extends ConsumerWidget {
       ),
     );
   }
+
+  String _getJobTypeText(JobType type) {
+    switch (type) {
+      case JobType.Corporate:
+        return "Kurumsal";
+      case JobType.Startup:
+        return "Startup";
+      case JobType.Government:
+        return "Kamu";
+    }
+  }
 }
-
-

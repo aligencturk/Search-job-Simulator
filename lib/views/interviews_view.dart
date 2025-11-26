@@ -32,19 +32,24 @@ class _InterviewsViewState extends ConsumerState<InterviewsView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Mülakatlarım"),
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.red,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          "Mülakatlarım",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ),
+      backgroundColor: const Color(0xFFF5F5F5),
       body: interviews.isEmpty
-          ? const Center(
+          ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.event_busy, size: 64, color: Colors.grey),
-                  SizedBox(height: 16),
+                  Icon(Icons.event_busy, size: 64, color: Colors.grey.shade400),
+                  const SizedBox(height: 16),
                   Text(
                     "Şu an aktif bir mülakat davetiniz yok.",
-                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
                   ),
                 ],
               ),
@@ -54,24 +59,44 @@ class _InterviewsViewState extends ConsumerState<InterviewsView> {
               itemCount: interviews.length,
               itemBuilder: (context, index) {
                 final app = interviews[index];
-                return Card(
-                  elevation: 4,
+                return Container(
                   margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
                   child: ListTile(
-                    leading: const CircleAvatar(
-                      backgroundColor: Colors.indigo,
-                      child: Icon(Icons.chat_bubble, color: Colors.white),
+                    contentPadding: const EdgeInsets.all(16),
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.blue.shade50,
+                      child: const Icon(Icons.chat_bubble, color: Colors.blue),
                     ),
                     title: Text(
                       app.job.title,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
                     ),
-                    subtitle: Text("${app.job.salary} TL - ${app.job.type.name}"),
+                    subtitle: Text(
+                      "${app.job.salary.toStringAsFixed(0)} TL - ${app.job.type.name}",
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
                     trailing: ElevatedButton(
                       onPressed: () => _startInterview(gameVM, app),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
                         foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                       child: const Text("Katıl"),
                     ),
@@ -95,8 +120,9 @@ class _InterviewsViewState extends ConsumerState<InterviewsView> {
 
   Widget _buildActiveInterviewScreen(GameViewModel vm) {
     if (_questions.isEmpty) {
-      return const Scaffold(
-        body: Center(child: Text("Soru yüklenemedi.")),
+      return Scaffold(
+        appBar: AppBar(title: const Text("Hata")),
+        body: const Center(child: Text("Soru yüklenemedi.")),
       );
     }
 
@@ -110,46 +136,54 @@ class _InterviewsViewState extends ConsumerState<InterviewsView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Mülakat: ${_selectedApplication!.job.title}"),
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.red,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(
+          "Mülakat: ${_selectedApplication!.job.title}",
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         automaticallyImplyLeading: false,
       ),
+      backgroundColor: const Color(0xFFF5F5F5),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // İlerleyiş Çubuğu
-            LinearProgressIndicator(
-              value: (_currentQuestionIndex + 1) / _questions.length,
-              backgroundColor: Colors.grey.shade300,
-              color: Colors.indigo,
-              minHeight: 10,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: LinearProgressIndicator(
+                value: (_currentQuestionIndex + 1) / _questions.length,
+                backgroundColor: Colors.grey.shade300,
+                color: Colors.red,
+                minHeight: 10,
+              ),
             ),
             const SizedBox(height: 24),
             // NPC / Interviewer Avatarı (Basit ikon)
             Center(
               child: CircleAvatar(
                 radius: 40,
-                backgroundColor: Colors.grey.shade200,
-                child: const Icon(Icons.person, size: 50, color: Colors.grey),
+                backgroundColor: Colors.white,
+                child: Icon(Icons.person, size: 50, color: Colors.grey.shade400),
               ),
             ),
             const SizedBox(height: 12),
             Center(
               child: Text(
                 "İşe Alım Uzmanı",
-                style: TextStyle(color: Colors.grey.shade600),
+                style: TextStyle(color: Colors.grey.shade600, fontWeight: FontWeight.w500),
               ),
             ),
             const SizedBox(height: 24),
             // Soru
             Container(
-              padding: const EdgeInsets.all(16),
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade300),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.05),
@@ -165,12 +199,13 @@ class _InterviewsViewState extends ConsumerState<InterviewsView> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
+                textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(height: 24),
             const Text(
               "Cevabınız:",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87),
             ),
             const SizedBox(height: 12),
             // Şıklar
@@ -182,10 +217,15 @@ class _InterviewsViewState extends ConsumerState<InterviewsView> {
                   return ElevatedButton(
                     onPressed: () => _answerQuestion(index),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.indigo.shade50,
-                      foregroundColor: Colors.indigo.shade900,
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black87,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       alignment: Alignment.centerLeft,
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(color: Colors.grey.shade200),
+                      ),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -219,24 +259,37 @@ class _InterviewsViewState extends ConsumerState<InterviewsView> {
 
   Widget _buildInterviewResultScreen(GameViewModel vm) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
+        child: Container(
+          margin: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(32),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.check_circle_outline,
-                  size: 80, color: Colors.green),
+              const Icon(Icons.check_circle_outline, size: 80, color: Colors.green),
               const SizedBox(height: 24),
               const Text(
                 "Mülakat Tamamlandı",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 "Sorulara verdiğin cevapları not aldık. Değerlendirme sonucunu en kısa sürede bildireceğiz.",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.grey),
+                style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
               ),
               const SizedBox(height: 32),
               ElevatedButton(
@@ -246,10 +299,14 @@ class _InterviewsViewState extends ConsumerState<InterviewsView> {
                   Navigator.pop(context); // InterviewsView'dan çık
                 },
                 style: ElevatedButton.styleFrom(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-                child: const Text("Tamam"),
+                child: const Text("Tamam", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ],
           ),

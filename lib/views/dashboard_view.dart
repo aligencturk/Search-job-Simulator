@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/event_model.dart';
-import '../models/job_application_model.dart';
-import '../models/story_model.dart';
 import '../viewmodels/game_view_model.dart';
 import 'applications_view.dart';
-import 'chat_view.dart';
 import 'cv_view.dart';
 import 'interviews_view.dart';
 import 'jobs_view.dart';
+import 'market_view.dart';
 import 'self_improvement_view.dart';
 import 'setup_view.dart';
 
@@ -42,96 +40,141 @@ class DashboardView extends ConsumerWidget {
     }
 
     return Scaffold(
-      drawer: _buildDrawer(context, ref, player),
       appBar: AppBar(
         backgroundColor: Colors.red,
-        title: const Text("İş Arama Simülatörü"),
-        actions: [
-          // Sıfırla Butonu (Geliştirme)
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => _showResetDialog(context, ref),
-            tooltip: "Oyunu Sıfırla",
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          "Bir TC Simülasyonu",
+          style: TextStyle(
             color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
           ),
-        ],
-      ),
-      body: Container(
-        color: Colors.grey.shade200,
-        child: Column(
-          children: [
-            // Üst kısım - Tarih ve Zaman İlerletme Butonları
-            Container(
-              padding: const EdgeInsets.all(16.0),
-              color: Colors.white,
-              child: Column(
-                children: [
-                  // Tarih
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+        ),
+        actions: [
+          // Mağaza butonu
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Row(
+              children: [
+                const Text(
+                  "Mağaza",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MarketView(),
+                      ),
+                    );
+                  },
+                  child: Stack(
                     children: [
-                      const Icon(Icons.calendar_today, size: 20),
-                      const SizedBox(width: 8),
-                      Text(
-                        gameVM.formattedDate,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                      const Icon(
+                        Icons.shopping_basket,
+                        color: Colors.amber,
+                        size: 32,
+                      ),
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 10,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  // Zaman İlerletme Butonları
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      drawer: _buildDrawer(context, ref, player),
+      body: Container(
+        color: const Color(0xFFF5F5F5),
+        child: Column(
+          children: [
+            // Üst Bilgi Alanı
+            Container(
+              padding: const EdgeInsets.all(16),
+              color: const Color(0xFFF5F5F5),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Bebek ikonu (Statik görsel amaçlı)
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE0E0E0),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.child_care,
+                      size: 40,
+                      color: Colors.brown.shade300,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  // İsim ve Bölüm
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          player.name,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          gameVM.department?.name ?? "Bölüm Yok",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Bakiye
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      // Sonraki Gün Butonu
-                      ElevatedButton.icon(
-                        onPressed: () => _handleNextDay(context, ref),
-                        icon: const Icon(Icons.arrow_forward, size: 18),
-                        label: const Text("Sonraki Gün"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
+                      const Text(
+                        "Bakiye",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      // Sonraki Ay Butonu
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          final event = ref.read(gameProvider).nextMonth();
-                          _showEventDialog(context, event);
-                        },
-                        icon: const Icon(Icons.calendar_month, size: 18),
-                        label: const Text("Sonraki Ay"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                        ),
-                      ),
-                      // Sonraki Yıl Butonu
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          final event = ref.read(gameProvider).nextYear();
-                          _showEventDialog(context, event);
-                        },
-                        icon: const Icon(Icons.event, size: 18),
-                        label: const Text("Sonraki Yıl"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "${player.money.toStringAsFixed(0)} TL",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black54,
                         ),
                       ),
                     ],
@@ -139,263 +182,172 @@ class DashboardView extends ConsumerWidget {
                 ],
               ),
             ),
-            // Ana içerik
+
+            // Hikaye Alanı (Görseldeki gibi sadece metin)
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                color: const Color(0xFFF5F5F5),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Üst kısım - Kullanıcı Bilgileri
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Sol tarafta Avatar
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundColor: Theme.of(context).primaryColor,
-                          child: Text(
-                            player.name[0].toUpperCase(),
-                            style: const TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                    Text(
+                      "Tarih: ${gameVM.formattedDate}",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red.shade800,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Text(
+                          gameVM.stories.isNotEmpty
+                              ? gameVM.stories.last.content
+                              : "Hayatın henüz başında...",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black54,
+                            height: 1.5,
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        // Orta kısım - İsim ve Bölüm
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // İsim Soyisim
-                              Text(
-                                player.name,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey.shade800,
-                                ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Alt Butonlar ve Mental Sağlık
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // 5'li Buton Grubu
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _MenuButton(
+                        icon: Icons.work,
+                        label: "İş İlanları",
+                        color: Colors.red,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const JobsView(),
+                            ),
+                          );
+                        },
+                      ),
+                      _MenuButton(
+                        icon: Icons.person, // Kişisel yerine şimdilik profil/cv
+                        label: "CV",
+                        color: Colors.red,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CVView(),
+                            ),
+                          );
+                        },
+                      ),
+                      // Ortadaki Büyük + Butonu (Yeni Gün)
+                      GestureDetector(
+                        onTap: () => _handleNextDay(context, ref),
+                        child: Container(
+                          width: 70,
+                          height: 70,
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.red.withOpacity(0.4),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
                               ),
-                              const SizedBox(height: 4),
-                              // Mezun Olunan Bölüm
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(Icons.add, color: Colors.white, size: 36),
                               Text(
-                                gameVM.department?.name ?? "Bölüm seçilmedi",
+                                "Yeni Gün",
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey.shade600,
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        // Sağ tarafta - Bakiye
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "Bakiye",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey.shade600,
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Icon(
-                                  Icons.account_balance_wallet,
-                                  size: 16,
-                                  color: Colors.amber.shade700,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "${player.money.toStringAsFixed(0)} TL",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey.shade800,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          Chip(
-                            avatar: const Icon(Icons.home, size: 18),
-                            label: Text(
-                              gameVM.livingWithFamily
-                                  ? "Aile Evi - Temel gider yok"
-                                  : "Kendi Evi",
-                            ),
-                            backgroundColor: Colors.green.shade50,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                          Chip(
-                            avatar: const Icon(Icons.groups, size: 18),
-                            label: Text(
-                              "Arkadaşlarla çıkmak: ${gameVM.optionalHangoutCost.toStringAsFixed(0)} TL",
-                            ),
-                            backgroundColor: Colors.blue.shade50,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                        ],
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    _MentalHealthBar(mentalHealth: gameVM.mentalHealth),
-                    const SizedBox(height: 24),
-                    // Hikayeler Listesi
-                    if (gameVM.stories.isNotEmpty) ...[
-                      Row(
-                        children: [
-                          const Icon(Icons.book, color: Colors.blue),
-                          const SizedBox(width: 8),
-                          Text(
-                            "Hikayeler",
-                            style: Theme.of(context).textTheme.titleLarge
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                      _MenuButton(
+                        icon: Icons.shopping_bag, // İlişki yerine Market
+                        label: "Market",
+                        color: Colors.red,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MarketView(),
+                            ),
+                          );
+                        },
                       ),
-                      const SizedBox(height: 12),
-                      ...gameVM.stories.reversed.map((story) {
-                        final months = [
-                          'Ocak',
-                          'Şubat',
-                          'Mart',
-                          'Nisan',
-                          'Mayıs',
-                          'Haziran',
-                          'Temmuz',
-                          'Ağustos',
-                          'Eylül',
-                          'Ekim',
-                          'Kasım',
-                          'Aralık',
-                        ];
-                        final dateStr =
-                            "${story.date.day} ${months[story.date.month - 1]} ${story.date.year}";
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      story.type == StoryType.Daily
-                                          ? Icons.today
-                                          : story.type == StoryType.Monthly
-                                          ? Icons.calendar_month
-                                          : Icons.event,
-                                      size: 18,
-                                      color: story.type == StoryType.Daily
-                                          ? Colors.blue
-                                          : story.type == StoryType.Monthly
-                                          ? Colors.orange
-                                          : Colors.red,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      dateStr,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey.shade700,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  story.content,
-                                  style: const TextStyle(fontSize: 15),
-                                ),
-                              ],
+                      _MenuButton(
+                        icon: Icons.school, // Aktivite yerine Kendini Geliştir
+                        label: "Gelişim",
+                        color: Colors.red,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SelfImprovementView(),
                             ),
-                          ),
-                        );
-                      }).toList(),
-                    ] else ...[
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Center(
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.book_outlined,
-                                  size: 48,
-                                  color: Colors.grey.shade400,
-                                ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  "Henüz hikaye yok",
-                                  style: TextStyle(
-                                    color: Colors.grey.shade600,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  "Zaman ilerletmek için butonları kullanın",
-                                  style: TextStyle(
-                                    color: Colors.grey.shade500,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
                     ],
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Mental Sağlık Barı
+                  _MentalHealthBar(mentalHealth: gameVM.mentalHealth),
+                  const SizedBox(height: 10),
+                ],
               ),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ChatView()),
-          );
-        },
-        icon: const Icon(Icons.chat),
-        label: const Text("AI Asistan"),
-      ),
     );
   }
 
+  // ... Drawer ve diğer helper metodlar aynı kalabilir veya sadeleştirilebilir ...
+  // Drawer'ı şimdilik tutuyorum ama ana ekrana taşındı çoğu şey.
   Widget _buildDrawer(BuildContext context, WidgetRef ref, player) {
-    final gameVM = ref.watch(gameProvider);
+    // final gameVM = ref.watch(gameProvider);
 
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+            decoration: const BoxDecoration(color: Colors.red),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
@@ -405,10 +357,10 @@ class DashboardView extends ConsumerWidget {
                   backgroundColor: Colors.white,
                   child: Text(
                     player.name[0].toUpperCase(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
+                      color: Colors.red,
                     ),
                   ),
                 ),
@@ -421,53 +373,14 @@ class DashboardView extends ConsumerWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  gameVM.department?.name ?? "",
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 14,
-                  ),
-                ),
               ],
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.work),
-            title: const Text("İş İlanları"),
-            trailing: gameVM.availableJobs.isNotEmpty
-                ? Chip(
-                    label: Text("${gameVM.availableJobs.length}"),
-                    padding: EdgeInsets.zero,
-                    labelPadding: const EdgeInsets.symmetric(horizontal: 8),
-                  )
-                : null,
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const JobsView()),
-              );
-            },
-          ),
-          ListTile(
             leading: const Icon(Icons.list_alt),
             title: const Text("Başvurularım"),
-            trailing:
-                gameVM.applications
-                    .where((a) => a.status == ApplicationStatus.Applied)
-                    .isNotEmpty
-                ? Chip(
-                    label: Text(
-                      "${gameVM.applications.where((a) => a.status == ApplicationStatus.Applied).length}",
-                    ),
-                    backgroundColor: Colors.orange,
-                    labelStyle: const TextStyle(color: Colors.white),
-                    padding: EdgeInsets.zero,
-                    labelPadding: const EdgeInsets.symmetric(horizontal: 8),
-                  )
-                : null,
             onTap: () {
-              Navigator.pop(context);
+              Navigator.pop(context); // Drawer'ı kapat
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -477,60 +390,21 @@ class DashboardView extends ConsumerWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.event),
+            leading: const Icon(Icons.chat_bubble_outline),
             title: const Text("Mülakatlarım"),
-            trailing: gameVM.interviews.isNotEmpty
-                ? Chip(
-                    label: Text("${gameVM.interviews.length}"),
-                    backgroundColor: Colors.green,
-                    labelStyle: const TextStyle(color: Colors.white),
-                    padding: EdgeInsets.zero,
-                    labelPadding: const EdgeInsets.symmetric(horizontal: 8),
-                  )
-                : null,
             onTap: () {
-              Navigator.pop(context);
+              Navigator.pop(context); // Drawer'ı kapat
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const InterviewsView()),
               );
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.school),
-            title: const Text("Kendini Geliştir"),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SelfImprovementView(),
-                ),
-              );
-            },
-          ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.description),
-            title: const Text("CV'm"),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const CVView()),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.chat),
-            title: const Text("AI Asistan"),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ChatView()),
-              );
-            },
+            leading: const Icon(Icons.refresh),
+            title: const Text("Oyunu Sıfırla"),
+            onTap: () => _showResetDialog(context, ref),
           ),
         ],
       ),
@@ -617,7 +491,6 @@ class DashboardView extends ConsumerWidget {
         content: Text(event.description),
         actions: [
           if (event.isChoice) ...[
-            // Seçimli Olay
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -639,7 +512,6 @@ class DashboardView extends ConsumerWidget {
               child: Text(event.choiceYesText ?? "Evet"),
             ),
           ] else ...[
-            // Zorunlu Olay
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
@@ -695,28 +567,10 @@ class DashboardView extends ConsumerWidget {
         return AlertDialog(
           title: Row(
             children: [
-              Icon(
-                event.type == EventType.Daily
-                    ? Icons.today
-                    : event.type == EventType.Monthly
-                    ? Icons.calendar_month
-                    : Icons.event,
-                color: event.type == EventType.Daily
-                    ? Colors.blue
-                    : event.type == EventType.Monthly
-                    ? Colors.orange
-                    : Colors.red,
-              ),
+              Icon(Icons.today, color: Colors.blue),
               const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  event.type == EventType.Daily
-                      ? "Günlük Olay"
-                      : event.type == EventType.Monthly
-                      ? "Aylık Olay"
-                      : "Yıllık Olay",
-                  style: const TextStyle(fontSize: 18),
-                ),
+              const Expanded(
+                child: Text("Günlük Olay", style: TextStyle(fontSize: 18)),
               ),
             ],
           ),
@@ -734,7 +588,7 @@ class DashboardView extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               ...event.options.asMap().entries.map((entry) {
-                final index = entry.key;
+                // final index = entry.key;
                 final option = entry.value;
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -754,11 +608,7 @@ class DashboardView extends ConsumerWidget {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: index == 0
-                            ? Colors.green
-                            : index == 1
-                            ? Colors.blue
-                            : Colors.red,
+                        backgroundColor: Colors.red.shade400,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
@@ -775,6 +625,45 @@ class DashboardView extends ConsumerWidget {
   }
 }
 
+class _MenuButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _MenuButton({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: Colors.white, size: 24),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _MentalHealthBar extends StatelessWidget {
   const _MentalHealthBar({required this.mentalHealth});
 
@@ -783,59 +672,60 @@ class _MentalHealthBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double value = mentalHealth.clamp(0, 100).toDouble() / 100;
-    final Color barColor = mentalHealth >= 70
-        ? Colors.green
-        : mentalHealth >= 40
-        ? Colors.orange
-        : Colors.red;
+    // final Color barColor =
+    //     mentalHealth >= 70
+    //         ? Colors.green
+    //         : mentalHealth >= 40
+    //         ? Colors.orange
+    //         : Colors.red;
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.favorite, color: barColor),
-                const SizedBox(width: 8),
-                Text(
-                  "Mental Sağlık",
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Spacer(),
-                Text(
-                  "$mentalHealth / 100",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: barColor,
-                  ),
-                ),
-              ],
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(25),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Row(
+        children: [
+          Text(
+            "Sağlık",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade700,
             ),
-            const SizedBox(height: 12),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+          ),
+          const SizedBox(width: 12),
+          Icon(Icons.favorite, color: Colors.red, size: 28),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
               child: LinearProgressIndicator(
                 value: value,
-                minHeight: 12,
-                valueColor: AlwaysStoppedAnimation<Color>(barColor),
-                backgroundColor: Colors.grey.shade200,
+                minHeight: 20,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.red.shade400),
+                backgroundColor: Colors.red.shade100,
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              mentalHealth >= 70
-                  ? "Moralin yüksek!"
-                  : mentalHealth >= 40
-                  ? "Biraz dinlenmeye ihtiyacın var."
-                  : "Kendine zaman ayır, moral toparla.",
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+          ),
+          const SizedBox(width: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.red.shade800,
+              borderRadius: BorderRadius.circular(12),
             ),
-          ],
-        ),
+            child: const Text(
+              "Yükselt",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

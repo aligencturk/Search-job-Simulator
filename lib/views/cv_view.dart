@@ -19,19 +19,27 @@ class CVView extends ConsumerWidget {
       cv = gameVM.generateCV();
     } catch (e) {
       return Scaffold(
-        appBar: AppBar(title: const Text("CV")),
+        appBar: AppBar(
+          backgroundColor: Colors.red,
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: const Text("CV", style: TextStyle(color: Colors.white)),
+        ),
         body: const Center(child: Text("Oyun başlatılmamış!")),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Özgeçmiş (CV)"),
+        backgroundColor: Colors.red,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          "Özgeçmiş (CV)",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
             onPressed: () {
-              // Paylaşma özelliği eklenebilir
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("Paylaşma özelliği yakında!")),
               );
@@ -39,40 +47,53 @@ class CVView extends ConsumerWidget {
           ),
         ],
       ),
+      backgroundColor: const Color(0xFFF5F5F5),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Başlık
+            // Başlık (Profil)
             FadeInDown(
-              child: Card(
-                color: Theme.of(context).primaryColor.withOpacity(0.1),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        cv.name,
-                        style: Theme.of(context).textTheme.headlineMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor,
-                            ),
+              child: Container(
+                padding: const EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      cv.name,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red.shade800,
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        cv.department,
-                        style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      cv.department,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "Cinsiyet: ${cv.gender == Gender.Male ? "Erkek" : "Kadın"}",
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Cinsiyet: ${cv.gender == Gender.Male ? "Erkek" : "Kadın"}",
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -112,18 +133,31 @@ class CVView extends ConsumerWidget {
             const SizedBox(height: 24),
 
             // Tamamlanan Görevler
-            if (cv.completedTasks.isNotEmpty) ...[
-              Text(
-                "Tamamlanan Görevler",
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+            Text(
+              "Tamamlanan Görevler",
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
-              const SizedBox(height: 12),
+            ),
+            const SizedBox(height: 12),
+            if (cv.completedTasks.isNotEmpty)
               ...cv.completedTasks.map(
                 (task) => FadeInLeft(
-                  child: Card(
+                  child: Container(
                     margin: const EdgeInsets.only(bottom: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
                     child: ListTile(
                       leading: const Icon(
                         Icons.check_circle,
@@ -148,31 +182,25 @@ class CVView extends ConsumerWidget {
                     ),
                   ),
                 ),
-              ),
-            ] else ...[
-              Text(
-                "Tamamlanan Görevler",
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Icon(Icons.info_outline, color: Colors.grey.shade600),
-                      const SizedBox(width: 12),
-                      Text(
-                        "Henüz görev tamamlanmadı",
-                        style: TextStyle(color: Colors.grey.shade600),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+              )
+            else
+               Container(
+                 padding: const EdgeInsets.all(16.0),
+                 decoration: BoxDecoration(
+                   color: Colors.white,
+                   borderRadius: BorderRadius.circular(12),
+                 ),
+                 child: Row(
+                   children: [
+                     Icon(Icons.info_outline, color: Colors.grey.shade600),
+                     const SizedBox(width: 12),
+                     Text(
+                       "Henüz görev tamamlanmadı",
+                       style: TextStyle(color: Colors.grey.shade600),
+                     ),
+                   ],
+                 ),
+               ),
 
             const SizedBox(height: 24),
 
@@ -180,15 +208,28 @@ class CVView extends ConsumerWidget {
             if (cv.experiences.isNotEmpty) ...[
               Text(
                 "Deneyimler",
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
               ),
               const SizedBox(height: 12),
               ...cv.experiences.map(
                 (exp) => FadeInRight(
-                  child: Card(
+                  child: Container(
                     margin: const EdgeInsets.only(bottom: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
                     child: ListTile(
                       leading: const Icon(Icons.work, color: Colors.blue),
                       title: Text(exp.title),
@@ -216,32 +257,42 @@ class CVView extends ConsumerWidget {
     IconData icon,
     String content,
   ) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: Theme.of(context).primaryColor),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: Colors.red.shade700),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.black87,
                   ),
-                  const SizedBox(height: 8),
-                  Text(content),
-                ],
-              ),
+                ),
+                const SizedBox(height: 8),
+                Text(content, style: const TextStyle(color: Colors.black87)),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

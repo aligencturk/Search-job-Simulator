@@ -25,7 +25,15 @@ class SelfImprovementView extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Kendini Geliştir")),
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          "Kendini Geliştir",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+      backgroundColor: const Color(0xFFF5F5F5),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -33,37 +41,55 @@ class SelfImprovementView extends ConsumerWidget {
           children: [
             // Başlık Kartı
             FadeInDown(
-              child: Card(
-                color: Theme.of(context).primaryColor.withOpacity(0.1),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Row(
-                    children: [
-                      Icon(
+              child: Container(
+                padding: const EdgeInsets.all(20.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade50,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
                         Icons.school,
-                        size: 48,
-                        color: Theme.of(context).primaryColor,
+                        size: 32,
+                        color: Colors.red.shade700,
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Yeteneklerini Geliştir",
-                              style: Theme.of(context).textTheme.titleLarge
-                                  ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Yeteneklerini Geliştir",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              "Yeni yetenekler öğren, kariyerini ilerlet",
-                              style: TextStyle(color: Colors.grey.shade600),
-                            ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            "Yeni yetenekler öğren, kariyerini ilerlet",
+                            style: TextStyle(color: Colors.grey.shade600),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -71,26 +97,51 @@ class SelfImprovementView extends ConsumerWidget {
             const SizedBox(height: 24),
 
             // Mevcut Yetenekler
-            Text(
+            const Text(
               "Mevcut Yetenekler",
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
             const SizedBox(height: 12),
+            if (player.skills.isEmpty)
+              const Text(
+                "Henüz yetenek yok.",
+                style: TextStyle(color: Colors.grey),
+              ),
             ...player.skills.map((skill) {
               return FadeInLeft(
-                child: Card(
+                child: Container(
                   margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
                   child: ListTile(
-                    leading: const Icon(Icons.star, color: Colors.amber),
-                    title: Text(skill),
-                    subtitle: LinearPercentIndicator(
-                      lineHeight: 8.0,
-                      percent: 0.5, // Şimdilik sabit
-                      backgroundColor: Colors.grey.shade300,
-                      progressColor: Colors.blue,
-                      barRadius: const Radius.circular(4),
+                    leading: Icon(Icons.star, color: Colors.amber.shade600),
+                    title: Text(
+                      skill,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: LinearPercentIndicator(
+                        lineHeight: 6.0,
+                        percent: 1.0, // Öğrenilmiş yetenek tam dolu
+                        backgroundColor: Colors.grey.shade200,
+                        progressColor: Colors.green,
+                        barRadius: const Radius.circular(4),
+                        padding: EdgeInsets.zero,
+                      ),
                     ),
                   ),
                 ),
@@ -100,11 +151,13 @@ class SelfImprovementView extends ConsumerWidget {
             const SizedBox(height: 24),
 
             // Yeni Yetenekler
-            Text(
+            const Text(
               "Öğrenebileceğin Yetenekler",
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
             const SizedBox(height: 12),
             ..._getAvailableSkills(player.skills, gameVM.department?.name).map((
@@ -123,18 +176,32 @@ class SelfImprovementView extends ConsumerWidget {
                   : null;
 
               return FadeInRight(
-                child: Card(
+                child: Container(
                   margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
                   child: ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.add_circle_outline,
-                      color: Colors.green,
+                      color: Colors.red.shade400,
                     ),
-                    title: Text(skill),
+                    title: Text(
+                      skill,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
                     subtitle: Text(
                       game != null
-                          ? "Bu yeteneği öğrenmek için '${game.name}' oyununu tamamlamalısın"
-                          : "Bu yeteneği öğrenmek için 5.000 TL gerekiyor",
+                          ? "Gereksinim: '${game.name}' oyunu"
+                          : "Gereksinim: 5.000 TL",
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.grey.shade600,
@@ -164,6 +231,13 @@ class SelfImprovementView extends ConsumerWidget {
                               );
                             }
                           : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                       child: Text(game != null ? "Oyna" : "Öğren"),
                     ),
                   ),

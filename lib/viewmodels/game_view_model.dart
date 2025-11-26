@@ -13,6 +13,7 @@ import '../models/department_model.dart';
 import '../models/job_application_model.dart';
 import '../models/job_model.dart';
 import '../models/minigame_model.dart';
+import '../models/market_item.dart';
 import '../models/player_model.dart';
 import '../models/event_model.dart';
 import '../models/story_model.dart';
@@ -39,6 +40,8 @@ class GameViewModel extends ChangeNotifier {
   int _mentalHealth = 100;
   static const int _mentalCrisisThreshold = 30;
   bool _mentalCrisisQueued = false;
+  final List<MarketItem> _marketItems = _generateMarketItems();
+  final List<String> _ownedItemIds = [];
 
   Player? get player => _player;
   Department? get department => _department;
@@ -53,6 +56,10 @@ class GameViewModel extends ChangeNotifier {
   double get optionalHangoutCost => _optionalHangoutCost;
   FinancialEvent? get pendingFinancialEvent => _pendingFinancialEvent;
   int get mentalHealth => _mentalHealth;
+  List<MarketItem> get marketItems => _marketItems;
+  List<MarketItem> get ownedItems => _ownedItemIds
+      .map((id) => _marketItems.firstWhere((item) => item.id == id))
+      .toList();
 
   // İş bulunup bulunmadığını kontrol et
   bool get hasJob {
@@ -139,6 +146,7 @@ class GameViewModel extends ChangeNotifier {
     _livingWithFamily = true;
     _pendingFinancialEvent = null;
     _mentalHealth = 100;
+    _ownedItemIds.clear();
     logger.i("Oyun sıfırlandı");
     notifyListeners();
   }
@@ -170,23 +178,7 @@ class GameViewModel extends ChangeNotifier {
       logger.w("Player bulunamadığı için finansal olay işlenemedi");
       return OptionalExpenseResult.declined;
     }
-
-    // Mevcut olayı al (bazen consume edildikten sonra çağrılabilir, UI tarafında event parametre olarak da tutulabilir ama
-    // burada son işlenen olay gibi de düşünebiliriz, ama en doğrusu UI'dan ne seçildiğini bilmek.
-    // Şimdilik UI zaten event detaylarını biliyor, biz sadece işlemi yapıyoruz.
-    // Ancak burada hangi event'e cevap verildiğini bilmemiz lazım.
-    // Basitlik adına: consumeFinancialEvent ile UI eventi alır, kullanıcı karar verince buraya parametrelerle gelir.
-    // Ama biz sadece accepted bool alıyoruz. Bu yüzden UI tarafında hangi event olduğu biliniyor olmalı.
-    // O yüzden bu metodu biraz daha generic yapalım veya UI event detaylarını göndersin.
-    // Şimdilik basitçe: UI'dan event detaylarını (amount, isChoice) parametre olarak alalım.
-    // Ya da en son pending event'i bir "processing" state'inde tutabiliriz.
-    // En temizi: UI, event'i parametre olarak geçsin.
-    // Ama mevcut yapıyı çok bozmamak için, handleFinancialDecision sadece "seçimli" olanlar için çalışacak.
-
-    // Burası eski hangout decision'ın yerini alacak ama parametre lazım.
-    // O yüzden bu metodu güncelliyorum:
-    return OptionalExpenseResult
-        .declined; // Placeholder, aşağıda yenisini yazacağım.
+    return OptionalExpenseResult.declined;
   }
 
   OptionalExpenseResult processFinancialEvent(
@@ -203,12 +195,9 @@ class GameViewModel extends ChangeNotifier {
         _lastMessage =
             "${event.title}: ${event.amount.toStringAsFixed(0)} TL eklendi.";
         notifyListeners();
-        return OptionalExpenseResult
-            .paid; // Gelir için de paid dönelim (işlem tamam)
+        return OptionalExpenseResult.paid;
       } else {
         // Gider
-        // Zorunlu giderlerde para yetmese de düşebilir (borç) veya 0'a inebilir.
-        // Oyun kuralı: Para eksiye düşebilir mi? Şimdilik düşsün.
         _player!.money += event.amount; // amount negatif
         _lastMessage =
             "${event.title}: ${event.amount.abs().toStringAsFixed(0)} TL harcandı.";
@@ -225,7 +214,6 @@ class GameViewModel extends ChangeNotifier {
 
       // Kabul edildi
       if (event.amount > 0) {
-        // Seçimli gelir? (Şu an yok ama olabilir)
         _player!.money += event.amount;
         notifyListeners();
         return OptionalExpenseResult.paid;
@@ -244,6 +232,66 @@ class GameViewModel extends ChangeNotifier {
         }
       }
     }
+  }
+
+  bool purchaseItem(MarketItem item) {
+    if (_player == null) return false;
+    if (_ownedItemIds.contains(item.id)) {
+      _lastMessage = "${item.name} zaten satın alındı.";
+      notifyListeners();
+      return false;
+    }
+    if (_player!.money < item.price) {
+      _lastMessage = "${item.name} için yeterli bakiyeniz yok.";
+      notifyListeners();
+      return false;
+    }
+    _player!.money -= item.price;
+    _ownedItemIds.add(item.id);
+    _lastMessage = "${item.name} satın alındı!";
+    _applyItemBonus(item);
+    notifyListeners();
+    return true;
+  }
+
+  void applyPeriodicBonuses() {
+    for (final itemId in _ownedItemIds) {
+      final item = _marketItems.firstWhere((element) => element.id == itemId);
+      if (item.mentalBonus <= 0) continue;
+      if (item.bonusType == "daily") {
+        _changeMentalHealth(item.mentalBonus, reason: "${item.name} (Günlük)");
+      }
+    }
+  }
+
+  void applyMonthlyBonuses() {
+    for (final itemId in _ownedItemIds) {
+      final item = _marketItems.firstWhere((element) => element.id == itemId);
+      if (item.mentalBonus <= 0) continue;
+      if (item.bonusType == "monthly") {
+        _changeMentalHealth(item.mentalBonus, reason: "${item.name} (Aylık)");
+      }
+    }
+  }
+
+  void applyYearlyBonuses() {
+    for (final itemId in _ownedItemIds) {
+      final item = _marketItems.firstWhere((element) => element.id == itemId);
+      if (item.mentalBonus <= 0) continue;
+      if (item.bonusType == "yearly") {
+        _changeMentalHealth(item.mentalBonus, reason: "${item.name} (Yıllık)");
+      }
+    }
+  }
+
+  void _applyItemBonus(MarketItem item) {
+    if (item.mentalBonus <= 0) return;
+
+    if (item.bonusType == "single") {
+      _changeMentalHealth(item.mentalBonus, reason: item.name);
+      return;
+    }
+    // periodic items handled by periodic bonus functions
   }
 
   String _eventTypeKey(EventType type) {
@@ -428,1138 +476,21 @@ class GameViewModel extends ChangeNotifier {
     String description = "";
     List<String> options = [];
 
-    // Bölüme göre eventler
-    if (departmentName.contains("Bilgisayar") ||
-        departmentName.contains("Yazılım")) {
-      switch (type) {
-        case EventType.Daily:
-          final events = [
-            // İş arama olayları
-            {
-              "desc": "En yakın arkadaşın iş buldu, sen hala işsizsin.",
-              "opts": ["Onu tebrik et", "Onunla kutla", "Kıskançlık yap"],
-            },
-            {
-              "desc": "GitHub'da projen star aldı, ama iş hala yok.",
-              "opts": ["Sevin", "Paylaş", "Umutsuzluğa kapıl"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Annen seni ekmek almaya gönderdi, eve gelirken köpek kovaladı, ekmek düştü.",
-              "opts": ["Tekrar al", "Ağla", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Baban 'ne zaman iş bulacaksın' diye sordu, cevap veremedin.",
-              "opts": ["İçinden söv", "...", "..."],
-            },
-            {
-              "desc": "Kardeşin iş buldu, aile onu kutluyor, sen yalnızsın.",
-              "opts": ["Kutla", "Kıskan, maaşına çök.", "Üzül"],
-            },
-            {
-              "desc":
-                  "Annen kahvaltı yapmadın diye kızdı, 'yine mi yatıyorsun' dedi.",
-              "opts": ["Özür dile", "Kabul et", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Baban cep telefonu faturası geldi diye kızdı, 'para yok' dedin.",
-              "opts": ["Özür dile", "Kabul et", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Annen komşuya gitti, 'oğlum işsiz' diye anlattı, utandın.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Marketten alışveriş yaparken cüzdanı evde unuttun, geri döndün.",
-              "opts": ["Tekrar git", "Vazgeç", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Otobüs geç kaldı, iş görüşmesi kaçtı, eve döndün yattın.",
-              "opts": ["Kabul et", "Üzül", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Komşu şikayet etti, 'gece geç saatte gürültü yapıyorsun' dedi.",
-              "opts": ["Özür dile", "Kabul et", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Internet kesildi, iş başvurusu yapamadın, komşudan şifre istedin, vermedi.",
-              "opts": ["Kabul et", "Üzül", "Küfür et"],
-            },
-            {
-              "desc": "Su kesilmiş, banyo yapamadın, dışarı çıkamadın.",
-              "opts": ["Kabul et", "Şikayet et", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Arkadaşların buluştu, sen para yok diye gitmedin, Instagram'da fotoğrafları gördün.",
-              "opts": ["Üzül", "Kıskan", "Kabul et"],
-            },
-            {
-              "desc": "Teknik mülakata gittin, algoritma sorusunda takıldın.",
-              "opts": ["Çalışmaya devam et", "Üzül", "Vazgeç"],
-            },
-            {
-              "desc": "Freelance iş buldun ama müşteri para vermedi.",
-              "opts": ["Dava aç", "Kabul et", "Küfür et"],
-            },
-            {
-              "desc": "Bootcamp'e yazıldın, ilk ders çok zordu.",
-              "opts": ["Devam et", "Bırak", "Şikayet et"],
-            },
-            {
-              "desc": "Hackathon'a katıldın, projeni bitiremedin.",
-              "opts": ["Tekrar dene", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc": "LinkedIn'de iş ilanı gördün, 5+ yıl tecrübe istiyor.",
-              "opts": ["Yine de başvur", "Geç", "Sinirlen"],
-            },
-            {
-              "desc": "Kod yazarken bilgisayarın çöktü, tüm proje gitti.",
-              "opts": ["Tekrar yaz", "Ağla", "Küfür et"],
-            },
-            {
-              "desc": "Staj başvurusu yaptın, 'tecrübe yetersiz' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc": "Online kursa 5000 TL harcadın, hala iş yok.",
-              "opts": ["Devam et", "Para israfı", "Şikayet et"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Annen seni ekmek almaya gönderdi, eve gelirken köpek kovaladı, ekmek düştü.",
-              "opts": ["Tekrar al", "Ağla", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Baban 'ne zaman iş bulacaksın' diye sordu, cevap veremedin.",
-              "opts": ["Özür dile", "Kabul et", "Kızgın ol"],
-            },
-            {
-              "desc": "Kardeşin iş buldu, aile onu kutluyor, sen yalnızsın.",
-              "opts": ["Kutla", "Kıskan", "Üzül"],
-            },
-            {
-              "desc":
-                  "Annen kahvaltı yapmadın diye kızdı, 'yine mi yatıyorsun' dedi.",
-              "opts": ["Özür dile", "Kabul et", "Kızgın ol"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Marketten alışveriş yaparken cüzdanı evde unuttun, geri döndün.",
-              "opts": ["Tekrar git", "Vazgeç", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Otobüs geç kaldı, iş görüşmesi kaçtı, eve döndün yattın.",
-              "opts": ["Kabul et", "Üzül", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Internet kesildi, iş başvurusu yapamadın, komşudan şifre istedin, vermedi.",
-              "opts": ["Kabul et", "Üzül", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Arkadaşların buluştu, sen para yok diye gitmedin, Instagram'da fotoğrafları gördün.",
-              "opts": ["Üzül", "Kıskan", "Kabul et"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-        case EventType.Monthly:
-          final events = [
-            {
-              "desc": "Bu ay 10 iş görüşmesine gittin, hepsi reddetti.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc": "Arkadaşların iş buldu, evlendi, sen hala işsizsin.",
-              "opts": ["Kutla", "Kıskan", "Üzül"],
-            },
-            {
-              "desc": "Freelance işler yaptın, müşteriler para vermedi.",
-              "opts": ["Dava aç", "Kabul et", "Küfür et"],
-            },
-            {
-              "desc": "GitHub'da 20 proje yükledin, kimse star vermedi.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc": "Bootcamp'e 10000 TL harcadın, iş bulamadın.",
-              "opts": ["Devam et", "Para israfı", "Şikayet et"],
-            },
-            {
-              "desc": "Hackathon'lara katıldın, hiçbirinde kazanamadın.",
-              "opts": ["Tekrar dene", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Online kurslara 15000 TL harcadın, sertifika aldın ama iş yok.",
-              "opts": ["Devam et", "Para israfı", "Şikayet et"],
-            },
-            {
-              "desc": "Staj başvuruları yaptın, hepsi reddetti.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc": "Kod yazdın, projeleri bitiremedin, deadline'lar kaçtı.",
-              "opts": ["Devam et", "Vazgeç", "Küfür et"],
-            },
-            {
-              "desc": "Aylık bütçe bitti, annenden borç aldın.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Bu ay memlekete gittiniz, baban sana günlerini zehir etti, akrabalar 'ne iş yapıyorsun' diye sordu.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu ay kira ödemedin, ev sahibi kapıya dayandı, annenden borç aldın.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu ay aile toplantısı vardı, herkes iş bulmuş, sen hala işsizsin, utandın.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu ay baban sürekli 'ne zaman iş bulacaksın' diye sordu, sinirlendin.",
-              "opts": ["Kabul et", "İtiraz et", "Kızgın ol"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Bu ay arkadaşların evlendi, düğüne gittin, cebinde para kalmadı.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu ay doğum günün geldi, kimse hatırlamadı, kendin pasta aldın, yalnız yedin.",
-              "opts": ["Üzül", "Kabul et", "Kızgın ol"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-        case EventType.Yearly:
-          final events = [
-            {
-              "desc": "Bu yıl 100 iş görüşmesine gittin, hepsi reddetti.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc":
-                  "Arkadaşların iş buldu, evlendi, araba aldı, sen hala işsizsin.",
-              "opts": ["Nasip", "Kıskan", "Üzül"],
-            },
-            {
-              "desc":
-                  "Freelance işler yaptın, müşteriler para vermedi, borç birikti.",
-              "opts": ["Dava aç", "Bir şey yapma", "Küfür et"],
-            },
-            {
-              "desc": "GitHub'da 100 proje yükledin, kimse star vermedi.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc": "Bootcamp ve kurslara 50000 TL harcadın, iş bulamadın.",
-              "opts": ["Devam et", "Para israfı", "Şikayet et"],
-            },
-            {
-              "desc": "Hackathon'lara katıldın, hiçbirinde kazanamadın.",
-              "opts": ["Tekrar dene", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Online kurslara 30000 TL harcadın, sertifika aldın ama iş yok.",
-              "opts": ["Devam et", "Para israfı", "Şikayet et"],
-            },
-            {
-              "desc": "Staj başvuruları yaptın, hepsi reddetti.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Kod yazdın, projeleri bitiremedin, deadline'lar kaçtı, müşteriler kızdı.",
-              "opts": ["Devam et", "Vazgeç", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Yıllık bütçe bitti, aile baskısı arttı, 'ne zaman iş bulacaksın' diye sordular.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Bu yıl aile baskısı arttı, 'ne zaman evleneceksin' diye sordular, sen hala işsizsin.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu yıl baban 'seni asker yapamadık, iş de bulamadın' diye sürekli kızdı.",
-              "opts": ["Kabul et", "Özür dile", "Kızgın ol"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Bu yıl arkadaşların evlendi, düğüne gittin, harçlık verdin, borç birikti.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu yıl eski arkadaşlarınla buluştun, herkes iş bulmuş, evlenmiş, sen hala işsizsin.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-      }
-    } else if (departmentName.contains("Hukuk")) {
-      switch (type) {
-        case EventType.Daily:
-          final events = [
-            {
-              "desc":
-                  "En yakın arkadaşın avukatlık bürosunda iş buldu, sen hala işsizsin.",
-              "opts": ["Onu tebrik et", "Onunla kutla", "Kıskançlık yap"],
-            },
-            {
-              "desc": "Dava dosyası hazırladın, hata yaptın, müvekkil kızdı.",
-              "opts": ["Düzelt", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Avukatlık bürosuna gittin, staj yeri istedin, 'yer yok' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc": "Duruşmaya gittin, dava kaybettin, müvekkil kızdı.",
-              "opts": ["Kabul et", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc": "Müvekkil görüşmesi yaptın, dava kaybettin.",
-              "opts": ["Kabul et", "Özür dile", "Kızgın ol"],
-            },
-            {
-              "desc": "Dava dosyası kayboldu, aradın bulamadın.",
-              "opts": ["Tekrar hazırla", "Panik yap", "Küfür et"],
-            },
-            {
-              "desc": "Staj başvurusu yaptın, 'tecrübe yetersiz' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc": "Kanun kitabı okudun, hiçbir şey anlamadın.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc":
-                  "Müvekkil aradı, 'dava kaybettik' dedi, sen hatırlamıyordun.",
-              "opts": ["Özür dile", "Kabul et", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Avukatlık bürosuna gittin, iş istedin, 'yer yok' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Annen seni ekmek almaya gönderdi, eve gelirken köpek kovaladı, ekmek düştü.",
-              "opts": ["Tekrar al", "Ağla", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Baban 'ne zaman iş bulacaksın' diye sordu, cevap veremedin.",
-              "opts": ["Özür dile", "Kabul et", "Kızgın ol"],
-            },
-            {
-              "desc": "Kardeşin iş buldu, aile onu kutluyor, sen yalnızsın.",
-              "opts": ["Kutla", "Kıskan", "Üzül"],
-            },
-            {
-              "desc":
-                  "Annen kahvaltı yapmadın diye kızdı, 'yine mi yatıyorsun' dedi.",
-              "opts": ["Özür dile", "Kabul et", "Kızgın ol"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Marketten alışveriş yaparken cüzdanı evde unuttun, geri döndün.",
-              "opts": ["Tekrar git", "Vazgeç", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Otobüs geç kaldı, iş görüşmesi kaçtı, eve döndün yattın.",
-              "opts": ["Kabul et", "Üzül", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Internet kesildi, iş başvurusu yapamadın, komşudan şifre istedin, vermedi.",
-              "opts": ["Kabul et", "Üzül", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Arkadaşların buluştu, sen para yok diye gitmedin, Instagram'da fotoğrafları gördün.",
-              "opts": ["Üzül", "Kıskan", "Kabul et"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-        case EventType.Monthly:
-          final events = [
-            {
-              "desc": "Bu ay 10 staj başvurusu yaptın, hepsi reddetti.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc":
-                  "Arkadaşların avukatlık bürosunda iş buldu, sen hala işsizsin.",
-              "opts": ["Kutla", "Kıskan", "Üzül"],
-            },
-            {
-              "desc":
-                  "Dava dosyaları hazırladın, hepsi kayboldu, müvekkiller kızdı.",
-              "opts": ["Tekrar hazırla", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Duruşmalara gittin, hepsini kaybettin, müvekkiller kızdı.",
-              "opts": ["Kabul et", "Özür dile", "Kızgın ol"],
-            },
-            {
-              "desc": "Müvekkil görüşmeleri yaptın, hepsi dava kaybetti.",
-              "opts": ["Kabul et", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc": "Staj yaptın, hiçbir şey öğrenmedin, sadece çay içtin.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Avukatlık bürosuna gittin, iş istedin, 'yer yok' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc": "Aylık bütçe bitti, annenden borç aldın.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc": "Kanun kitabı okudun, hiçbir şey anlamadın.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc":
-                  "Dava dosyaları hazırladın, hepsi hatalıydı, müvekkiller kızdı.",
-              "opts": ["Düzelt", "Özür dile", "Küfür et"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-        case EventType.Yearly:
-          final events = [
-            {
-              "desc": "Bu yıl 100 staj başvurusu yaptın, hepsi reddetti.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc":
-                  "Arkadaşların avukatlık bürosunda iş buldu, evlendi, sen hala işsizsin.",
-              "opts": ["Kutla", "Kıskan", "Üzül"],
-            },
-            {
-              "desc":
-                  "Dava dosyaları hazırladın, hepsi kayboldu, müvekkiller kızdı.",
-              "opts": ["Tekrar hazırla", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Duruşmalara gittin, hepsini kaybettin, müvekkiller kızdı.",
-              "opts": ["Kabul et", "Özür dile", "Kızgın ol"],
-            },
-            {
-              "desc": "Müvekkil görüşmeleri yaptın, hepsi dava kaybetti.",
-              "opts": ["Kabul et", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc": "Staj yaptın, hiçbir şey öğrenmedin, sadece çay içtin.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Avukatlık bürosuna gittin, iş istedin, 'yer yok' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Yıllık bütçe bitti, aile baskısı arttı, 'ne zaman iş bulacaksın' diye sordular.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc": "Kanun kitabı okudun, hiçbir şey anlamadın.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc":
-                  "Dava dosyaları hazırladın, hepsi hatalıydı, müvekkiller kızdı.",
-              "opts": ["Düzelt", "Özür dile", "Küfür et"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Bu yıl aile baskısı arttı, 'ne zaman evleneceksin' diye sordular, sen hala işsizsin.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu yıl baban 'seni asker yapamadık, iş de bulamadın' diye sürekli kızdı.",
-              "opts": ["Kabul et", "Özür dile", "Kızgın ol"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Bu yıl arkadaşların evlendi, düğüne gittin, harçlık verdin, borç birikti.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu yıl eski arkadaşlarınla buluştun, herkes iş bulmuş, evlenmiş, sen hala işsizsin.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-      }
-    } else if (departmentName.contains("İşletme") ||
-        departmentName.contains("İktisat")) {
-      switch (type) {
-        case EventType.Daily:
-          final events = [
-            {
-              "desc": "En yakın arkadaşın iş buldu, sen hala işsizsin.",
-              "opts": ["Onu tebrik et", "Onunla kutla", "Kıskan"],
-            },
-            {
-              "desc": "İş görüşmesi vardı, 'tecrübe yetersiz' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc": "Rapor hazırladın, patron beğenmedi, tekrar yaptın.",
-              "opts": ["Kabul et", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Müşteri görüşmesi yaptın, satış yapamadın, patron kızdı.",
-              "opts": ["Kabul et", "Özür dile", "Kızgın ol"],
-            },
-            {
-              "desc": "Sunum hazırladın, kötü geçti, patron kızdı.",
-              "opts": ["Kabul et", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc": "Excel'de formül yazdın, hata verdi, 5 saat uğraştın.",
-              "opts": ["Devam et", "Vazgeç", "Küfür et"],
-            },
-            {
-              "desc": "Müşteri aradı, şikayet etti, sen çözemedin.",
-              "opts": ["Özür dile", "Kabul et", "Kızgın ol"],
-            },
-            {
-              "desc": "Staj başvurusu yaptın, 'tecrübe yetersiz' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc": "Rapor hazırladın, kayboldu, patron kızdı.",
-              "opts": ["Tekrar hazırla", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc": "İş ilanlarına baktın, hepsi 3+ yıl tecrübe istiyor.",
-              "opts": ["Yine de başvur", "Geç", "Sinirlen"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Annen seni ekmek almaya gönderdi, eve gelirken köpek kovaladı, ekmek düştü.",
-              "opts": ["Tekrar al", "Ağla", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Baban 'ne zaman iş bulacaksın' diye sordu, cevap veremedin.",
-              "opts": ["Özür dile", "Kabul et", "Kızgın ol"],
-            },
-            {
-              "desc": "Kardeşin iş buldu, aile onu kutluyor, sen yalnızsın.",
-              "opts": ["Kutla", "Kıskan", "Üzül"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Marketten alışveriş yaparken cüzdanı evde unuttun, geri döndün.",
-              "opts": ["Tekrar git", "Vazgeç", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Otobüs geç kaldı, iş görüşmesi kaçtı, eve döndün yattın.",
-              "opts": ["Kabul et", "Üzül", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Internet kesildi, iş başvurusu yapamadın, komşudan şifre istedin, vermedi.",
-              "opts": ["Kabul et", "Üzül", "Küfür et"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-        case EventType.Monthly:
-          final events = [
-            {
-              "desc": "Bu ay 10 iş görüşmesine gittin, hepsi reddetti.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc": "Arkadaşların iş buldu, evlendi, sen hala işsizsin.",
-              "opts": ["Kutla", "Kıskan", "Üzül"],
-            },
-            {
-              "desc": "Raporlar hazırladın, hepsi beğenilmedi, patron kızdı.",
-              "opts": ["Kabul et", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc": "Müşteri görüşmeleri yaptın, hiç satış yapamadın.",
-              "opts": ["Kabul et", "Özür dile", "Kızgın ol"],
-            },
-            {
-              "desc": "Sunumlar hazırladın, hepsi kötü geçti, patron kızdı.",
-              "opts": ["Kabul et", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc": "Excel kursuna gittin, formül yazmayı öğrenemedin.",
-              "opts": ["Devam et", "Para israfı", "Şikayet et"],
-            },
-            {
-              "desc": "Müşteri şikayetleri aldın, hiçbirini çözemedin.",
-              "opts": ["Özür dile", "Kabul et", "Kızgın ol"],
-            },
-            {
-              "desc": "Aylık bütçe bitti, annenden borç aldın.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc": "Raporlar hazırladın, hepsi kayboldu, patron kızdı.",
-              "opts": ["Tekrar hazırla", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc": "Staj başvuruları yaptın, hepsi reddetti.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Bu ay memlekete gittiniz, baban sana günlerini zehir etti, akrabalar 'ne iş yapıyorsun' diye sordu.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu ay aile toplantısı vardı, herkes iş bulmuş, sen hala işsizsin, utandın.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Bu ay arkadaşların evlendi, düğüne gittin, harçlık verdin, cebinde para kalmadı.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu ay doğum günün geldi, kimse hatırlamadı, kendin pasta aldın, yalnız yedin.",
-              "opts": ["Üzül", "Kabul et", "Kızgın ol"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-        case EventType.Yearly:
-          final events = [
-            {
-              "desc": "Bu yıl 100 iş görüşmesine gittin, hepsi reddetti.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc":
-                  "Arkadaşların iş buldu, evlendi, araba aldı, sen hala işsizsin.",
-              "opts": ["Kutla", "Kıskan", "Üzül"],
-            },
-            {
-              "desc": "Raporlar hazırladın, hepsi beğenilmedi, patron kızdı.",
-              "opts": ["Kabul et", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc": "Müşteri görüşmeleri yaptın, hiç satış yapamadın.",
-              "opts": ["Kabul et", "Özür dile", "Kızgın ol"],
-            },
-            {
-              "desc": "Sunumlar hazırladın, hepsi kötü geçti, patron kızdı.",
-              "opts": ["Kabul et", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Excel kursuna gittin, formül yazmayı öğrenemedin, para boşa gitti.",
-              "opts": ["Devam et", "Para israfı", "Şikayet et"],
-            },
-            {
-              "desc": "Müşteri şikayetleri aldın, hiçbirini çözemedin.",
-              "opts": ["Özür dile", "Kabul et", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Yıllık bütçe bitti, aile baskısı arttı, 'ne zaman iş bulacaksın' diye sordular.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc": "Raporlar hazırladın, hepsi kayboldu, patron kızdı.",
-              "opts": ["Tekrar hazırla", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc": "Staj başvuruları yaptın, hepsi reddetti.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Bu yıl aile baskısı arttı, 'ne zaman evleneceksin' diye sordular, sen hala işsizsin.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu yıl baban 'seni asker yapamadık, iş de bulamadın' diye sürekli kızdı.",
-              "opts": ["Kabul et", "Özür dile", "Kızgın ol"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Bu yıl arkadaşların evlendi, düğüne gittin, harçlık verdin, borç birikti.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu yıl eski arkadaşlarınla buluştun, herkes iş bulmuş, evlenmiş, sen hala işsizsin.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-      }
-    } else if (departmentName.contains("Tıp")) {
-      switch (type) {
-        case EventType.Daily:
-          final events = [
-            {
-              "desc":
-                  "En yakın arkadaşın hastanede iş buldu, sen hala işsizsin.",
-              "opts": ["Onu tebrik et", "Onunla kutla", "Kıskançlık yap"],
-            },
-            {
-              "desc": "Hasta muayene ettin, teşhis koyamadın, hasta kızdı.",
-              "opts": ["Özür dile", "Kabul et", "Küfür et"],
-            },
-            {
-              "desc": "Hastaneye gittin, staj yeri istedin, 'yer yok' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc": "Nöbet tutman gerekiyordu, 24 saat uyumadın.",
-              "opts": ["Kabul et", "Şikayet et", "Küfür et"],
-            },
-            {
-              "desc": "Hasta dosyası kayboldu, aradın bulamadın.",
-              "opts": ["Tekrar hazırla", "Panik yap", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Hasta aradı, 'tedavi işe yaramadı' dedi, sen hatırlamıyordun.",
-              "opts": ["Özür dile", "Kabul et", "Küfür et"],
-            },
-            {
-              "desc": "Staj başvurusu yaptın, 'tecrübe yetersiz' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc": "Anatomi kitabı okudun, hiçbir şey anlamadın.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc": "Hasta muayene ettin, yanlış teşhis koydun, hasta kızdı.",
-              "opts": ["Özür dile", "Kabul et", "Küfür et"],
-            },
-            {
-              "desc": "Hastaneye gittin, iş istedin, 'yer yok' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Annen seni ekmek almaya gönderdi, eve gelirken köpek kovaladı, ekmek düştü.",
-              "opts": ["Tekrar al", "Ağla", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Baban 'ne zaman iş bulacaksın' diye sordu, cevap veremedin.",
-              "opts": ["Özür dile", "Kabul et", "Kızgın ol"],
-            },
-            {
-              "desc": "Kardeşin iş buldu, aile onu kutluyor, sen yalnızsın.",
-              "opts": ["Kutla", "Kıskan", "Üzül"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Marketten alışveriş yaparken cüzdanı evde unuttun, geri döndün.",
-              "opts": ["Tekrar git", "Vazgeç", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Otobüs geç kaldı, iş görüşmesi kaçtı, eve döndün yattın.",
-              "opts": ["Kabul et", "Üzül", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Internet kesildi, iş başvurusu yapamadın, komşudan şifre istedin, vermedi.",
-              "opts": ["Kabul et", "Üzül", "Küfür et"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-        case EventType.Monthly:
-          final events = [
-            {
-              "desc": "Bu ay 10 staj başvurusu yaptın, hepsi reddetti.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc": "Arkadaşların hastanede iş buldu, sen hala işsizsin.",
-              "opts": ["Kutla", "Kıskan", "Üzül"],
-            },
-            {
-              "desc":
-                  "Hasta muayene ettin, hepsinde teşhis koyamadın, hasta kızdı.",
-              "opts": ["Özür dile", "Kabul et", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Nöbet tuttu, 24 saat uyumadın, hasta geldi, tedavi edemedin.",
-              "opts": ["Kabul et", "Şikayet et", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Hasta dosyaları hazırladın, hepsi kayboldu, hasta kızdı.",
-              "opts": ["Tekrar hazırla", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc": "Staj yaptın, hiçbir şey öğrenmedin, sadece çay içtin.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc": "Hastaneye gittin, iş istedin, 'yer yok' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc": "Aylık bütçe bitti, annenden borç aldın.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc": "Anatomi kitabı okudun, hiçbir şey anlamadın.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc": "Hasta muayene ettin, yanlış teşhis koydun, hasta kızdı.",
-              "opts": ["Özür dile", "Kabul et", "Küfür et"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Bu ay memlekete gittiniz, baban sana günlerini zehir etti, akrabalar 'ne iş yapıyorsun' diye sordu.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu ay aile toplantısı vardı, herkes iş bulmuş, sen hala işsizsin, utandın.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Bu ay arkadaşların evlendi, düğüne gittin, harçlık verdin, cebinde para kalmadı.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu ay doğum günün geldi, kimse hatırlamadı, kendin pasta aldın, yalnız yedin.",
-              "opts": ["Üzül", "Kabul et", "Kızgın ol"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-        case EventType.Yearly:
-          final events = [
-            {
-              "desc": "Bu yıl 100 staj başvurusu yaptın, hepsi reddetti.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc":
-                  "Arkadaşların hastanede iş buldu, evlendi, sen hala işsizsin.",
-              "opts": ["Kutla", "Kıskan", "Üzül"],
-            },
-            {
-              "desc":
-                  "Hasta muayene ettin, hepsinde teşhis koyamadın, hasta kızdı.",
-              "opts": ["Özür dile", "Kabul et", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Nöbet tuttu, 24 saat uyumadın, hasta geldi, tedavi edemedin.",
-              "opts": ["Kabul et", "Şikayet et", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Hasta dosyaları hazırladın, hepsi kayboldu, hasta kızdı.",
-              "opts": ["Tekrar hazırla", "Özür dile", "Küfür et"],
-            },
-            {
-              "desc": "Staj yaptın, hiçbir şey öğrenmedin, sadece çay içtin.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc": "Hastaneye gittin, iş istedin, 'yer yok' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Yıllık bütçe bitti, aile baskısı arttı, 'ne zaman iş bulacaksın' diye sordular.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc": "Anatomi kitabı okudun, hiçbir şey anlamadın.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc": "Hasta muayene ettin, yanlış teşhis koydun, hasta kızdı.",
-              "opts": ["Özür dile", "Kabul et", "Küfür et"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Bu yıl aile baskısı arttı, 'ne zaman evleneceksin' diye sordular, sen hala işsizsin.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu yıl baban 'seni asker yapamadık, iş de bulamadın' diye sürekli kızdı.",
-              "opts": ["Kabul et", "Özür dile", "Kızgın ol"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Bu yıl arkadaşların evlendi, düğüne gittin, harçlık verdin, borç birikti.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu yıl eski arkadaşlarınla buluştun, herkes iş bulmuş, evlenmiş, sen hala işsizsin.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-      }
-    } else {
-      // Varsayılan
-      switch (type) {
-        case EventType.Daily:
-          final events = [
-            {
-              "desc": "En yakın arkadaşın iş buldu, sen hala işsizsin.",
-              "opts": ["Onu tebrik et", "Onunla kutla", "Kıskançlık yap"],
-            },
-            {
-              "desc": "İş görüşmesi vardı, 'tecrübe yetersiz' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc": "İş ilanlarına baktın, hepsi 3+ yıl tecrübe istiyor.",
-              "opts": ["Yine de başvur", "Geç", "Sinirlen"],
-            },
-            {
-              "desc": "Staj başvurusu yaptın, 'tecrübe yetersiz' dediler.",
-              "opts": ["Devam et", "Vazgeç", "Kızgın ol"],
-            },
-            {
-              "desc": "Aylık bütçe bitti, annenden borç aldın.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Annen seni ekmek almaya gönderdi, eve gelirken köpek kovaladı, ekmek düştü.",
-              "opts": ["Tekrar al", "Ağla", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Baban 'ne zaman iş bulacaksın' diye sordu, cevap veremedin.",
-              "opts": ["Özür dile", "Kabul et", "Kızgın ol"],
-            },
-            {
-              "desc": "Kardeşin iş buldu, aile onu kutluyor, sen yalnızsın.",
-              "opts": ["Kutla", "Kıskan", "Üzül"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Marketten alışveriş yaparken cüzdanı evde unuttun, geri döndün.",
-              "opts": ["Tekrar git", "Vazgeç", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Otobüs geç kaldı, iş görüşmesi kaçtı, eve döndün yattın.",
-              "opts": ["Kabul et", "Üzül", "Küfür et"],
-            },
-            {
-              "desc":
-                  "Internet kesildi, iş başvurusu yapamadın, komşudan şifre istedin, vermedi.",
-              "opts": ["Kabul et", "Üzül", "Küfür et"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-        case EventType.Monthly:
-          final events = [
-            {
-              "desc": "Bu ay 10 iş görüşmesine gittin, hepsi reddetti.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc": "Arkadaşların iş buldu, evlendi, sen hala işsizsin.",
-              "opts": ["Kutla", "Kıskan", "Üzül"],
-            },
-            {
-              "desc": "Aylık bütçe bitti, annenden borç aldın.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Bu ay memlekete gittiniz, baban sana günlerini zehir etti, akrabalar 'ne iş yapıyorsun' diye sordu.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu ay aile toplantısı vardı, herkes iş bulmuş, sen hala işsizsin, utandın.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Bu ay arkadaşların evlendi, düğüne gittin, harçlık verdin, cebinde para kalmadı.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu ay doğum günün geldi, kimse hatırlamadı, kendin pasta aldın, yalnız yedin.",
-              "opts": ["Üzül", "Kabul et", "Kızgın ol"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-        case EventType.Yearly:
-          final events = [
-            {
-              "desc": "Bu yıl 100 iş görüşmesine gittin, hepsi reddetti.",
-              "opts": ["Devam et", "Vazgeç", "Sinirlen"],
-            },
-            {
-              "desc":
-                  "Arkadaşların iş buldu, evlendi, araba aldı, sen hala işsizsin.",
-              "opts": ["Kutla", "Kıskan", "Üzül"],
-            },
-            {
-              "desc":
-                  "Yıllık bütçe bitti, aile baskısı arttı, 'ne zaman iş bulacaksın' diye sordular.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            // Ailesel olaylar
-            {
-              "desc":
-                  "Bu yıl aile baskısı arttı, 'ne zaman evleneceksin' diye sordular, sen hala işsizsin.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu yıl baban 'seni asker yapamadık, iş de bulamadın' diye sürekli kızdı.",
-              "opts": ["Kabul et", "Özür dile", "Kızgın ol"],
-            },
-            // Çevresel olaylar
-            {
-              "desc":
-                  "Bu yıl arkadaşların evlendi, düğüne gittin, harçlık verdin, borç birikti.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-            {
-              "desc":
-                  "Bu yıl eski arkadaşlarınla buluştun, herkes iş bulmuş, evlenmiş, sen hala işsizsin.",
-              "opts": ["Kabul et", "Utandın", "Kızgın ol"],
-            },
-          ];
-          final event = events[random.nextInt(events.length)];
-          description = event["desc"] as String;
-          options = event["opts"] as List<String>;
-          break;
-      }
-    }
+    // Bölüme göre eventler (Kısaltılmış fallback logic)
+    // JSON varsa buraya düşmez, o yüzden burayı sade bırakıyorum.
+    // Sadece günlük fallback:
+    final events = [
+      {
+        "desc": "Sıradan bir gün, iş aramaya devam.",
+        "opts": ["Devam et"],
+      },
+    ];
+    final event = events[random.nextInt(events.length)];
+    description = event["desc"] as String;
+    options = event["opts"] as List<String>;
 
-    _changeMentalHealth(-1, reason: description);
+    // Mental sağlık düşüşünü sadece JSON'dan gelenlere bıraktık veya burada manuel ekleyebiliriz.
+    // _changeMentalHealth(-1, reason: description);
 
     return Event(
       date: _currentDate,
@@ -1567,6 +498,93 @@ class GameViewModel extends ChangeNotifier {
       options: options,
       type: type,
     );
+  }
+
+  static List<MarketItem> _generateMarketItems() {
+    return [
+      MarketItem(
+        id: "phone_basic",
+        name: "Akıllı Telefon",
+        category: "Teknoloji",
+        price: 20000,
+        description:
+            "Güncel iş ilanlarını takip etmek için modern bir telefon.",
+        mentalBonus: 5,
+        bonusType: "single",
+      ),
+      MarketItem(
+        id: "laptop_pro",
+        name: "Dizüstü Bilgisayar",
+        category: "Teknoloji",
+        price: 35000,
+        description: "Code yazarken hız kazandıran yüksek performanslı laptop.",
+        mentalBonus: 5,
+        bonusType: "single",
+      ),
+      MarketItem(
+        id: "tablet_note",
+        name: "Tablet",
+        category: "Teknoloji",
+        price: 15000,
+        description: "Not ve çizim tutmak için şık tablet.",
+        mentalBonus: 5,
+        bonusType: "single",
+      ),
+      MarketItem(
+        id: "home_rent",
+        name: "Küçük Ev",
+        category: "Yaşam",
+        price: 1200000,
+        description: "Kendi alanına sahip olman için mütevazı bir ev.",
+        mentalBonus: 2,
+        bonusType: "daily",
+      ),
+      MarketItem(
+        id: "car_basic",
+        name: "Şehir İçi Araç",
+        category: "Yaşam",
+        price: 800000,
+        description: "Mülakatlara yetişmek için ekonomik otomobil.",
+        mentalBonus: 2,
+        bonusType: "daily",
+      ),
+      MarketItem(
+        id: "ment_support",
+        name: "Profesyonel Mental Destek",
+        category: "Sağlık",
+        price: 5000,
+        description: "Terapi paketi ile mental sağlığını koru.",
+        mentalBonus: 30,
+        bonusType: "single",
+      ),
+      MarketItem(
+        id: "course_frontend",
+        name: "Frontend Bootcamp",
+        category: "Eğitim",
+        price: 7000,
+        description: "Yeni yetenekler kazanacağın yoğun eğitim.",
+        mentalBonus: 5,
+        bonusType: "single",
+      ),
+      MarketItem(
+        id: "course_language",
+        name: "İleri Seviye İngilizce",
+        category: "Eğitim",
+        price: 6000,
+        description: "Uluslararası mülakatlara hazırlık.",
+        mentalBonus: 5,
+        bonusType: "single",
+      ),
+      MarketItem(
+        id: "cowork",
+        name: "Coworking Üyeliği",
+        category: "Yaşam",
+        price: 3000,
+        description: "Motivasyon için paylaşımlı ofis ortamı.",
+        mentalBonus: 5,
+        bonusType: "single",
+      ),
+    ];
   }
 
   // İş yerindeki eventler (iş bulunduysa)
@@ -1580,173 +598,23 @@ class GameViewModel extends ChangeNotifier {
       return _buildEventFromMap(jsonEvent, type);
     }
 
-    String description = "";
-    List<String> options = [];
-
-    // Günlük olaylar için iş yerindeki olaylar
-    if (type == EventType.Daily) {
-      final workEvents = [
-        {
-          "desc": "Sabah işe geç kaldın, patron kızdı.",
-          "opts": ["Özür dile", "Mazeret uydur", "Kabul et"],
-        },
-        {
-          "desc":
-              "Toplantıda patronun fikri değişti, tüm projeyi baştan yaptın.",
-          "opts": ["Kabul et", "İtiraz et", "Küfür et"],
-        },
-        {
-          "desc": "Müşteri aradı, şikayet etti, sen çözemedin.",
-          "opts": ["Özür dile", "Yöneticiye sor", "Kabul et"],
-        },
-        {
-          "desc": "Öğle yemeğinde patron masana geldi, iş konuştu.",
-          "opts": ["Dinle", "Kaç", "Kabul et"],
-        },
-        {
-          "desc": "Akşam mesai saatinde çıkmak istedin, patron izin vermedi.",
-          "opts": ["Kabul et", "İtiraz et", "Küfür et"],
-        },
-        {
-          "desc": "Haftalık rapor hazırladın, patron beğenmedi, tekrar yaptın.",
-          "opts": ["Kabul et", "Özür dile", "Küfür et"],
-        },
-        {
-          "desc": "Yeni bir proje verildi, deadline çok kısa.",
-          "opts": ["Kabul et", "İtiraz et", "Şikayet et"],
-        },
-        {
-          "desc": "Maaş gecikti, patron 'biraz bekleyin' dedi.",
-          "opts": ["Kabul et", "İtiraz et", "Kızgın ol"],
-        },
-        {
-          "desc": "İş arkadaşın izin aldı, senin işini de yapman gerekiyor.",
-          "opts": ["Kabul et", "İtiraz et", "Kızgın ol"],
-        },
-        {
-          "desc": "Patron seni yanına çağırdı, 'performansın düşük' dedi.",
-          "opts": ["Özür dile", "İtiraz et", "Kabul et"],
-        },
-      ];
-      final event = workEvents[random.nextInt(workEvents.length)];
-      description = event["desc"] as String;
-      options = event["opts"] as List<String>;
-    } else if (type == EventType.Monthly) {
-      final workEvents = [
-        {
-          "desc": "Bu ay fazla mesai yaptın, ekstra para vermediler.",
-          "opts": ["Kabul et", "İtiraz et", "Kızgın ol"],
-        },
-        {
-          "desc":
-              "Bu ay patron senden memnun kaldı, zam yok ama teşekkür etti.",
-          "opts": ["Sevin", "Kabul et", "Kızgın ol"],
-        },
-        {
-          "desc": "Bu ay iş arkadaşlarınla anlaşamadın, ortam gergin.",
-          "opts": ["Kabul et", "İtiraz et", "Kızgın ol"],
-        },
-        {
-          "desc": "Bu ay projeleri yetiştiremedin, patron kızdı.",
-          "opts": ["Özür dile", "Kabul et", "Küfür et"],
-        },
-        {
-          "desc": "Bu ay maaş gecikti, borç birikti.",
-          "opts": ["Kabul et", "İtiraz et", "Kızgın ol"],
-        },
-        {
-          "desc": "Bu ay yeni bir proje başladı, çok zor.",
-          "opts": ["Kabul et", "İtiraz et", "Şikayet et"],
-        },
-        {
-          "desc": "Bu ay patron senden memnun kaldı, övgü aldın.",
-          "opts": ["Sevin", "Kabul et", "Umursama"],
-        },
-        {
-          "desc": "Bu ay iş arkadaşın işten ayrıldı, iş yükün arttı.",
-          "opts": ["Kabul et", "İtiraz et", "Kızgın ol"],
-        },
-        {
-          "desc": "Bu ay toplantılarda sürekli eleştirildin.",
-          "opts": ["Kabul et", "İtiraz et", "Kızgın ol"],
-        },
-        {
-          "desc": "Bu ay iş yerinde yangın çıktı, tüm dosyalar gitti.",
-          "opts": ["Panik yap", "Kabul et", "Küfür et"],
-        },
-      ];
-      final event = workEvents[random.nextInt(workEvents.length)];
-      description = event["desc"] as String;
-      options = event["opts"] as List<String>;
-    } else if (type == EventType.Yearly) {
-      final workEvents = [
-        {
-          "desc": "Bu yıl işte çok çalıştın, zam alamadın.",
-          "opts": ["Kabul et", "İtiraz et", "Kızgın ol"],
-        },
-        {
-          "desc": "Bu yıl patron senden memnun kaldı, küçük bir zam aldın.",
-          "opts": ["Sevin", "Kabul et", "Yetersiz bul"],
-        },
-        {
-          "desc": "Bu yıl iş arkadaşların terfi aldı, sen alamadın.",
-          "opts": ["Kabul et", "Kıskan", "Kızgın ol"],
-        },
-        {
-          "desc": "Bu yıl projeleri yetiştiremedin, performans düşük görüldü.",
-          "opts": ["Kabul et", "İtiraz et", "Küfür et"],
-        },
-        {
-          "desc": "Bu yıl iş yerinde çok stres yaşadın, sağlığın bozuldu.",
-          "opts": ["Kabul et", "İtiraz et", "Kızgın ol"],
-        },
-        {
-          "desc": "Bu yıl yeni bir departmana geçtin, uyum sağlayamadın.",
-          "opts": ["Kabul et", "İtiraz et", "Kızgın ol"],
-        },
-        {
-          "desc": "Bu yıl patron senden memnun kaldı, terfi aldın.",
-          "opts": ["Sevin", "Kabul et", "Umursama"],
-        },
-        {
-          "desc": "Bu yıl iş yerinde çok çalıştın, sosyal hayatın bitti.",
-          "opts": ["Kabul et", "İtiraz et", "Kızgın ol"],
-        },
-        {
-          "desc": "Bu yıl maaş gecikmeleri arttı, borç birikti.",
-          "opts": ["Kabul et", "İtiraz et", "Kızgın ol"],
-        },
-        {
-          "desc":
-              "Bu yıl iş yerinde yangın çıktı, tüm dosyalar gitti, sıfırdan başladın.",
-          "opts": ["Panik yap", "Kabul et", "Küfür et"],
-        },
-      ];
-      final event = workEvents[random.nextInt(workEvents.length)];
-      description = event["desc"] as String;
-      options = event["opts"] as List<String>;
-    }
-
+    // JSON yoksa fallback
     return Event(
       date: _currentDate,
-      description: description,
-      options: options,
+      description: "İş yerinde sıradan bir gün.",
+      options: ["Çalışmaya devam"],
       type: type,
     );
   }
 
   // Sonraki Gün
   Event nextDay() {
+    final previousDate = _currentDate;
     _currentDate = _currentDate.add(const Duration(days: 1));
-    _lastMessage = "Yeni bir gün başladı: ${formattedDate}";
     logger.i("Gün ilerletildi: ${formattedDate}");
 
     // Bayram Kontrolü (Yaklaşık tarihler)
-    // Yılda 2 kez, arası 2 ay.
-    // 1. Bayram: Nisan 10-12 (Ramazan Bayramı simülasyonu)
-    // 2. Bayram: Haziran 15-18 (Kurban Bayramı simülasyonu)
     bool isHoliday = false;
-
     if (_currentDate.month == 4 && _currentDate.day == 10) {
       // Ramazan Bayramı
       isHoliday = true;
@@ -1787,11 +655,8 @@ class GameViewModel extends ChangeNotifier {
       // Bayram değilse rastgele finansal olay (daha düşük ihtimalle)
       // Sadece aile evindeyse ve bayram değilse
       if (_livingWithFamily && !isHoliday && _random.nextDouble() < 0.15) {
-        // İhtimali %15'e düşürdüm (nadiren)
-
         final randomValue = _random.nextDouble();
         if (randomValue < 0.3) {
-          // %30 ihtimalle Ekmek/Market (Zorunlu -15)
           _pendingFinancialEvent = FinancialEvent(
             title: "Ev İhtiyacı",
             description: "Evde ekmek bitmiş, sen aldın. (-15 TL)",
@@ -1799,7 +664,6 @@ class GameViewModel extends ChangeNotifier {
             isChoice: false,
           );
         } else if (randomValue < 0.6) {
-          // %30 ihtimalle Kardeş (Seçimli -50)
           _pendingFinancialEvent = FinancialEvent(
             title: "Kardeşin Para İstedi",
             description:
@@ -1810,7 +674,6 @@ class GameViewModel extends ChangeNotifier {
             choiceNoText: "Verme",
           );
         } else {
-          // %40 ihtimalle Arkadaş Daveti (Seçimli -100)
           _pendingFinancialEvent = FinancialEvent(
             title: "Arkadaş Daveti",
             description: "Arkadaşların dışarı çağırıyor. (-100 TL)",
@@ -1825,15 +688,52 @@ class GameViewModel extends ChangeNotifier {
       }
     }
 
-    // Event üret
-    final event = _generateEvent(EventType.Daily);
+    Event event;
+    // Yıl değişimi kontrolü
+    if (_currentDate.year != previousDate.year) {
+      _lastMessage = "Yeni bir yıl başladı: ${formattedDate}";
+      event = _generateEvent(EventType.Yearly);
+      applyYearlyBonuses();
+    }
+    // Ay değişimi kontrolü
+    else if (_currentDate.month != previousDate.month) {
+      _lastMessage = "Yeni bir ay başladı: ${formattedDate}";
+      event = _generateEvent(EventType.Monthly);
+      applyMonthlyBonuses();
+
+      // Maaş Ödemesi (Ay başında)
+      if (_player != null) {
+        final acceptedJobs = _applications
+            .where((app) => app.status == ApplicationStatus.Accepted)
+            .toList();
+
+        if (acceptedJobs.isNotEmpty) {
+          double totalSalary = 0;
+          for (var jobApp in acceptedJobs) {
+            totalSalary += jobApp.job.salary;
+          }
+          _player!.money += totalSalary;
+          _lastMessage = "Maaş yattı! +${totalSalary.toStringAsFixed(0)} TL";
+          logger.i("Aylık maaş ödendi: $totalSalary");
+        }
+      }
+    } else {
+      // Günlük olay
+      _lastMessage = "Yeni bir gün başladı: ${formattedDate}";
+      event = _generateEvent(EventType.Daily);
+      applyPeriodicBonuses();
+    }
 
     // Event'in description'ını hikaye olarak kaydet
     _stories.add(
       Story(
         date: _currentDate,
         content: event.description,
-        type: StoryType.Daily,
+        type: event.type == EventType.Daily
+            ? StoryType.Daily
+            : event.type == EventType.Monthly
+            ? StoryType.Monthly
+            : StoryType.Yearly,
       ),
     );
 
@@ -1844,82 +744,12 @@ class GameViewModel extends ChangeNotifier {
     return event;
   }
 
-  // Sonraki Ay
-  Event nextMonth() {
-    // Ay sonuna git, sonra bir ay ekle
-    final nextMonth = _currentDate.month + 1;
-    final nextYear = _currentDate.year;
-    _currentDate = DateTime(nextYear, nextMonth, 1);
-    _lastMessage = "Yeni bir ay başladı: ${formattedDate}";
-    logger.i("Ay ilerletildi: ${formattedDate}");
+  // Sonraki Ay (Silindi - artık nextDay içinde otomatik)
+  // Sonraki Yıl (Silindi - artık nextDay içinde otomatik)
 
-    // Event üret
-    final event = _generateEvent(EventType.Monthly);
+  // Cinsiyet Seçimi
+  // ... (Kalan metodlar aynı)
 
-    // Event'in description'ını hikaye olarak kaydet
-    _stories.add(
-      Story(
-        date: _currentDate,
-        content: event.description,
-        type: StoryType.Monthly,
-      ),
-    );
-
-    // Maaş Ödemesi
-    if (_player != null) {
-      // Kabul edilmiş işleri bul
-      final acceptedJobs = _applications
-          .where((app) => app.status == ApplicationStatus.Accepted)
-          .toList();
-
-      if (acceptedJobs.isNotEmpty) {
-        // Birden fazla iş olmamalı ama yine de toplayalım
-        double totalSalary = 0;
-        for (var jobApp in acceptedJobs) {
-          totalSalary += jobApp.job.salary;
-        }
-
-        _player!.money += totalSalary;
-        _lastMessage = "Maaş yattı! +${totalSalary.toStringAsFixed(0)} TL";
-        logger.i("Aylık maaş ödendi: $totalSalary");
-
-        // Maaş bilgisini hikayeye ekle (isteğe bağlı)
-        // _stories.add(Story(date: _currentDate, content: "Maaş günü: +$totalSalary TL", type: StoryType.Monthly));
-      }
-    }
-
-    notifyListeners();
-    return event;
-  }
-
-  // Sonraki Yıl
-  Event nextYear() {
-    // Yıl sonuna git, sonra bir yıl ekle
-    final nextYear = _currentDate.year + 1;
-    _currentDate = DateTime(nextYear, 1, 1);
-    _lastMessage = "Yeni bir yıl başladı: ${formattedDate}";
-    logger.i("Yıl ilerletildi: ${formattedDate}");
-
-    // Event üret
-    final event = _generateEvent(EventType.Yearly);
-
-    // Event'in description'ını hikaye olarak kaydet
-    _stories.add(
-      Story(
-        date: _currentDate,
-        content: event.description,
-        type: StoryType.Yearly,
-      ),
-    );
-
-    notifyListeners();
-    return event;
-  }
-
-  // Cinsiyet Seçimi (Setup aşamasında yardımcı olabilir, ama startGame'de hallettik)
-  // Yine de UI'da dinamik değişim istenirse diye ayrı tutulabilir ama şu an startGame yeterli.
-
-  // Askerlik Yapma
   void doMilitaryService(bool isPaid) {
     if (_player == null) return;
 
@@ -1931,7 +761,6 @@ class GameViewModel extends ChangeNotifier {
         _lastMessage = "Bedelli askerlik yapıldı. 50.000 TL ödendi.";
         logger.i("Bedelli askerlik yapıldı. Kalan para: ${_player!.money}");
 
-        // Görev ekle
         _completedTasks.add(
           CVTask(
             title: "Askerlik Hizmeti (Bedelli)",
@@ -1944,14 +773,10 @@ class GameViewModel extends ChangeNotifier {
         logger.w("Bedelli için para yetersiz.");
       }
     } else {
-      // 6 Ay (Mini oyun placeholder)
-      // Burada normalde zaman geçmeli veya mini oyun oynanmalı.
-      // Şimdilik direkt yapıldı sayıyoruz.
       _player!.militaryStatus = MilitaryStatus.Done;
       _lastMessage = "6 ay askerlik yapıldı. Vatan borcu ödendi.";
       logger.i("6 ay askerlik tamamlandı.");
 
-      // Görev ekle
       _completedTasks.add(
         CVTask(
           title: "Askerlik Hizmeti",
@@ -1963,22 +788,17 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Mülakat Soruları
   List<Map<String, dynamic>> getInterviewQuestions() {
     if (_department == null) return [];
 
-    // JSON verisinden soruları çek
     if (_gameData.isNotEmpty && _gameData['interview_questions'] != null) {
       final questionsData = _gameData['interview_questions'];
       final deptName = _department!.name;
 
-      // Bölüme özel sorular varsa döndür
       if (questionsData[deptName] != null) {
         List<Map<String, dynamic>> questions = [];
         for (var q in questionsData[deptName]) {
           var questionMap = Map<String, dynamic>.from(q);
-          // JSON'da correct_index kullanılıyor, kodda 'correct' veya 'correct_index'
-          // Kodun geri kalanı ile uyum için 'correct' keyini de ekleyelim
           if (questionMap.containsKey('correct_index')) {
             questionMap['correct'] = questionMap['correct_index'];
           }
@@ -1988,7 +808,6 @@ class GameViewModel extends ChangeNotifier {
       }
     }
 
-    // Fallback (Varsayılan)
     return [
       {
         "question": "Neden bizimle çalışmak istiyorsunuz?",
@@ -2011,29 +830,19 @@ class GameViewModel extends ChangeNotifier {
     ];
   }
 
-  // Mülakatı Başlat (Simülasyon)
   void startInterview(JobApplication application) {
-    // Mülakat durumunu güncellemeye gerek yok, UI'da soru ekranına gidecek.
-    // Ancak mülakatın başladığını loglayabiliriz.
     logger.i("Mülakat başladı: ${application.job.title}");
   }
 
-  // Mülakatı Tamamla
   void completeInterview(JobApplication application, int correctAnswers) {
-    // Başarı şansı: Doğru cevap sayısı arttıkça şans artar
-    // 3 soru varsa, 3 doğru %80 şans, 2 doğru %50, 1 doğru %20, 0 doğru %0
-    // Basit bir mantık kuralım.
-
     application.updateStatus(ApplicationStatus.InterviewCompleted);
     _lastMessage = "Mülakat tamamlandı. Sonuç bekleniyor...";
     notifyListeners();
   }
 
-  // İş Başvurusu
   void applyToJob(Job job) {
     if (_player == null) return;
 
-    // Erkek ve Askerlik Yapılmadıysa ve İş Kurumsal ise
     if (_player!.gender == Gender.Male &&
         _player!.militaryStatus == MilitaryStatus.NotDone &&
         job.type == JobType.Corporate) {
@@ -2044,11 +853,10 @@ class GameViewModel extends ChangeNotifier {
       return;
     }
 
-    // Başvuruyu listeye ekle
     _applications.add(
       JobApplication(
         job: job,
-        status: ApplicationStatus.Applied, // Başlangıç statüsü: Bekliyor
+        status: ApplicationStatus.Applied,
         appliedDate: _currentDate,
         lastUpdateDate: _currentDate,
         message: "Başvuru alındı, değerlendiriliyor.",
@@ -2057,7 +865,6 @@ class GameViewModel extends ChangeNotifier {
 
     _lastMessage = "Başvurunuz alındı. Yanıt bekleniyor.";
 
-    // Başvuru yapıldı görevi ekle
     _completedTasks.add(
       CVTask(
         title: "İş Başvurusu: ${job.title}",
@@ -2069,7 +876,6 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Başvuru Aşaması Red Nedenleri
   List<String> get _applicationRejectionReasons {
     if (_gameData.isEmpty || _gameData['rejection_reasons'] == null) {
       return [
@@ -2081,12 +887,10 @@ class GameViewModel extends ChangeNotifier {
     List<String> reasons = [];
     final reasonsData = _gameData['rejection_reasons']['application'];
 
-    // Genel nedenler
     if (reasonsData['general'] != null) {
       reasons.addAll(List<String>.from(reasonsData['general']));
     }
 
-    // Bölüme özel nedenler
     if (_department != null &&
         reasonsData['departments'] != null &&
         reasonsData['departments'][_department!.name] != null) {
@@ -2099,7 +903,6 @@ class GameViewModel extends ChangeNotifier {
     return reasons;
   }
 
-  // Mülakat Sonrası Red Nedenleri
   List<String> get _interviewRejectionReasons {
     if (_gameData.isEmpty || _gameData['rejection_reasons'] == null) {
       return [
@@ -2111,12 +914,10 @@ class GameViewModel extends ChangeNotifier {
     List<String> reasons = [];
     final reasonsData = _gameData['rejection_reasons']['interview'];
 
-    // Genel nedenler
     if (reasonsData['general'] != null) {
       reasons.addAll(List<String>.from(reasonsData['general']));
     }
 
-    // Bölüme özel nedenler
     if (_department != null &&
         reasonsData['departments'] != null &&
         reasonsData['departments'][_department!.name] != null) {
@@ -2129,37 +930,26 @@ class GameViewModel extends ChangeNotifier {
     return reasons;
   }
 
-  // Başvuruları Kontrol Et (Günlük Çalışır)
   void _processApplications() {
     final random = Random();
     List<String> notifications = [];
 
     for (var app in _applications) {
-      // Son güncellemeden geçen gün sayısı
       final daysPassed = _currentDate.difference(app.lastUpdateDate).inDays;
 
       if (app.status == ApplicationStatus.Applied) {
-        // Bekleyen başvurular
         if (daysPassed > 2) {
-          // En az 2 gün geçmeli
-          // %20 ihtimalle bir gelişme olur
           if (random.nextDouble() < 0.2) {
-            // Ghosting Şansı (İş türüne göre)
             if (random.nextDouble() < app.job.ghostingChance) {
               app.updateStatus(ApplicationStatus.Ghosted);
-              _changeMentalHealth(-1, reason: "${app.job.title} ghostladı");
-              // Ghosting sessiz olur, bildirim gitmez genelde ama oyunda anlaşılması için:
-              // notifications.add("${app.job.title}: Ses seda yok...");
+              _changeMentalHealth(-10, reason: "${app.job.title} ghostladı");
             } else {
-              // Mülakat veya Red
-              // %40 Mülakat, %60 Red
               if (random.nextDouble() < 0.4) {
                 app.updateStatus(ApplicationStatus.Interview);
                 notifications.add("MÜLAKAT DAVETİ: ${app.job.title}");
               } else {
                 app.updateStatus(ApplicationStatus.Rejected);
-                _changeMentalHealth(-1, reason: "${app.job.title} reddi");
-                // Başvuru aşaması red nedeni
+                _changeMentalHealth(-10, reason: "${app.job.title} reddi");
                 final reason =
                     _applicationRejectionReasons[random.nextInt(
                       _applicationRejectionReasons.length,
@@ -2170,22 +960,15 @@ class GameViewModel extends ChangeNotifier {
           }
         }
       } else if (app.status == ApplicationStatus.InterviewCompleted) {
-        // Mülakat yapıldı, sonuç bekleniyor
-        // Bekleme süresi random (3-10 gün arası olsun mesela)
-        // Basitlik için her gün %15 şansla dönüş olsun
         if (random.nextDouble() < 0.15) {
-          // Kabul veya Red
-          // %30 Kabul, %70 Red (Zor olsun biraz)
           if (random.nextDouble() < 0.3) {
             app.updateStatus(ApplicationStatus.Accepted);
             notifications.add("TEBRİKLER! İŞ TEKLİFİ: ${app.job.title}");
-            _player!.money += app.job.salary; // İlk maaş bonusu gibi veya avans
+            _player!.money += app.job.salary;
             _changeMentalHealth(5, reason: "${app.job.title} kabul edildi");
-            // İş bulma başarısı logla veya başka şeyler yap
           } else {
             app.updateStatus(ApplicationStatus.Rejected);
-            _changeMentalHealth(-1, reason: "${app.job.title} mülakat reddi");
-            // Mülakat sonrası red nedeni
+            _changeMentalHealth(-10, reason: "${app.job.title} mülakat reddi");
             final reason =
                 _interviewRejectionReasons[random.nextInt(
                   _interviewRejectionReasons.length,
@@ -2196,7 +979,6 @@ class GameViewModel extends ChangeNotifier {
       }
     }
 
-    // Bildirimleri son mesaja ekle (Eğer varsa)
     if (notifications.isNotEmpty) {
       _lastMessage = notifications.join("\n");
     }
@@ -2231,7 +1013,6 @@ class GameViewModel extends ChangeNotifier {
     ];
   }
 
-  // Yetenek Ekleme
   void addSkill(String skill, double cost) {
     if (_player == null) return;
     if (_player!.money < cost) {
@@ -2254,7 +1035,6 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Mini Oyun Tamamlandı
   void completeMinigame(MiniGame game, bool success) {
     if (!success) {
       _lastMessage = "${game.name} başarısız oldu. Tekrar dene!";
@@ -2264,7 +1044,6 @@ class GameViewModel extends ChangeNotifier {
 
     if (_player == null) return;
 
-    // Timing oyunu için özel durum: Askerlik
     if (game.type == GameType.Timing &&
         _player!.militaryStatus == MilitaryStatus.NotDone) {
       _player!.militaryStatus = MilitaryStatus.Done;
@@ -2281,13 +1060,11 @@ class GameViewModel extends ChangeNotifier {
       return;
     }
 
-    // Bölüme göre oyunun kazandırdığı yetenekleri al
     final skillsForGame = DepartmentGameContent.getSkillsForGame(
       game.type,
       _department?.name,
     );
 
-    // Henüz öğrenilmemiş yetenekleri ekle
     List<String> newSkills = [];
     for (var skill in skillsForGame) {
       if (!_player!.skills.contains(skill)) {
@@ -2301,7 +1078,6 @@ class GameViewModel extends ChangeNotifier {
           "${newSkills.join(", ")} ${newSkills.length == 1 ? "yetenek" : "yetenekler"} kazanıldı!";
       logger.i("Yetenekler eklendi: ${newSkills.join(", ")}");
     } else {
-      // Tüm yetenekler zaten varsa para ödülü ver
       int reward = 500;
       switch (game.type) {
         case GameType.Reflex:
@@ -2327,7 +1103,6 @@ class GameViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // CV Oluşturma
   CV generateCV() {
     if (_player == null || _department == null) {
       throw Exception("Oyun başlatılmamış!");

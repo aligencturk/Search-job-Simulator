@@ -15,7 +15,15 @@ class JobsView extends ConsumerWidget {
     final jobs = gameVM.availableJobs;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("İş İlanları")),
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          "İş İlanları",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+      backgroundColor: const Color(0xFFF5F5F5),
       body: jobs.isEmpty
           ? Center(
               child: Column(
@@ -45,9 +53,19 @@ class JobsView extends ConsumerWidget {
   }
 
   Widget _buildJobCard(BuildContext context, WidgetRef ref, Job job) {
-    return Card(
+    return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      elevation: 2,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -56,8 +74,8 @@ class JobsView extends ConsumerWidget {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: _getJobColor(job.type),
-                  child: Icon(_getJobIcon(job.type), color: Colors.white),
+                  backgroundColor: _getJobColor(job.type).withOpacity(0.1),
+                  child: Icon(_getJobIcon(job.type), color: _getJobColor(job.type)),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -69,6 +87,7 @@ class JobsView extends ConsumerWidget {
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: Colors.black87,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -91,7 +110,10 @@ class JobsView extends ConsumerWidget {
                 children: job.requiredSkills.map((skill) {
                   return Chip(
                     label: Text(skill),
-                    labelStyle: const TextStyle(fontSize: 12),
+                    labelStyle: const TextStyle(fontSize: 12, color: Colors.black87),
+                    backgroundColor: Colors.grey.shade100,
+                    side: BorderSide.none,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   );
                 }).toList(),
               ),
@@ -112,7 +134,12 @@ class JobsView extends ConsumerWidget {
                 icon: const Icon(Icons.send),
                 label: const Text("Başvur"),
                 style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ),
