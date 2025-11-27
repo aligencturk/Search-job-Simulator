@@ -183,7 +183,7 @@ class DashboardView extends ConsumerWidget {
               ),
             ),
 
-            // Hikaye Alanı (Görseldeki gibi sadece metin)
+            // Hikaye Alanı - Timeline Şeklinde
             Expanded(
               child: Container(
                 width: double.infinity,
@@ -205,18 +205,66 @@ class DashboardView extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     Expanded(
-                      child: SingleChildScrollView(
-                        child: Text(
-                          gameVM.stories.isNotEmpty
-                              ? gameVM.stories.last.content
-                              : "Hayatın henüz başında...",
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.black54,
-                            height: 1.5,
-                          ),
-                        ),
-                      ),
+                      child: gameVM.stories.isEmpty
+                          ? const Center(
+                              child: Text(
+                                "Hayatın henüz başında...",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            )
+                          : ListView.builder(
+                              itemCount: gameVM.stories.length,
+                              itemBuilder: (context, index) {
+                                final story = gameVM.stories[index];
+                                final months = [
+                                  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+                                  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+                                ];
+                                final dateStr = '${story.date.day} ${months[story.date.month - 1]} ${story.date.year}';
+                                
+                                return Container(
+                                  margin: const EdgeInsets.only(bottom: 12),
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(color: Colors.grey.shade200),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        dateStr,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red.shade700,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        story.content,
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black87,
+                                          height: 1.4,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
                     ),
                   ],
                 ),
@@ -449,6 +497,7 @@ class DashboardView extends ConsumerWidget {
     final event = ref.read(gameProvider).nextDay();
     _showEventDialog(
       context,
+      ref,
       event,
       onDialogClosed: () => _maybeShowFinancialEventDialog(context, ref),
     );
@@ -557,6 +606,7 @@ class DashboardView extends ConsumerWidget {
 
   static void _showEventDialog(
     BuildContext context,
+    WidgetRef ref,
     Event event, {
     VoidCallback? onDialogClosed,
   }) {
@@ -588,7 +638,6 @@ class DashboardView extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
               ...event.options.asMap().entries.map((entry) {
-                // final index = entry.key;
                 final option = entry.value;
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 8.0),
@@ -597,10 +646,13 @@ class DashboardView extends ConsumerWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.of(context).pop();
+                        final outcome = ref
+                            .read(gameProvider)
+                            .processEventChoice(option);
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text("$option seçildi"),
-                            duration: const Duration(seconds: 1),
+                            content: Text(outcome),
+                            duration: const Duration(seconds: 2),
                           ),
                         );
                         if (onDialogClosed != null) {

@@ -42,6 +42,7 @@ class GameViewModel extends ChangeNotifier {
   bool _mentalCrisisQueued = false;
   final List<MarketItem> _marketItems = _generateMarketItems();
   final List<String> _ownedItemIds = [];
+  String? _lastEventDescription;
 
   Player? get player => _player;
   Department? get department => _department;
@@ -431,35 +432,37 @@ class GameViewModel extends ChangeNotifier {
 
   // Event Üretme (Dialog için)
   Event _generateEvent(EventType type) {
+    Event event;
     if (_player == null || _department == null) {
-      return Event(
+      event = Event(
         date: _currentDate,
         description: "Bir olay gerçekleşti.",
         options: ["Tamam", "Anladım", "Devam"],
         type: type,
       );
-    }
-
-    if (_mentalCrisisQueued) {
+    } else if (_mentalCrisisQueued) {
       final crisisEvent = _getMentalCrisisEvent();
       if (crisisEvent != null) {
-        final event = _buildEventFromMap(crisisEvent, type);
+        event = _buildEventFromMap(crisisEvent, type);
         _mentalCrisisQueued = _mentalHealth < _mentalCrisisThreshold;
-        return event;
+      } else {
+        event = _generateEventByStatus(type);
       }
-    }
-
-    final random = _random;
-    final departmentName = _department!.name;
-
-    // İş durumuna göre eventler
-    if (hasJob) {
-      // İş bulunduysa → İş yerindeki olaylar + günlük olaylar karışık
-      return _generateWorkEvent(type, departmentName, random);
     } else {
-      // İş bulunmadıysa → İş arama sürecindeki olaylar
-      return _generateJobSearchEvent(type, departmentName, random);
+      event = _generateEventByStatus(type);
     }
+
+    _lastEventDescription = event.description;
+    return event;
+  }
+
+  Event _generateEventByStatus(EventType type) {
+    final random = _random;
+    final departmentName = _department?.name ?? "";
+    if (hasJob) {
+      return _generateWorkEvent(type, departmentName, random);
+    }
+    return _generateJobSearchEvent(type, departmentName, random);
   }
 
   // İş arama sürecindeki eventler
@@ -984,33 +987,386 @@ class GameViewModel extends ChangeNotifier {
     }
   }
 
-  void _generateJobs() {
-    _availableJobs = [
+  String processEventChoice(String option) {
+    final context = _lastEventDescription ?? "bugünkü olay";
+    final intent = _detectOptionIntent(option);
+
+    final baseMessage = _formatTemplate(
+      _pickTemplate(_optionBaseTemplates, intent),
+      context,
+      option,
+    );
+    String absurdMessage = baseMessage;
+
+    if (_random.nextBool()) {
+      final extra = _formatTemplate(
+        _pickTemplate(_optionFollowUpTemplates, intent),
+        context,
+        option,
+      );
+      absurdMessage = "$baseMessage $extra";
+    }
+
+    _changeMentalHealth(-1, reason: "Absürt olay: $absurdMessage");
+    if (_stories.isNotEmpty) {
+      final lastStory = _stories.removeLast();
+      _stories.add(
+        Story(
+          date: lastStory.date,
+          content: "${lastStory.content}\n$absurdMessage",
+          type: lastStory.type,
+        ),
+      );
+    }
+    _lastMessage = absurdMessage;
+    notifyListeners();
+    return absurdMessage;
+  }
+
+  String _detectOptionIntent(String option) {
+    final value = option.toLowerCase();
+    if (_containsAny(value, [
+      "git",
+      "katıl",
+      "devam",
+      "sürdür",
+      "evet",
+      "yine de",
+      "yap",
+      "çalış",
+    ])) {
+      return "proceed";
+    }
+    if (_containsAny(value, [
+      "vazgeç",
+      "bırak",
+      "pas",
+      "gitme",
+      "hayır",
+      "evde kal",
+      "dur",
+      "kal",
+    ])) {
+      return "give_up";
+    }
+    if (_containsAny(value, [
+      "ağla",
+      "üzül",
+      "sinirlen",
+      "kız",
+      "panikle",
+      "dram",
+      "kıskan",
+      "üzül",
+      "kızgın",
+    ])) {
+      return "emotional";
+    }
+    if (_containsAny(value, [
+      "kutla",
+      "arkadaş",
+      "paylaş",
+      "parti",
+      "kutlama",
+    ])) {
+      return "celebrate";
+    }
+    if (_containsAny(value, ["özür", "pişman"])) {
+      return "apologize";
+    }
+    if (_containsAny(value, ["kabul", "katlan", "boyun eğ"])) {
+      return "accept";
+    }
+    if (_containsAny(value, ["itiraz", "şikayet", "söylen", "hesap sor"])) {
+      return "complain";
+    }
+    if (_containsAny(value, ["tekrar", "yeniden", "bir daha"])) {
+      return "retry";
+    }
+    if (_containsAny(value, ["küfür", "söv"])) {
+      return "rage";
+    }
+    return "default";
+  }
+
+  bool _containsAny(String source, List<String> keywords) {
+    return keywords.any((kw) => source.contains(kw));
+  }
+
+  String _formatTemplate(String template, String context, String option) {
+    return template
+        .replaceAll("{context}", context)
+        .replaceAll("{option}", option);
+  }
+
+  String _pickTemplate(Map<String, List<String>> templates, String intent) {
+    final pool = templates[intent] ?? templates["default"]!;
+    return pool[_random.nextInt(pool.length)];
+  }
+
+  static final Map<String, List<String>> _optionBaseTemplates = {
+    "proceed": [
+      "\"{context}\" ardından {option} diyerek yine de gittin; girişte seni isimle karşılayıp kırmızı halı serdiler.",
+      "{option} diyerek {context} olayını hiçe saydın; asansör bile seni alkışladı.",
+      "\"{context}\" sonrasında pes etmeyip {option} dedin; resepsiyon seni motivasyon konuşmacısı sandı.",
+    ],
+    "give_up": [
+      "\"{context}\" sonrası {option} diyerek vazgeçtin; kader çizelgesinde beş dakikalık mola açıldı.",
+      "{context} diye özetleyip bir köşede {option} dedin, evren sana çay demledi.",
+      "\"{context}\" yüzünden {option} planını seçtin; evdeki koltuk seni sarıp Netflix açtı.",
+    ],
+    "emotional": [
+      "\"{context}\" karşısında {option} dedin; gözyaşların KPI raporu gibi akmaya başladı.",
+      "Durum {context} olunca {option} seçeneği aktive edildi; tavan bile sana mendil uzattı.",
+      "\"{context}\" sonrası {option} dedin ve melodramatik soundtrack otomatik çaldı.",
+    ],
+    "celebrate": [
+      "\"{context}\" sonrası {option} diyerek olayı partiye çevirdin; konfeti yerine elektrik faturasını havaya attılar.",
+      "{context} diye anlatıp {option} yapınca apartman yönetimi seni sosyal etkinlik sorumlusu ilan etti.",
+    ],
+    "default": [
+      "\"{context}\" sonrası {option} dedin; evren 'tamam mı?' diye sordu.",
+      "Olay {context} iken {option} diyerek spontane bir timeline açtın.",
+    ],
+    "apologize": [
+      "\"{context}\" için {option} deyince karşı taraf sana Excel makrosu gibi uzun bir konuşma yaptı.",
+      "{option} diyerek {context} olayını tatlıya bağlamaya çalıştın; sonuç olarak sana ev yapımı kek verildi.",
+    ],
+    "accept": [
+      "\"{context}\" oldu, sen de {option} diyerek kaderin KPIsını imzaladın.",
+      "{option} deyip {context} durumunu kabullendin; evren seni otomatik pilota aldı.",
+    ],
+    "complain": [
+      "\"{context}\" sonrası {option} diyerek dilekçe açtın; sistem seni 'günün şikayetçisi' seçti.",
+      "{option} seçeneğini kullanıp {context} hakkında manifesto yayınladın.",
+    ],
+    "retry": [
+      "\"{context}\" ardından {option} dedin; checkpoint'ten yeniden başladın.",
+      "{context} yaşandı, sen de {option} diyerek kredili yeniden deneme başlattın.",
+    ],
+    "rage": [
+      "\"{context}\" sonrası {option} dedin; sansür bandı otomatik devreye girdi.",
+      "{option} diye patlayınca {context} olayı argo sözlükte trend oldu.",
+    ],
+  };
+
+  static final Map<String, List<String>> _optionFollowUpTemplates = {
+    "proceed": [
+      "Toplantıya girdiğinde herkes seni CEO sanıp not almaya başladı.",
+      "Güvenlik kartın çalışmadı ama sen ninja gibi içeri sızdın.",
+      "Mülakat soruları yerine sana kariyer danışmanlığı sordular.",
+    ],
+    "give_up": [
+      "Kapıdaki kediler bile seninle aynı kararı verip protesto düzenledi.",
+      "Bakkal sana 'yarın gidersin' diyerek fiş yerine moral verdi.",
+      "Telefon otomatik olarak türlü bahaneler üreten moda geçti.",
+    ],
+    "emotional": [
+      "Ağlarken Spotify seni 'acıklı Anatolian lo-fi' listesine sabitledi.",
+      "Komşu teyze kapıdan içeri lokum atarak teselli etmeye çalıştı.",
+      "Moral -1 oldu ama drama kraliçesi rozeti kazandın.",
+    ],
+    "celebrate": [
+      "Kutlama sırasında pastanın üstüne CV yazmayı unutmadın.",
+      "Arkadaşlar story atarken seni filtre yerine motivasyon logosu yaptılar.",
+    ],
+    "default": [
+      "Bir anda belediye hoparlöründen adınla anons yapıldı.",
+      "Zil çaldı, kargodan 'kararsızlık kiti' geldi.",
+    ],
+    "apologize": [
+      "Özrün kabul edildi, ancak sana 45 sayfalık davranış sözleşmesi imzalattılar.",
+      "Karşı taraf \"önemli değil\" dedi ama WhatsApp'ta üç mavi tik bıraktı.",
+    ],
+    "accept": [
+      "Kabul belgesini imzalarken arka planda 'dramatic sigh' efekti çaldı.",
+      "Kabullenme kartı seni resmi olarak yetişkinler kulübüne aldı.",
+    ],
+    "complain": [
+      "Şikayet dilekçen Slack kanalında emoji yağmuruna tutuldu.",
+      "İtirazın üzerine sana müşteri hizmetleri scripti gönderdiler.",
+    ],
+    "retry": [
+      "Yeniden deneme ekranı açıldı; loading çubuğu %99'da takılı kaldı.",
+      "Deneme hakkı verdiler ama mouse'u ters çevirmişler.",
+    ],
+    "rage": [
+      "Sinir katsayısı yükselince apartman kapıcısı sana punching bag getirdi.",
+      "Küfürlerin yer çekimi bozup etrafa neon sansürler saçtı.",
+    ],
+  };
+
+  static final Map<String, List<Job>> _departmentJobPools = {
+    "bilgisayar": [
       Job(
         title: "Junior Flutter Geliştirici",
+        salary: 18000,
+        ghostingChance: 0.35,
+        type: JobType.Startup,
+        requiredSkills: ["Flutter", "Dart"],
+      ),
+      Job(
+        title: "Backend Node.js Geliştirici",
+        salary: 26000,
+        ghostingChance: 0.45,
+        type: JobType.Corporate,
+        requiredSkills: ["Node.js", "MongoDB"],
+      ),
+      Job(
+        title: "QA Otomasyon Uzmanı",
+        salary: 22000,
+        ghostingChance: 0.3,
+        type: JobType.Corporate,
+        requiredSkills: ["Selenium", "Test Otomasyonu"],
+      ),
+      Job(
+        title: "DevOps Mühendisi",
+        salary: 32000,
+        ghostingChance: 0.25,
+        type: JobType.Corporate,
+        requiredSkills: ["AWS", "CI/CD"],
+      ),
+      Job(
+        title: "Indie Game Developer",
         salary: 15000,
+        ghostingChance: 0.6,
+        type: JobType.Startup,
+        requiredSkills: ["Unity", "C#"],
+      ),
+    ],
+    "hukuk": [
+      Job(
+        title: "Stajyer Avukat",
+        salary: 10000,
+        ghostingChance: 0.5,
+        type: JobType.Corporate,
+        requiredSkills: ["Dava Dosyası Takibi"],
+      ),
+      Job(
+        title: "Dava Takip Uzmanı",
+        salary: 20000,
+        ghostingChance: 0.35,
+        type: JobType.Government,
+        requiredSkills: ["İcra Hukuku"],
+      ),
+      Job(
+        title: "Şirketler Hukuku Danışmanı",
+        salary: 28000,
+        ghostingChance: 0.3,
+        type: JobType.Corporate,
+        requiredSkills: ["Sözleşme Analizi"],
+      ),
+      Job(
+        title: "İnsan Hakları Proje Avukatı",
+        salary: 18000,
         ghostingChance: 0.4,
+        type: JobType.Startup,
+        requiredSkills: ["Raporlama"],
+      ),
+    ],
+    "işletme": [
+      Job(
+        title: "Pazarlama Uzmanı",
+        salary: 19000,
+        ghostingChance: 0.45,
+        type: JobType.Corporate,
+        requiredSkills: ["Sunum", "Google Ads"],
+      ),
+      Job(
+        title: "Satış Temsilcisi (SaaS)",
+        salary: 21000,
+        ghostingChance: 0.5,
+        type: JobType.Startup,
+        requiredSkills: ["CRM", "Demo Sunumu"],
+      ),
+      Job(
+        title: "Finans Analisti",
+        salary: 27000,
+        ghostingChance: 0.3,
+        type: JobType.Corporate,
+        requiredSkills: ["Excel", "Bilanço"],
+      ),
+      Job(
+        title: "Strateji Danışmanı Junior",
+        salary: 30000,
+        ghostingChance: 0.25,
+        type: JobType.Corporate,
+        requiredSkills: ["Analitik Düşünme"],
+      ),
+    ],
+    "tıp": [
+      Job(
+        title: "Pratisyen Hekim",
+        salary: 35000,
+        ghostingChance: 0.15,
+        type: JobType.Government,
+        requiredSkills: ["Hasta Takibi"],
+      ),
+      Job(
+        title: "Acil Servis Doktoru",
+        salary: 42000,
+        ghostingChance: 0.2,
+        type: JobType.Government,
+        requiredSkills: ["Acil Müdahale"],
+      ),
+      Job(
+        title: "Klinik Araştırma Asistanı",
+        salary: 28000,
+        ghostingChance: 0.3,
+        type: JobType.Corporate,
+        requiredSkills: ["Veri Girişi"],
+      ),
+      Job(
+        title: "Tele-Tıp Danışmanı",
+        salary: 26000,
+        ghostingChance: 0.35,
+        type: JobType.Startup,
+        requiredSkills: ["Online Muayene"],
+      ),
+    ],
+    "default": [
+      Job(
+        title: "Genel Stajyer",
+        salary: 8000,
+        ghostingChance: 0.6,
         type: JobType.Startup,
       ),
       Job(
-        title: "Kurumsal Java Geliştirici",
-        salary: 25000,
-        ghostingChance: 0.6,
+        title: "Ofis Asistanı",
+        salary: 12000,
+        ghostingChance: 0.4,
         type: JobType.Corporate,
       ),
       Job(
-        title: "Devlet Memuru (Bilişim)",
-        salary: 30000,
-        ghostingChance: 0.1,
-        type: JobType.Government,
+        title: "Müşteri Temsilcisi",
+        salary: 15000,
+        ghostingChance: 0.35,
+        type: JobType.Corporate,
       ),
       Job(
-        title: "Stajyer",
-        salary: 5000,
-        ghostingChance: 0.8,
-        type: JobType.Startup,
+        title: "Arşiv Memuru",
+        salary: 14000,
+        ghostingChance: 0.2,
+        type: JobType.Government,
       ),
-    ];
+    ],
+  };
+
+  void _generateJobs() {
+    final deptName = _department?.name.toLowerCase() ?? "";
+    final pool = _getJobsForDepartment(deptName);
+    pool.shuffle(_random);
+    _availableJobs = pool.take(4).toList();
+  }
+
+  List<Job> _getJobsForDepartment(String deptName) {
+    for (final entry in _departmentJobPools.entries) {
+      if (entry.key == "default") continue;
+      if (deptName.contains(entry.key)) {
+        return List<Job>.from(entry.value);
+      }
+    }
+    return List<Job>.from(_departmentJobPools["default"]!);
   }
 
   void addSkill(String skill, double cost) {
