@@ -42,7 +42,7 @@ class GameViewModel extends ChangeNotifier {
   bool _mentalCrisisQueued = false;
   final List<MarketItem> _marketItems = _generateMarketItems();
   final List<String> _ownedItemIds = [];
-  String? _lastEventDescription;
+  Event? _currentEvent;
 
   // Giderler
   double _rentCost = 0;
@@ -489,6 +489,7 @@ class GameViewModel extends ChangeNotifier {
       description: description,
       options: options,
       type: type,
+      outcomes: eventMap['outcomes'],
     );
   }
 
@@ -514,7 +515,7 @@ class GameViewModel extends ChangeNotifier {
       event = _generateEventByStatus(type);
     }
 
-    _lastEventDescription = event.description;
+    _currentEvent = event;
     return event;
   }
 
@@ -1066,7 +1067,40 @@ class GameViewModel extends ChangeNotifier {
   }
 
   String processEventChoice(String option) {
-    final context = _lastEventDescription ?? "bugünkü olay";
+    final context = _currentEvent?.description ?? "bugünkü olay";
+
+    // 1. Özel Outcome Kontrolü (JSON'da tanımlıysa)
+    if (_currentEvent?.outcomes != null &&
+        _currentEvent!.outcomes!.containsKey(option)) {
+      final outcomeData = _currentEvent!.outcomes![option];
+
+      String outcomeText;
+      if (outcomeData['text'] is List) {
+        final list = outcomeData['text'] as List;
+        outcomeText = list[_random.nextInt(list.length)].toString();
+      } else {
+        outcomeText = outcomeData['text'].toString();
+      }
+
+      final mentalDelta = outcomeData['mental_delta'] as int? ?? 0;
+
+      _changeMentalHealth(mentalDelta, reason: "Olay sonucu: $option");
+
+      if (_stories.isNotEmpty) {
+        final lastIndex = _stories.length - 1;
+        final lastStory = _stories[lastIndex];
+        _stories[lastIndex] = Story(
+          date: lastStory.date,
+          content: "${lastStory.content.trimRight()}\n$outcomeText",
+          type: lastStory.type,
+        );
+      }
+      _lastMessage = outcomeText;
+      notifyListeners();
+      return outcomeText;
+    }
+
+    // 2. Genel Intent Bazlı Logic (Fallback)
     final intent = _detectOptionIntent(option);
 
     // JSON'dan şablonları çek

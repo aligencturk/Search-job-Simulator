@@ -225,9 +225,9 @@
                 "Son bir umutla şansını denemeye karar verdin."
             ],
             "follow_up": [
-                "Beklerken saatler geçti, koridordaki duvarın desenlerini ezberledin.",
-                "Eve dönerken dolmuşa verecek paran kalmadığı için kilometrelerce yürüdün.",
-                "Akşam eve döndüğünde ayakların şişmiş, umudun biraz daha azalmıştı."
+                "Cesaretin ödülünü aldın, kendini daha güçlü hissettin.",
+                "Belki hemen sonuç alamadın ama denemiş olmanın huzuruyla uyudun.",
+                "Bu kararlılığın sana yeni kapılar açacağını hissettin."
             ]
         },
         "rage": {
@@ -244,14 +244,14 @@
         },
         "celebrate": {
             "base": [
-                "Yüzünde buruk bir gülümseme belirdi, kısa bir anlığına mutlu oldun.",
-                "Küçük de olsa bir zafer kazanmış gibi hissettin.",
-                "Derin bir nefes alıp anın tadını çıkarmaya çalıştın."
+                "İçini bir sevinç kapladı, kendine güvenin geldi.",
+                "Gülümsemene engel olamadın, bu anın tadını çıkardın.",
+                "Küçük bir zafer de olsa, kendini iyi hissettin."
             ],
             "follow_up": [
-                "Sonra cüzdanındaki son parayı hatırlayıp sevincin yarım kaldı.",
-                "Arkadaşlarına anlatmak istedin ama kimse telefonu açmadı, hevesin kursağında kaldı.",
-                "Kendine bir çay demleyip sessizce kutlama yaptın, en ucuzundan."
+                "Bu pozitif enerjiyle hemen yeni planlar yapmaya başladın.",
+                "Aynaya baktığında gözlerinin içinin güldüğünü gördün.",
+                "Kendine 'başarabilirim' dedin ve buna gerçekten inandın."
             ]
         },
         "apologize": {
@@ -325,7 +325,21 @@
                             "Onu tebrik et",
                             "Onunla kutla",
                             "Kıskan"
-                        ]
+                        ],
+                        "outcomes": {
+                            "Onu tebrik et": {
+                                "text": "Zoraki bir gülümsemeyle tebrik ettin, ama için kan ağladı.",
+                                "mental_delta": -1
+                            },
+                            "Onunla kutla": {
+                                "text": "Kutlamaya gittin, hesap sana kaldı. Hem paran hem moralin gitti.",
+                                "mental_delta": -3
+                            },
+                            "Kıskan": {
+                                "text": "Eve gidip ağladın ve 'neden ben değil' diye düşündün.",
+                                "mental_delta": -2
+                            }
+                        }
                     },
                     {
                         "description": "İş ilanlarına baktın, hepsi 3+ yıl tecrübe istiyor.",
@@ -333,7 +347,21 @@
                             "Yine de başvur",
                             "Geç",
                             "Sinirlen"
-                        ]
+                        ],
+                        "outcomes": {
+                            "Yine de başvur": {
+                                "text": "Başvurdun ama içindeki ses 'dönmeyecekler' dedi.",
+                                "mental_delta": -1
+                            },
+                            "Geç": {
+                                "text": "İlanı geçtin ama aklın takılı kaldı, 'acaba denesem miydim' dedin.",
+                                "mental_delta": -1
+                            },
+                            "Sinirlen": {
+                                "text": "Bilgisayarı kapatıp sinirle yürüyüşe çıktın.",
+                                "mental_delta": 1
+                            }
+                        }
                     },
                     {
                         "description": "Staj başvurusu yaptın, 'tecrübe yetersiz' dediler.",
@@ -362,10 +390,28 @@
                     {
                         "description": "İnternet kesildi, iş başvurusu yapamadın.",
                         "options": [
-                            "Kabul et",
-                            "Üzül",
+                            "Müşteri temsilcisini ara",
+                            "Modemi kapat aç",
                             "Küfür et"
-                        ]
+                        ],
+                        "outcomes": {
+                            "Müşteri temsilcisini ara": {
+                                "text": [
+                                    "Müşteri temsilcisi sorunun altyapıdan kaynaklandığını söyledi, çözüm yok.",
+                                    "Müşteri hizmetlerine bağlanmak için 20 dakika bekledin, sonra hat düştü.",
+                                    "Temsilci 'bölgenizde çalışma var' dedi, ne zaman biteceği meçhul."
+                                ],
+                                "mental_delta": -2
+                            },
+                            "Modemi kapat aç": {
+                                "text": "Modemi açıp kapadın, ışıklar yandı söndü ama internet yine gelmedi.",
+                                "mental_delta": -1
+                            },
+                            "Küfür et": {
+                                "text": "Böyle firmanın a... diyerek rahatladın (biraz).",
+                                "mental_delta": 1
+                            }
+                        }
                     },
                     {
                         "description": "Arkadaşların güçlü mentaline hayran kaldı, seni takdir etti.",
@@ -418,10 +464,24 @@
                         {
                             "description": "LinkedIn'de herkes başarı hikayesi paylaşıyor, sen sadece beğeniyorsun.",
                             "options": [
-                                "Beğen",
+                                "Kutla",
                                 "Yorum yap",
-                                "Kıskan"
-                            ]
+                                "Sinirlen"
+                            ],
+                            "outcomes": {
+                                "Kutla": {
+                                    "text": "'Tebrik ederim' yorumu attın ama içten içe kendini sorguladın.",
+                                    "mental_delta": -1
+                                },
+                                "Yorum yap": {
+                                    "text": "Networking yapmaya çalıştın ama kimse dönmedi.",
+                                    "mental_delta": -1
+                                },
+                                "Sinirlen": {
+                                    "text": "'LinkedIn boş iş zaten' diyerek uygulamayı sildin.",
+                                    "mental_delta": 1
+                                }
+                            }
                         }
                     ],
                     "Hukuk": [
