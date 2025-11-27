@@ -10,6 +10,7 @@ import 'cv_view.dart';
 import 'interviews_view.dart';
 import 'jobs_view.dart';
 import 'market_view.dart';
+import 'personal_life_view.dart';
 import 'self_improvement_view.dart';
 import 'setup_view.dart';
 
@@ -220,18 +221,31 @@ class DashboardView extends ConsumerWidget {
                               itemBuilder: (context, index) {
                                 final story = gameVM.stories[index];
                                 final months = [
-                                  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-                                  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+                                  'Ocak',
+                                  'Şubat',
+                                  'Mart',
+                                  'Nisan',
+                                  'Mayıs',
+                                  'Haziran',
+                                  'Temmuz',
+                                  'Ağustos',
+                                  'Eylül',
+                                  'Ekim',
+                                  'Kasım',
+                                  'Aralık',
                                 ];
-                                final dateStr = '${story.date.day} ${months[story.date.month - 1]} ${story.date.year}';
-                                
+                                final dateStr =
+                                    '${story.date.day} ${months[story.date.month - 1]} ${story.date.year}';
+
                                 return Container(
                                   margin: const EdgeInsets.only(bottom: 12),
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: Colors.grey.shade200),
+                                    border: Border.all(
+                                      color: Colors.grey.shade200,
+                                    ),
                                     boxShadow: [
                                       BoxShadow(
                                         color: Colors.black.withOpacity(0.05),
@@ -241,7 +255,8 @@ class DashboardView extends ConsumerWidget {
                                     ],
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         dateStr,
@@ -423,6 +438,19 @@ class DashboardView extends ConsumerWidget {
                 ),
               ],
             ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.home),
+            title: const Text("Kişisel Hayat"),
+            onTap: () {
+              Navigator.pop(context); // Drawer'ı kapat
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PersonalLifeView(),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.list_alt),

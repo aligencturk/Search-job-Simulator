@@ -44,6 +44,11 @@ class GameViewModel extends ChangeNotifier {
   final List<String> _ownedItemIds = [];
   String? _lastEventDescription;
 
+  // Giderler
+  double _rentCost = 0;
+  double _billsCost = 0;
+  double _groceryCost = 0;
+
   Player? get player => _player;
   Department? get department => _department;
   List<Job> get availableJobs => _availableJobs;
@@ -61,6 +66,13 @@ class GameViewModel extends ChangeNotifier {
   List<MarketItem> get ownedItems => _ownedItemIds
       .map((id) => _marketItems.firstWhere((item) => item.id == id))
       .toList();
+
+  // Gider Getterları
+  double get rentCost => _rentCost;
+  double get billsCost => _billsCost;
+  double get groceryCost => _groceryCost;
+  double get totalMonthlyExpenses =>
+      _livingWithFamily ? 0 : (_rentCost + _billsCost + _groceryCost);
 
   // İş bulunup bulunmadığını kontrol et
   bool get hasJob {
@@ -255,6 +267,31 @@ class GameViewModel extends ChangeNotifier {
     return true;
   }
 
+  void moveToRental() {
+    if (_player == null) return;
+    if (_player!.money < 30000) {
+      _lastMessage = "Eve çıkmak için yeterli bakiyen yok (Min 30.000 TL).";
+      notifyListeners();
+      return;
+    }
+    _livingWithFamily = false;
+    _rentCost = 15000;
+    _billsCost = 2500;
+    _groceryCost = 6000;
+    _player!.money -= 30000; // Depozito + İlk kira
+    _lastMessage = "Kendi evine çıktın! 30.000 TL (Depozito+İlk Kira) ödendi.";
+    notifyListeners();
+  }
+
+  void returnToFamily() {
+    _livingWithFamily = true;
+    _rentCost = 0;
+    _billsCost = 0;
+    _groceryCost = 0;
+    _lastMessage = "Aile evine döndün. Kira derdi bitti.";
+    notifyListeners();
+  }
+
   void applyPeriodicBonuses() {
     for (final itemId in _ownedItemIds) {
       final item = _marketItems.firstWhere((element) => element.id == itemId);
@@ -342,11 +379,10 @@ class GameViewModel extends ChangeNotifier {
     final deptName = _department?.name;
     final departmentsData = typeEvents['departments'];
     if (deptName != null && departmentsData is Map) {
+      final normalizedDeptTokens = _tokenizeDepartment(deptName);
       for (final entry in departmentsData.entries) {
         final key = entry.key.toString();
-        final matches =
-            key == deptName || deptName.contains(key) || key.contains(deptName);
-        if (!matches) continue;
+        if (!_departmentMatches(normalizedDeptTokens, key)) continue;
 
         final deptEvents = entry.value;
         if (deptEvents is List) {
@@ -367,6 +403,32 @@ class GameViewModel extends ChangeNotifier {
     if (pool.isEmpty) return null;
 
     return pool[_random.nextInt(pool.length)];
+  }
+
+  List<String> _tokenizeDepartment(String input) {
+    final lower = input.toLowerCase();
+    final tokens = lower
+        .split(RegExp(r'[^a-z0-9ığüşöçıİĞÜŞÖÇ]+'))
+        .where((token) => token.isNotEmpty)
+        .toList();
+    if (tokens.isEmpty) {
+      return [lower];
+    }
+    return tokens;
+  }
+
+  bool _departmentMatches(List<String> deptTokens, String key) {
+    final keyTokens = _tokenizeDepartment(key);
+    if (deptTokens.isEmpty || keyTokens.isEmpty) {
+      final deptString = deptTokens.join();
+      final keyString = keyTokens.join();
+      return deptString.contains(keyString) || keyString.contains(deptString);
+    }
+    final keySubset = keyTokens.every(deptTokens.contains);
+    if (keySubset) return true;
+    final deptSubset = deptTokens.every(keyTokens.contains);
+    if (deptSubset) return true;
+    return keyTokens.any(deptTokens.contains);
   }
 
   Map<String, dynamic>? _getMentalCrisisEvent() {
@@ -719,6 +781,22 @@ class GameViewModel extends ChangeNotifier {
           _lastMessage = "Maaş yattı! +${totalSalary.toStringAsFixed(0)} TL";
           logger.i("Aylık maaş ödendi: $totalSalary");
         }
+
+        // Aylık Giderler
+        if (!_livingWithFamily) {
+          double total = _rentCost + _billsCost + _groceryCost;
+          _player!.money -= total;
+          _lastMessage +=
+              "\nAylık giderler ödendi: -${total.toStringAsFixed(0)} TL";
+
+          if (_player!.money < 0) {
+            _lastMessage += "\nParan bitti! Aile evine dönmek zorunda kaldın.";
+            _livingWithFamily = true;
+            _rentCost = 0;
+            _billsCost = 0;
+            _groceryCost = 0;
+          }
+        }
       }
     } else {
       // Günlük olay
@@ -991,31 +1069,40 @@ class GameViewModel extends ChangeNotifier {
     final context = _lastEventDescription ?? "bugünkü olay";
     final intent = _detectOptionIntent(option);
 
-    final baseMessage = _formatTemplate(
-      _pickTemplate(_optionBaseTemplates, intent),
-      context,
-      option,
-    );
+    // JSON'dan şablonları çek
+    final Map<String, dynamic>? templates = _gameData['outcome_templates'];
+    if (templates == null) {
+      // Fallback
+      return "Olay sonuçlandı.";
+    }
+
+    final intentData = templates[intent] ?? templates['default'];
+    final List<dynamic> baseList = intentData['base'] ?? ["Olay bitti."];
+    final List<dynamic> followUpList = intentData['follow_up'] ?? [];
+
+    final baseTemplate = baseList[_random.nextInt(baseList.length)].toString();
+
+    final baseMessage = _formatTemplate(baseTemplate, context, option);
     String absurdMessage = baseMessage;
 
-    if (_random.nextBool()) {
-      final extra = _formatTemplate(
-        _pickTemplate(_optionFollowUpTemplates, intent),
-        context,
-        option,
-      );
+    // %50 şansla ikinci olay
+    final triggerFollowUp = _random.nextDouble() < 0.5;
+
+    if (triggerFollowUp && followUpList.isNotEmpty) {
+      final extraTemplate = followUpList[_random.nextInt(followUpList.length)]
+          .toString();
+      final extra = _formatTemplate(extraTemplate, context, option);
       absurdMessage = "$baseMessage $extra";
     }
 
-    _changeMentalHealth(-1, reason: "Absürt olay: $absurdMessage");
+    _changeMentalHealth(-1, reason: "Olay sonucu: $absurdMessage");
     if (_stories.isNotEmpty) {
-      final lastStory = _stories.removeLast();
-      _stories.add(
-        Story(
-          date: lastStory.date,
-          content: "${lastStory.content}\n$absurdMessage",
-          type: lastStory.type,
-        ),
+      final lastIndex = _stories.length - 1;
+      final lastStory = _stories[lastIndex];
+      _stories[lastIndex] = Story(
+        date: lastStory.date,
+        content: "${lastStory.content.trimRight()}\n$absurdMessage",
+        type: lastStory.type,
       );
     }
     _lastMessage = absurdMessage;
@@ -1099,102 +1186,7 @@ class GameViewModel extends ChangeNotifier {
         .replaceAll("{option}", option);
   }
 
-  String _pickTemplate(Map<String, List<String>> templates, String intent) {
-    final pool = templates[intent] ?? templates["default"]!;
-    return pool[_random.nextInt(pool.length)];
-  }
-
-  static final Map<String, List<String>> _optionBaseTemplates = {
-    "proceed": [
-      "\"{context}\" ardından {option} diyerek yine de gittin; girişte seni isimle karşılayıp kırmızı halı serdiler.",
-      "{option} diyerek {context} olayını hiçe saydın; asansör bile seni alkışladı.",
-      "\"{context}\" sonrasında pes etmeyip {option} dedin; resepsiyon seni motivasyon konuşmacısı sandı.",
-    ],
-    "give_up": [
-      "\"{context}\" sonrası {option} diyerek vazgeçtin; kader çizelgesinde beş dakikalık mola açıldı.",
-      "{context} diye özetleyip bir köşede {option} dedin, evren sana çay demledi.",
-      "\"{context}\" yüzünden {option} planını seçtin; evdeki koltuk seni sarıp Netflix açtı.",
-    ],
-    "emotional": [
-      "\"{context}\" karşısında {option} dedin; gözyaşların KPI raporu gibi akmaya başladı.",
-      "Durum {context} olunca {option} seçeneği aktive edildi; tavan bile sana mendil uzattı.",
-      "\"{context}\" sonrası {option} dedin ve melodramatik soundtrack otomatik çaldı.",
-    ],
-    "celebrate": [
-      "\"{context}\" sonrası {option} diyerek olayı partiye çevirdin; konfeti yerine elektrik faturasını havaya attılar.",
-      "{context} diye anlatıp {option} yapınca apartman yönetimi seni sosyal etkinlik sorumlusu ilan etti.",
-    ],
-    "default": [
-      "\"{context}\" sonrası {option} dedin; evren 'tamam mı?' diye sordu.",
-      "Olay {context} iken {option} diyerek spontane bir timeline açtın.",
-    ],
-    "apologize": [
-      "\"{context}\" için {option} deyince karşı taraf sana Excel makrosu gibi uzun bir konuşma yaptı.",
-      "{option} diyerek {context} olayını tatlıya bağlamaya çalıştın; sonuç olarak sana ev yapımı kek verildi.",
-    ],
-    "accept": [
-      "\"{context}\" oldu, sen de {option} diyerek kaderin KPIsını imzaladın.",
-      "{option} deyip {context} durumunu kabullendin; evren seni otomatik pilota aldı.",
-    ],
-    "complain": [
-      "\"{context}\" sonrası {option} diyerek dilekçe açtın; sistem seni 'günün şikayetçisi' seçti.",
-      "{option} seçeneğini kullanıp {context} hakkında manifesto yayınladın.",
-    ],
-    "retry": [
-      "\"{context}\" ardından {option} dedin; checkpoint'ten yeniden başladın.",
-      "{context} yaşandı, sen de {option} diyerek kredili yeniden deneme başlattın.",
-    ],
-    "rage": [
-      "\"{context}\" sonrası {option} dedin; sansür bandı otomatik devreye girdi.",
-      "{option} diye patlayınca {context} olayı argo sözlükte trend oldu.",
-    ],
-  };
-
-  static final Map<String, List<String>> _optionFollowUpTemplates = {
-    "proceed": [
-      "Toplantıya girdiğinde herkes seni CEO sanıp not almaya başladı.",
-      "Güvenlik kartın çalışmadı ama sen ninja gibi içeri sızdın.",
-      "Mülakat soruları yerine sana kariyer danışmanlığı sordular.",
-    ],
-    "give_up": [
-      "Kapıdaki kediler bile seninle aynı kararı verip protesto düzenledi.",
-      "Bakkal sana 'yarın gidersin' diyerek fiş yerine moral verdi.",
-      "Telefon otomatik olarak türlü bahaneler üreten moda geçti.",
-    ],
-    "emotional": [
-      "Ağlarken Spotify seni 'acıklı Anatolian lo-fi' listesine sabitledi.",
-      "Komşu teyze kapıdan içeri lokum atarak teselli etmeye çalıştı.",
-      "Moral -1 oldu ama drama kraliçesi rozeti kazandın.",
-    ],
-    "celebrate": [
-      "Kutlama sırasında pastanın üstüne CV yazmayı unutmadın.",
-      "Arkadaşlar story atarken seni filtre yerine motivasyon logosu yaptılar.",
-    ],
-    "default": [
-      "Bir anda belediye hoparlöründen adınla anons yapıldı.",
-      "Zil çaldı, kargodan 'kararsızlık kiti' geldi.",
-    ],
-    "apologize": [
-      "Özrün kabul edildi, ancak sana 45 sayfalık davranış sözleşmesi imzalattılar.",
-      "Karşı taraf \"önemli değil\" dedi ama WhatsApp'ta üç mavi tik bıraktı.",
-    ],
-    "accept": [
-      "Kabul belgesini imzalarken arka planda 'dramatic sigh' efekti çaldı.",
-      "Kabullenme kartı seni resmi olarak yetişkinler kulübüne aldı.",
-    ],
-    "complain": [
-      "Şikayet dilekçen Slack kanalında emoji yağmuruna tutuldu.",
-      "İtirazın üzerine sana müşteri hizmetleri scripti gönderdiler.",
-    ],
-    "retry": [
-      "Yeniden deneme ekranı açıldı; loading çubuğu %99'da takılı kaldı.",
-      "Deneme hakkı verdiler ama mouse'u ters çevirmişler.",
-    ],
-    "rage": [
-      "Sinir katsayısı yükselince apartman kapıcısı sana punching bag getirdi.",
-      "Küfürlerin yer çekimi bozup etrafa neon sansürler saçtı.",
-    ],
-  };
+  // Hardcoded şablonlar kaldırıldı, artık JSON'dan okunuyor.
 
   static final Map<String, List<Job>> _departmentJobPools = {
     "bilgisayar": [

@@ -15,17 +15,19 @@
                     "Başvuru reddedildi: 'Yapay zeka ile kod yazdığınız tespit edildi'.",
                     "Başvuru reddedildi: 'Kullandığınız framework geçen hafta eskidi'."
                 ],
-                "Endüstri Mühendisliği": [
-                    "Başvuru reddedildi: 'Optimizasyon öneriniz şirketi batırabilir'.",
-                    "Başvuru reddedildi: 'Beyaz baretiniz eksik'."
+                "Hukuk": [
+                    "Başvuru reddedildi: 'Dilekçenizde yazım hatası var, kabul edilemez'.",
+                    "Başvuru reddedildi: 'Henüz yeterince stresli görünmüyorsunuz'.",
+                    "Başvuru reddedildi: 'Takım elbiseli fotoğrafınız eksik'."
                 ],
                 "İşletme": [
                     "Başvuru reddedildi: 'Sunumlarınızda yeterince grafik yok'.",
                     "Başvuru reddedildi: 'Liderlik vasfınız (henüz) yok'."
                 ],
-                "Mimarlık": [
-                    "Başvuru reddedildi: 'Maketleriniz rüzgarda uçuyor'.",
-                    "Başvuru reddedildi: 'Binayı ters çizmişsiniz'."
+                "Tıp": [
+                    "Başvuru reddedildi: 'Diplomanızın mürekkebi kurumamış'.",
+                    "Başvuru reddedildi: 'Bu hastane için fazla sağlıklısınız'.",
+                    "Başvuru reddedildi: 'El yazınız fazla okunaklı, doktor olamazsınız'."
                 ]
             }
         },
@@ -46,17 +48,19 @@
                     "Mülakat sonucu olumsuz: 'Tab mı Space mi sorusuna Space dediniz, elendiniz'.",
                     "Mülakat sonucu olumsuz: 'Canlı kodlama sırasında stackoverflow çöktü, kod yazamadınız'."
                 ],
-                "Endüstri Mühendisliği": [
-                    "Mülakat sonucu olumsuz: 'Tedarik zincirini karıştırıp lojistik krizi çıkardınız'.",
-                    "Mülakat sonucu olumsuz: 'Verimlilik analizinizde mülakat süresini kısaltmayı önerdiniz, kovuldunuz'."
+                "Hukuk": [
+                    "Mülakat sonucu olumsuz: 'Hakime itiraz eder gibi konuştunuz'.",
+                    "Mülakat sonucu olumsuz: 'Kanun maddesini yanlış hatırladınız'.",
+                    "Mülakat sonucu olumsuz: 'Müvekkil gizliliğine önem vermediniz'."
                 ],
                 "İşletme": [
                     "Mülakat sonucu olumsuz: 'SWOT analizini yanlış yaptınız, zayıf yönünüzü \"tembellik\" olarak yazdınız'.",
                     "Mülakat sonucu olumsuz: 'CEO olma planlarınızı çok erken açıkladınız'."
                 ],
-                "Mimarlık": [
-                    "Mülakat sonucu olumsuz: 'Çizdiğiniz kolon kirişi taşımıyor'.",
-                    "Mülakat sonucu olumsuz: 'Estetik anlayışınız patronun zevkine uymadı'."
+                "Tıp": [
+                    "Mülakat sonucu olumsuz: 'Hastaya teşhis koyarken Google kullandınız'.",
+                    "Mülakat sonucu olumsuz: 'Nöbet tutmak istemediğinizi söylediniz'.",
+                    "Mülakat sonucu olumsuz: 'Latince terimleri karıştırdınız'."
                 ]
             }
         }
@@ -101,33 +105,33 @@
                 "correct_index": 3
             }
         ],
-        "Endüstri Mühendisliği": [
+        "Hukuk": [
             {
-                "question": "Yalın üretim (Lean Manufacturing) nedir?",
+                "question": "Bir dava dilekçesinde en önemli kısım neresidir?",
                 "options": [
-                    "Üretimde israfı en aza indirme yöntemidir.",
-                    "Sadece zayıf işçilerin çalıştırılmasıdır.",
-                    "Ürünlerin daha hafif üretilmesidir."
+                    "Talep Sonucu",
+                    "Giriş paragrafı",
+                    "Kağıdın kalitesi"
                 ],
                 "correct_index": 0
             },
             {
-                "question": "ERP (Kurumsal Kaynak Planlaması) ne işe yarar?",
+                "question": "Müvekkiliniz haksız olduğunu itiraf ederse ne yaparsınız?",
                 "options": [
-                    "Şirketin tüm kaynaklarını tek sistemde yönetir.",
-                    "Sadece muhasebe hesaplarını tutar.",
-                    "Personelin izin günlerini hesaplar."
+                    "Polisi ararım",
+                    "Savunma hakkını koruyarak en iyi sonucu almaya çalışırım",
+                    "Davayı hemen bırakırım"
                 ],
-                "correct_index": 0
+                "correct_index": 1
             },
             {
-                "question": "Endüstri mühendisi ne yapar?",
+                "question": "Masumiyet karinesi nedir?",
                 "options": [
-                    "Her işten biraz anlar, yönetir.",
-                    "Sadece excel tablosu yapar.",
-                    "Makine yağlar."
+                    "Herkesin suçlu olabileceği varsayımıdır",
+                    "Suçu ispatlanana kadar herkesin masum sayılmasıdır",
+                    "Hakimin kararına itiraz etmektir"
                 ],
-                "correct_index": 0
+                "correct_index": 1
             }
         ],
         "İşletme": [
@@ -159,35 +163,156 @@
                 "correct_index": 0
             }
         ],
-        "Mimarlık": [
+        "Tıp": [
             {
-                "question": "Altın oran nedir?",
+                "question": "Normal bir yetişkinin dinlenme nabzı kaçtır?",
                 "options": [
-                    "Estetik açıdan ideal kabul edilen matematiksel oran.",
-                    "Altın fiyatlarının artış oranı.",
-                    "Binanın yüksekliğinin genişliğine oranı."
+                    "60-100 arası",
+                    "120-150 arası",
+                    "20-40 arası"
                 ],
                 "correct_index": 0
             },
             {
-                "question": "Restorasyon ne demektir?",
+                "question": "Hipokrat Yemini neyi temel alır?",
                 "options": [
-                    "Eski yapıların aslına uygun onarılması.",
-                    "Yeni bina inşa etmek.",
-                    "Binayı yıkıp otopark yapmak."
+                    "Hastanenin kar etmesini",
+                    "Hastaya zarar vermemeyi ve hayatı korumayı",
+                    "Doktorların tatil haklarını"
                 ],
-                "correct_index": 0
+                "correct_index": 1
             },
             {
-                "question": "Mimar Sinan'ın ustalık eseri hangisidir?",
+                "question": "Acil serviste triyaj ne demektir?",
                 "options": [
-                    "Selimiye Camii",
-                    "Süleymaniye Camii",
-                    "Şehzade Camii"
+                    "Hastaları aciliyet durumuna göre sınıflandırma",
+                    "İlaçların son kullanma tarihini kontrol etme",
+                    "Doktorların nöbet listesini hazırlama"
                 ],
                 "correct_index": 0
             }
         ]
+    },
+    "outcome_templates": {
+        "emotional": {
+            "base": [
+                "Gözlerin doldu ama kendini tuttun, kimsenin görmesini istemedin.",
+                "İçinde bir sıkıntı büyüdü, derin bir nefes alarak sakinleşmeye çalıştın.",
+                "Boğazında bir düğüm oluştu, yutkunmakta zorlandın."
+            ],
+            "follow_up": [
+                "Gece boyunca tavanı izleyerek 'nerede hata yaptım' diye düşündün.",
+                "Sosyal medyada herkesin mutlu fotoğraflarına bakıp kendini yalnız hissettin.",
+                "Aynaya baktığında gözlerindeki yorgunluk seni üzdü, ışığı kapatıp yattın."
+            ]
+        },
+        "give_up": {
+            "base": [
+                "Omuzların düştü, 'bu kadar yeter' diyerek geri çekildin.",
+                "Enerjin aniden tükendi, koltuğa yığılıp kaldın.",
+                "Kapıdan dönüp odana girdin, dünyayla bağını kestin."
+            ],
+            "follow_up": [
+                "Bütün gün pijamalarla oturdun, televizyondaki sesler anlamsızlaştı.",
+                "Telefonun çaldı ama açacak gücü kendinde bulamadın, sessize aldın.",
+                "Akşam yemeğini atladın, sadece bir bardak su içip erkenden uyudun."
+            ]
+        },
+        "proceed": {
+            "base": [
+                "Dişlerini sıktın ve 'başka çarem yok' diyerek adım attın.",
+                "Korkunu bastırıp titreyen ellerine rağmen devam ettin.",
+                "Son bir umutla şansını denemeye karar verdin."
+            ],
+            "follow_up": [
+                "Beklerken saatler geçti, koridordaki duvarın desenlerini ezberledin.",
+                "Eve dönerken dolmuşa verecek paran kalmadığı için kilometrelerce yürüdün.",
+                "Akşam eve döndüğünde ayakların şişmiş, umudun biraz daha azalmıştı."
+            ]
+        },
+        "rage": {
+            "base": [
+                "Yumruklarını sıktın, tırnakların avucuna battı.",
+                "İçinden bir çığlık yükseldi ama sessiz kaldın, sadece derin nefes aldın.",
+                "Eline geçen ilk şeyi fırlatmak istedin ama sonra vazgeçip masaya bıraktın."
+            ],
+            "follow_up": [
+                "Sinirden başın zonklamaya başladı, ağrı kesici bile fayda etmedi.",
+                "Evdeki herkese ters davrandın, sonra pişman oldun ama özür dileyemedin.",
+                "Hırsını çıkarmak için hızlı adımlarla yürüdün, nefes nefese kaldın ama öfken geçmedi."
+            ]
+        },
+        "celebrate": {
+            "base": [
+                "Yüzünde buruk bir gülümseme belirdi, kısa bir anlığına mutlu oldun.",
+                "Küçük de olsa bir zafer kazanmış gibi hissettin.",
+                "Derin bir nefes alıp anın tadını çıkarmaya çalıştın."
+            ],
+            "follow_up": [
+                "Sonra cüzdanındaki son parayı hatırlayıp sevincin yarım kaldı.",
+                "Arkadaşlarına anlatmak istedin ama kimse telefonu açmadı, hevesin kursağında kaldı.",
+                "Kendine bir çay demleyip sessizce kutlama yaptın, en ucuzundan."
+            ]
+        },
+        "apologize": {
+            "base": [
+                "Başını öne eğdin ve sessizce özür diledin.",
+                "Mahcup bir şekilde durumu kabullendin.",
+                "Hatanı kabul edip alttan aldın."
+            ],
+            "follow_up": [
+                "Karşı tarafın bakışları seni daha da ezdi, yerin dibine girmek istedin.",
+                "Eve gidince yastığa gömülüp utancından uyumaya çalıştın.",
+                "O anı tekrar tekrar kafanda yaşadın, 'keşke'lerin sonu gelmedi."
+            ]
+        },
+        "accept": {
+            "base": [
+                "Sessizce başını salladın ve durumu kabullendin.",
+                "İtiraz etmenin faydasız olduğunu anlayıp sustun.",
+                "Derin bir iç çekip 'peki' dedin."
+            ],
+            "follow_up": [
+                "İçindeki çaresizlik hissi büyüdü, kendini kapana kısılmış hissettin.",
+                "Eve dönerken vitrinlere baktın ama hiçbir şey hissetmedin, sadece boşluk vardı.",
+                "Yatağa yattığında hayatın kontrolünün sende olmadığını düşündün."
+            ]
+        },
+        "complain": {
+            "base": [
+                "Sesini yükseltmeden sitem ettin.",
+                "Haksızlığa uğradığını düşünüp söylendin.",
+                "Memnuniyetsizliğini belli eden bir bakış attın."
+            ],
+            "follow_up": [
+                "Kimse seni dinlemedi, sözlerin havada asılı kaldı.",
+                "Daha sonra 'acaba abarttım mı' diye kendini sorguladın.",
+                "Şikayetin bir şeyi değiştirmedi, sadece kendi canını sıktın."
+            ]
+        },
+        "retry": {
+            "base": [
+                "Yılmadan bir kez daha denemeye karar verdin.",
+                "Derin bir nefes alıp baştan başladın.",
+                "Pes etmeyi reddedip tekrar denedin."
+            ],
+            "follow_up": [
+                "Yorgunluktan gözlerin karardı ama durmadın.",
+                "Tekrar denerken içindeki son umut kırıntısına tutundun.",
+                "Sonuç değişmeyince hayal kırıklığın katlanarak arttı."
+            ]
+        },
+        "default": {
+            "base": [
+                "Boş gözlerle etrafa baktın.",
+                "Sadece omuz silktin.",
+                "Durumu akışına bıraktın."
+            ],
+            "follow_up": [
+                "Zaman akıp gitti, sen sadece izledin.",
+                "Hissizleştiğini fark ettin, hiçbir şey umurunda değildi."
+            ]
+        }
     },
     "events": {
         "jobless": {
@@ -216,14 +341,6 @@
                             "Devam et",
                             "Vazgeç",
                             "Sinirlen"
-                        ]
-                    },
-                    {
-                        "description": "Aylık bütçe bitti, annenden borç aldın.",
-                        "options": [
-                            "Kabul et",
-                            "Utandın",
-                            "Kızgın ol"
                         ]
                     },
                     {
@@ -307,13 +424,39 @@
                             ]
                         }
                     ],
-                    "Mimarlık": [
+                    "Hukuk": [
                         {
-                            "description": "Yaptığın maketi akşam kediniz yıktı.",
+                            "description": "Baro aidatını ödemeyi unuttun, uyarı geldi.",
                             "options": [
-                                "Tekrar yap",
-                                "Ağla",
-                                "Küfür et"
+                                "Öde",
+                                "Ertele",
+                                "Sinirlen"
+                            ]
+                        },
+                        {
+                            "description": "Adliyede eski arkadaşını gördün, o hakim olmuş.",
+                            "options": [
+                                "Tebrik et",
+                                "Kıskan",
+                                "Kaç"
+                            ]
+                        }
+                    ],
+                    "Tıp": [
+                        {
+                            "description": "TUS çalışmaktan gözlerin bozuldu.",
+                            "options": [
+                                "Dinlen",
+                                "Devam et",
+                                "Doktora git"
+                            ]
+                        },
+                        {
+                            "description": "Akrabalar sürekli 'şu tahlile bak' diye arıyor.",
+                            "options": [
+                                "Bak",
+                                "Meşgulüm de",
+                                "Engelle"
                             ]
                         }
                     ]
@@ -393,13 +536,23 @@
                             ]
                         }
                     ],
-                    "Endüstri Mühendisliği": [
+                    "Hukuk": [
                         {
-                            "description": "Optimizasyon sunumun aile toplantısında bile işe yaramadı.",
+                            "description": "Staj yeri bulamadığın için baronun havuzuna düştün.",
                             "options": [
-                                "Anlatmaya devam",
-                                "Sus",
-                                "Kızgın ol"
+                                "Kabul et",
+                                "Tekrar ara",
+                                "Üzül"
+                            ]
+                        }
+                    ],
+                    "Tıp": [
+                        {
+                            "description": "Mecburi hizmet kurasında istemediğin yer çıktı sandın (rüyaymış).",
+                            "options": [
+                                "Kalk ve çalış",
+                                "Su iç",
+                                "Geri uyu"
                             ]
                         }
                     ]
@@ -478,6 +631,26 @@
                                 "Paylaş",
                                 "Sakla",
                                 "Kız"
+                            ]
+                        }
+                    ],
+                    "Hukuk": [
+                        {
+                            "description": "Bir yıl geçti, hala ruhsatını alamadın.",
+                            "options": [
+                                "Çalış",
+                                "Bekle",
+                                "Üzül"
+                            ]
+                        }
+                    ],
+                    "Tıp": [
+                        {
+                            "description": "Bir yıl daha TUS çalıştın, puanın değişmedi.",
+                            "options": [
+                                "Daha çok çalış",
+                                "Vazgeç",
+                                "Ağla"
                             ]
                         }
                     ]
@@ -567,13 +740,23 @@
                             ]
                         }
                     ],
-                    "Mimarlık": [
+                    "Hukuk": [
                         {
-                            "description": "Sunumda render aldığın görsel açılmadı.",
+                            "description": "Duruşma sırası beklerken uyuyakaldın, mübaşir uyandırdı.",
                             "options": [
-                                "Açıklama yap",
-                                "Tekrar dene",
+                                "Özür dile",
+                                "İnkar et",
                                 "Kaç"
+                            ]
+                        }
+                    ],
+                    "Tıp": [
+                        {
+                            "description": "36 saatlik nöbet bitti, adını unuttun.",
+                            "options": [
+                                "Uyu",
+                                "Eve git",
+                                "Kahve iç"
                             ]
                         }
                     ]
@@ -653,14 +836,26 @@
                             ]
                         }
                     ],
-                    "Endüstri Mühendisliği": [
+                    "Hukuk": [
                         {
-                            "description": "Verimlilik raporun üst yönetimde viral oldu, herkes senden rapor istedi.",
+                            "description": "Kazandığın davanın vekalet ücreti yattı.",
                             "options": [
-                                "Sevin",
-                                "Kabul et",
-                                "Kaç"
-                            ]
+                                "Harc",
+                                "Yatırım yap",
+                                "Kutla"
+                            ],
+                            "mental_delta": 5
+                        }
+                    ],
+                    "Tıp": [
+                        {
+                            "description": "Hasta yakını sana baklava getirdi.",
+                            "options": [
+                                "Ye",
+                                "Dağıt",
+                                "Teşekkür et"
+                            ],
+                            "mental_delta": 5
                         }
                     ]
                 }
@@ -748,6 +943,26 @@
                                 "Kız"
                             ]
                         }
+                    ],
+                    "Hukuk": [
+                        {
+                            "description": "Yılın en çok dava kazanan avukatı ödülünü (kendi kendine) verdin.",
+                            "options": [
+                                "Sevin",
+                                "Gül",
+                                "Ağla"
+                            ]
+                        }
+                    ],
+                    "Tıp": [
+                        {
+                            "description": "Bu yıl o kadar çok nöbet tuttun ki, hastanede sana oda verdiler.",
+                            "options": [
+                                "Taşın",
+                                "Reddet",
+                                "Uyu"
+                            ]
+                        }
                     ]
                 }
             }
@@ -786,5 +1001,88 @@
                 }
             ]
         }
-    }
+    },
+    "market_items": [
+        {
+            "id": "phone_basic",
+            "name": "Akıllı Telefon",
+            "category": "Teknoloji",
+            "price": 20000,
+            "description": "Güncel iş ilanlarını takip etmek için modern bir telefon.",
+            "mentalBonus": 5,
+            "bonusType": "single"
+        },
+        {
+            "id": "laptop_pro",
+            "name": "Dizüstü Bilgisayar",
+            "category": "Teknoloji",
+            "price": 35000,
+            "description": "Code yazarken hız kazandıran yüksek performanslı laptop.",
+            "mentalBonus": 5,
+            "bonusType": "single"
+        },
+        {
+            "id": "tablet_note",
+            "name": "Tablet",
+            "category": "Teknoloji",
+            "price": 15000,
+            "description": "Not ve çizim tutmak için şık tablet.",
+            "mentalBonus": 5,
+            "bonusType": "single"
+        },
+        {
+            "id": "home_rent",
+            "name": "Küçük Ev",
+            "category": "Yaşam",
+            "price": 1200000,
+            "description": "Kendi alanına sahip olman için mütevazı bir ev.",
+            "mentalBonus": 2,
+            "bonusType": "daily"
+        },
+        {
+            "id": "car_basic",
+            "name": "Şehir İçi Araç",
+            "category": "Yaşam",
+            "price": 800000,
+            "description": "Mülakatlara yetişmek için ekonomik otomobil.",
+            "mentalBonus": 2,
+            "bonusType": "daily"
+        },
+        {
+            "id": "ment_support",
+            "name": "Profesyonel Mental Destek",
+            "category": "Sağlık",
+            "price": 5000,
+            "description": "Terapi paketi ile mental sağlığını koru.",
+            "mentalBonus": 30,
+            "bonusType": "single"
+        },
+        {
+            "id": "course_frontend",
+            "name": "Frontend Bootcamp",
+            "category": "Eğitim",
+            "price": 7000,
+            "description": "Yeni yetenekler kazanacağın yoğun eğitim.",
+            "mentalBonus": 5,
+            "bonusType": "single"
+        },
+        {
+            "id": "course_language",
+            "name": "İleri Seviye İngilizce",
+            "category": "Eğitim",
+            "price": 6000,
+            "description": "Uluslararası mülakatlara hazırlık.",
+            "mentalBonus": 5,
+            "bonusType": "single"
+        },
+        {
+            "id": "cowork",
+            "name": "Coworking Üyeliği",
+            "category": "Yaşam",
+            "price": 3000,
+            "description": "Motivasyon için paylaşımlı ofis ortamı.",
+            "mentalBonus": 5,
+            "bonusType": "single"
+        }
+    ]
 }
