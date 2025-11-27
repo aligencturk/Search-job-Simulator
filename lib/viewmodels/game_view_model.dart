@@ -436,12 +436,30 @@ class GameViewModel extends ChangeNotifier {
       return {
         "description":
             "Mental sağlığın kritik seviyede. Kendini kapana kısılmış hissediyorsun.",
-        "options": [
-          "Derin nefes egzersizi yap",
-          "Bir arkadaşını ara",
-          "Hiçbir şey yapmak istemiyorum",
+        "choices": [
+          {
+            "text": "Derin nefes al",
+            "result_text":
+                "Derin nefes aldın, biraz sakinleştin ama sorunlar hala orada.",
+            "mental_delta": 5,
+            "money_delta": 0,
+            "outcome_type": "proceed",
+          },
+          {
+            "text": "Günlük tut",
+            "result_text": "Duygularını kağıda döktün, yükün hafifledi.",
+            "mental_delta": 8,
+            "money_delta": 0,
+            "outcome_type": "proceed",
+          },
+          {
+            "text": "Hiçbir şey yapma",
+            "result_text": "Tavana bakarak saatler geçirdin. Zaman aktı gitti.",
+            "mental_delta": -2,
+            "money_delta": 0,
+            "outcome_type": "give_up",
+          },
         ],
-        "mental_delta": 8,
       };
     }
 
@@ -466,30 +484,64 @@ class GameViewModel extends ChangeNotifier {
     final description =
         (eventMap['description'] ?? eventMap['desc'] ?? "Bir olay gerçekleşti.")
             .toString();
-    final optionsRaw = eventMap['options'] ?? eventMap['opts'];
-    List<String> options;
 
-    if (optionsRaw is List) {
-      options = optionsRaw.map((e) => e.toString()).toList();
+    // Yeni 'choices' yapısını kontrol et
+    final choicesRaw = eventMap['choices'];
+    List<EventChoice> choices = [];
+
+    if (choicesRaw is List) {
+      choices = choicesRaw.map((c) {
+        if (c is Map<String, dynamic>) {
+          return EventChoice.fromMap(c);
+        }
+        // Eski string formatı için fallback (artık kullanılmamalı ama güvenlik için)
+        return EventChoice(
+          text: c.toString(),
+          resultText: "Olay sonuçlandı.",
+          mentalDelta: 0,
+          moneyDelta: 0,
+          outcomeType: "default",
+        );
+      }).toList();
     } else {
-      options = ["Tamam", "Devam"];
+      // Eski 'options' yapısı için fallback (artık kullanılmamalı)
+      final optionsRaw = eventMap['options'] ?? eventMap['opts'];
+      if (optionsRaw is List) {
+        choices = optionsRaw
+            .map(
+              (e) => EventChoice(
+                text: e.toString(),
+                resultText: "Olay sonuçlandı.",
+                mentalDelta: 0,
+                moneyDelta: 0,
+                outcomeType: "default",
+              ),
+            )
+            .toList();
+      }
     }
 
-    if (options.isEmpty) {
-      options = ["Tamam"];
+    if (choices.isEmpty) {
+      choices = [
+        EventChoice(
+          text: "Tamam",
+          resultText: "Devam ettin.",
+          mentalDelta: 0,
+          moneyDelta: 0,
+          outcomeType: "default",
+        ),
+      ];
     }
 
-    final mentalDeltaRaw = eventMap['mental_delta'];
-    if (mentalDeltaRaw is num && mentalDeltaRaw != 0) {
-      _changeMentalHealth(mentalDeltaRaw.toInt(), reason: description);
-    }
+    // Ana event mental delta'sı artık choices içinde yönetiliyor,
+    // ama genel bir etki varsa burada eklenebilir.
+    // Şimdilik kaldırıyoruz çünkü her seçeneğin kendi etkisi var.
 
     return Event(
       date: _currentDate,
       description: description,
-      options: options,
+      choices: choices,
       type: type,
-      outcomes: eventMap['outcomes'],
     );
   }
 
@@ -500,7 +552,15 @@ class GameViewModel extends ChangeNotifier {
       event = Event(
         date: _currentDate,
         description: "Bir olay gerçekleşti.",
-        options: ["Tamam", "Anladım", "Devam"],
+        choices: [
+          EventChoice(
+            text: "Tamam",
+            resultText: "Devam ettin.",
+            mentalDelta: 0,
+            moneyDelta: 0,
+            outcomeType: "default",
+          ),
+        ],
         type: type,
       );
     } else if (_mentalCrisisQueued) {
@@ -539,29 +599,19 @@ class GameViewModel extends ChangeNotifier {
       return _buildEventFromMap(jsonEvent, type);
     }
 
-    String description = "";
-    List<String> options = [];
-
-    // Bölüme göre eventler (Kısaltılmış fallback logic)
-    // JSON varsa buraya düşmez, o yüzden burayı sade bırakıyorum.
-    // Sadece günlük fallback:
-    final events = [
-      {
-        "desc": "Sıradan bir gün, iş aramaya devam.",
-        "opts": ["Devam et"],
-      },
-    ];
-    final event = events[random.nextInt(events.length)];
-    description = event["desc"] as String;
-    options = event["opts"] as List<String>;
-
-    // Mental sağlık düşüşünü sadece JSON'dan gelenlere bıraktık veya burada manuel ekleyebiliriz.
-    // _changeMentalHealth(-1, reason: description);
-
+    // Fallback event
     return Event(
       date: _currentDate,
-      description: description,
-      options: options,
+      description: "Sıradan bir gün, iş aramaya devam.",
+      choices: [
+        EventChoice(
+          text: "Devam et",
+          resultText: "Arayış sürüyor...",
+          mentalDelta: -1,
+          moneyDelta: 0,
+          outcomeType: "proceed",
+        ),
+      ],
       type: type,
     );
   }
@@ -664,11 +714,19 @@ class GameViewModel extends ChangeNotifier {
       return _buildEventFromMap(jsonEvent, type);
     }
 
-    // JSON yoksa fallback
+    // Fallback
     return Event(
       date: _currentDate,
       description: "İş yerinde sıradan bir gün.",
-      options: ["Çalışmaya devam"],
+      choices: [
+        EventChoice(
+          text: "Çalışmaya devam",
+          resultText: "Mesai bitti.",
+          mentalDelta: -1,
+          moneyDelta: 0,
+          outcomeType: "proceed",
+        ),
+      ],
       type: type,
     );
   }
@@ -826,10 +884,6 @@ class GameViewModel extends ChangeNotifier {
     return event;
   }
 
-  // Sonraki Ay (Silindi - artık nextDay içinde otomatik)
-  // Sonraki Yıl (Silindi - artık nextDay içinde otomatik)
-
-  // Cinsiyet Seçimi
   // ... (Kalan metodlar aynı)
 
   void doMilitaryService(bool isPaid) {
@@ -1066,158 +1120,44 @@ class GameViewModel extends ChangeNotifier {
     }
   }
 
-  String processEventChoice(String option) {
-    final context = _currentEvent?.description ?? "bugünkü olay";
+  String processEventChoice(String optionText) {
+    if (_currentEvent == null) return "Olay yok.";
 
-    // 1. Özel Outcome Kontrolü (JSON'da tanımlıysa)
-    if (_currentEvent?.outcomes != null &&
-        _currentEvent!.outcomes!.containsKey(option)) {
-      final outcomeData = _currentEvent!.outcomes![option];
-
-      String outcomeText;
-      if (outcomeData['text'] is List) {
-        final list = outcomeData['text'] as List;
-        outcomeText = list[_random.nextInt(list.length)].toString();
-      } else {
-        outcomeText = outcomeData['text'].toString();
-      }
-
-      final mentalDelta = outcomeData['mental_delta'] as int? ?? 0;
-
-      _changeMentalHealth(mentalDelta, reason: "Olay sonucu: $option");
-
-      if (_stories.isNotEmpty) {
-        final lastIndex = _stories.length - 1;
-        final lastStory = _stories[lastIndex];
-        _stories[lastIndex] = Story(
-          date: lastStory.date,
-          content: "${lastStory.content.trimRight()}\n$outcomeText",
-          type: lastStory.type,
-        );
-      }
-      _lastMessage = outcomeText;
-      notifyListeners();
-      return outcomeText;
-    }
-
-    // 2. Genel Intent Bazlı Logic (Fallback)
-    final intent = _detectOptionIntent(option);
-
-    // JSON'dan şablonları çek
-    final Map<String, dynamic>? templates = _gameData['outcome_templates'];
-    if (templates == null) {
+    // Seçilen EventChoice nesnesini bul
+    EventChoice? selectedChoice;
+    try {
+      selectedChoice = _currentEvent!.choices.firstWhere(
+        (c) => c.text == optionText,
+      );
+    } catch (e) {
       // Fallback
-      return "Olay sonuçlandı.";
+      return "Bir hata oldu.";
     }
 
-    final intentData = templates[intent] ?? templates['default'];
-    final List<dynamic> baseList = intentData['base'] ?? ["Olay bitti."];
-    final List<dynamic> followUpList = intentData['follow_up'] ?? [];
-
-    final baseTemplate = baseList[_random.nextInt(baseList.length)].toString();
-
-    final baseMessage = _formatTemplate(baseTemplate, context, option);
-    String absurdMessage = baseMessage;
-
-    // %50 şansla ikinci olay
-    final triggerFollowUp = _random.nextDouble() < 0.5;
-
-    if (triggerFollowUp && followUpList.isNotEmpty) {
-      final extraTemplate = followUpList[_random.nextInt(followUpList.length)]
-          .toString();
-      final extra = _formatTemplate(extraTemplate, context, option);
-      absurdMessage = "$baseMessage $extra";
+    // Etkileri uygula
+    _changeMentalHealth(
+      selectedChoice.mentalDelta,
+      reason: "Seçim: $optionText",
+    );
+    if (selectedChoice.moneyDelta != 0 && _player != null) {
+      _player!.money += selectedChoice.moneyDelta;
     }
 
-    _changeMentalHealth(-1, reason: "Olay sonucu: $absurdMessage");
+    // Hikayeyi güncelle
     if (_stories.isNotEmpty) {
       final lastIndex = _stories.length - 1;
       final lastStory = _stories[lastIndex];
       _stories[lastIndex] = Story(
         date: lastStory.date,
-        content: "${lastStory.content.trimRight()}\n$absurdMessage",
+        content:
+            "${lastStory.content.trimRight()}\n${selectedChoice.resultText}",
         type: lastStory.type,
       );
     }
-    _lastMessage = absurdMessage;
+
+    _lastMessage = selectedChoice.resultText;
     notifyListeners();
-    return absurdMessage;
-  }
-
-  String _detectOptionIntent(String option) {
-    final value = option.toLowerCase();
-    if (_containsAny(value, [
-      "git",
-      "katıl",
-      "devam",
-      "sürdür",
-      "evet",
-      "yine de",
-      "yap",
-      "çalış",
-    ])) {
-      return "proceed";
-    }
-    if (_containsAny(value, [
-      "vazgeç",
-      "bırak",
-      "pas",
-      "gitme",
-      "hayır",
-      "evde kal",
-      "dur",
-      "kal",
-    ])) {
-      return "give_up";
-    }
-    if (_containsAny(value, [
-      "ağla",
-      "üzül",
-      "sinirlen",
-      "kız",
-      "panikle",
-      "dram",
-      "kıskan",
-      "üzül",
-      "kızgın",
-    ])) {
-      return "emotional";
-    }
-    if (_containsAny(value, [
-      "kutla",
-      "arkadaş",
-      "paylaş",
-      "parti",
-      "kutlama",
-    ])) {
-      return "celebrate";
-    }
-    if (_containsAny(value, ["özür", "pişman"])) {
-      return "apologize";
-    }
-    if (_containsAny(value, ["kabul", "katlan", "boyun eğ"])) {
-      return "accept";
-    }
-    if (_containsAny(value, ["itiraz", "şikayet", "söylen", "hesap sor"])) {
-      return "complain";
-    }
-    if (_containsAny(value, ["tekrar", "yeniden", "bir daha"])) {
-      return "retry";
-    }
-    if (_containsAny(value, ["küfür", "söv"])) {
-      return "rage";
-    }
-    return "default";
-  }
-
-  bool _containsAny(String source, List<String> keywords) {
-    return keywords.any((kw) => source.contains(kw));
-  }
-
-  String _formatTemplate(String template, String context, String option) {
-    return template
-        .replaceAll("{context}", context)
-        .replaceAll("{option}", option);
+    return selectedChoice.resultText;
   }
 
   // Hardcoded şablonlar kaldırıldı, artık JSON'dan okunuyor.
@@ -1356,24 +1296,28 @@ class GameViewModel extends ChangeNotifier {
         salary: 8000,
         ghostingChance: 0.6,
         type: JobType.Startup,
+        requiredSkills: ["Genel Ofis"],
       ),
       Job(
         title: "Ofis Asistanı",
         salary: 12000,
         ghostingChance: 0.4,
         type: JobType.Corporate,
+        requiredSkills: ["Genel Ofis"],
       ),
       Job(
         title: "Müşteri Temsilcisi",
         salary: 15000,
         ghostingChance: 0.35,
         type: JobType.Corporate,
+        requiredSkills: ["İletişim"],
       ),
       Job(
         title: "Arşiv Memuru",
         salary: 14000,
         ghostingChance: 0.2,
         type: JobType.Government,
+        requiredSkills: ["Düzen"],
       ),
     ],
   };

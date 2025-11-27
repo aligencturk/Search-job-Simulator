@@ -193,127 +193,6 @@
             }
         ]
     },
-    "outcome_templates": {
-        "emotional": {
-            "base": [
-                "Gözlerin doldu ama kendini tuttun, kimsenin görmesini istemedin.",
-                "İçinde bir sıkıntı büyüdü, derin bir nefes alarak sakinleşmeye çalıştın.",
-                "Boğazında bir düğüm oluştu, yutkunmakta zorlandın."
-            ],
-            "follow_up": [
-                "Gece boyunca tavanı izleyerek 'nerede hata yaptım' diye düşündün.",
-                "Sosyal medyada herkesin mutlu fotoğraflarına bakıp kendini yalnız hissettin.",
-                "Aynaya baktığında gözlerindeki yorgunluk seni üzdü, ışığı kapatıp yattın."
-            ]
-        },
-        "give_up": {
-            "base": [
-                "Omuzların düştü, 'bu kadar yeter' diyerek geri çekildin.",
-                "Enerjin aniden tükendi, koltuğa yığılıp kaldın.",
-                "Kapıdan dönüp odana girdin, dünyayla bağını kestin."
-            ],
-            "follow_up": [
-                "Bütün gün pijamalarla oturdun, televizyondaki sesler anlamsızlaştı.",
-                "Telefonun çaldı ama açacak gücü kendinde bulamadın, sessize aldın.",
-                "Akşam yemeğini atladın, sadece bir bardak su içip erkenden uyudun."
-            ]
-        },
-        "proceed": {
-            "base": [
-                "Dişlerini sıktın ve 'başka çarem yok' diyerek adım attın.",
-                "Korkunu bastırıp titreyen ellerine rağmen devam ettin.",
-                "Son bir umutla şansını denemeye karar verdin."
-            ],
-            "follow_up": [
-                "Cesaretin ödülünü aldın, kendini daha güçlü hissettin.",
-                "Belki hemen sonuç alamadın ama denemiş olmanın huzuruyla uyudun.",
-                "Bu kararlılığın sana yeni kapılar açacağını hissettin."
-            ]
-        },
-        "rage": {
-            "base": [
-                "Yumruklarını sıktın, tırnakların avucuna battı.",
-                "İçinden bir çığlık yükseldi ama sessiz kaldın, sadece derin nefes aldın.",
-                "Eline geçen ilk şeyi fırlatmak istedin ama sonra vazgeçip masaya bıraktın."
-            ],
-            "follow_up": [
-                "Sinirden başın zonklamaya başladı, ağrı kesici bile fayda etmedi.",
-                "Evdeki herkese ters davrandın, sonra pişman oldun ama özür dileyemedin.",
-                "Hırsını çıkarmak için hızlı adımlarla yürüdün, nefes nefese kaldın ama öfken geçmedi."
-            ]
-        },
-        "celebrate": {
-            "base": [
-                "İçini bir sevinç kapladı, kendine güvenin geldi.",
-                "Gülümsemene engel olamadın, bu anın tadını çıkardın.",
-                "Küçük bir zafer de olsa, kendini iyi hissettin."
-            ],
-            "follow_up": [
-                "Bu pozitif enerjiyle hemen yeni planlar yapmaya başladın.",
-                "Aynaya baktığında gözlerinin içinin güldüğünü gördün.",
-                "Kendine 'başarabilirim' dedin ve buna gerçekten inandın."
-            ]
-        },
-        "apologize": {
-            "base": [
-                "Başını öne eğdin ve sessizce özür diledin.",
-                "Mahcup bir şekilde durumu kabullendin.",
-                "Hatanı kabul edip alttan aldın."
-            ],
-            "follow_up": [
-                "Karşı tarafın bakışları seni daha da ezdi, yerin dibine girmek istedin.",
-                "Eve gidince yastığa gömülüp utancından uyumaya çalıştın.",
-                "O anı tekrar tekrar kafanda yaşadın, 'keşke'lerin sonu gelmedi."
-            ]
-        },
-        "accept": {
-            "base": [
-                "Sessizce başını salladın ve durumu kabullendin.",
-                "İtiraz etmenin faydasız olduğunu anlayıp sustun.",
-                "Derin bir iç çekip 'peki' dedin."
-            ],
-            "follow_up": [
-                "İçindeki çaresizlik hissi büyüdü, kendini kapana kısılmış hissettin.",
-                "Eve dönerken vitrinlere baktın ama hiçbir şey hissetmedin, sadece boşluk vardı.",
-                "Yatağa yattığında hayatın kontrolünün sende olmadığını düşündün."
-            ]
-        },
-        "complain": {
-            "base": [
-                "Sesini yükseltmeden sitem ettin.",
-                "Haksızlığa uğradığını düşünüp söylendin.",
-                "Memnuniyetsizliğini belli eden bir bakış attın."
-            ],
-            "follow_up": [
-                "Kimse seni dinlemedi, sözlerin havada asılı kaldı.",
-                "Daha sonra 'acaba abarttım mı' diye kendini sorguladın.",
-                "Şikayetin bir şeyi değiştirmedi, sadece kendi canını sıktın."
-            ]
-        },
-        "retry": {
-            "base": [
-                "Yılmadan bir kez daha denemeye karar verdin.",
-                "Derin bir nefes alıp baştan başladın.",
-                "Pes etmeyi reddedip tekrar denedin."
-            ],
-            "follow_up": [
-                "Yorgunluktan gözlerin karardı ama durmadın.",
-                "Tekrar denerken içindeki son umut kırıntısına tutundun.",
-                "Sonuç değişmeyince hayal kırıklığın katlanarak arttı."
-            ]
-        },
-        "default": {
-            "base": [
-                "Boş gözlerle etrafa baktın.",
-                "Sadece omuz silktin.",
-                "Durumu akışına bıraktın."
-            ],
-            "follow_up": [
-                "Zaman akıp gitti, sen sadece izledin.",
-                "Hissizleştiğini fark ettin, hiçbir şey umurunda değildi."
-            ]
-        }
-    },
     "events": {
         "jobless": {
             "daily": {
@@ -321,202 +200,401 @@
                 "general": [
                     {
                         "description": "En yakın arkadaşın iş buldu, sen hala işsizsin.",
-                        "options": [
-                            "Onu tebrik et",
-                            "Onunla kutla",
-                            "Kıskan"
-                        ],
-                        "outcomes": {
-                            "Onu tebrik et": {
-                                "text": "Zoraki bir gülümsemeyle tebrik ettin, ama için kan ağladı.",
-                                "mental_delta": -1
+                        "choices": [
+                            {
+                                "text": "Onu tebrik et",
+                                "result_text": "Yüzünde donuk bir gülümsemeyle 'Hayırlı olsun kardeşim' dedin ama için kan ağladı. O an sadece eve gidip tavana bakmak istedin.",
+                                "mental_delta": -3,
+                                "money_delta": 0,
+                                "outcome_type": "apologize"
                             },
-                            "Onunla kutla": {
-                                "text": "Kutlamaya gittin, hesap sana kaldı. Hem paran hem moralin gitti.",
-                                "mental_delta": -3
+                            {
+                                "text": "Onunla kutla",
+                                "result_text": "Kutlamaya gittin, 'ben hallederim' diyerek hesabı ödemeye kalktın. Hem paran bitti hem de moralin sıfırlandı.",
+                                "mental_delta": -5,
+                                "money_delta": -500,
+                                "outcome_type": "celebrate"
                             },
-                            "Kıskan": {
-                                "text": "Eve gidip ağladın ve 'neden ben değil' diye düşündün.",
-                                "mental_delta": -2
+                            {
+                                "text": "Kıskan",
+                                "result_text": "Eve gidip yatağa gömüldün. 'Neden ben değil?' diye düşünmekten sabaha kadar uyuyamadın.",
+                                "mental_delta": -6,
+                                "money_delta": 0,
+                                "outcome_type": "emotional"
                             }
-                        }
-                    },
-                    {
-                        "description": "İş ilanlarına baktın, hepsi 3+ yıl tecrübe istiyor.",
-                        "options": [
-                            "Yine de başvur",
-                            "Geç",
-                            "Sinirlen"
-                        ],
-                        "outcomes": {
-                            "Yine de başvur": {
-                                "text": "Başvurdun ama içindeki ses 'dönmeyecekler' dedi.",
-                                "mental_delta": -1
-                            },
-                            "Geç": {
-                                "text": "İlanı geçtin ama aklın takılı kaldı, 'acaba denesem miydim' dedin.",
-                                "mental_delta": -1
-                            },
-                            "Sinirlen": {
-                                "text": "Bilgisayarı kapatıp sinirle yürüyüşe çıktın.",
-                                "mental_delta": 1
-                            }
-                        }
-                    },
-                    {
-                        "description": "Staj başvurusu yaptın, 'tecrübe yetersiz' dediler.",
-                        "options": [
-                            "Devam et",
-                            "Vazgeç",
-                            "Sinirlen"
                         ]
                     },
                     {
-                        "description": "Marketten alışveriş yaparken cüzdanı evde unuttun, geri döndün.",
-                        "options": [
-                            "Tekrar git",
-                            "Vazgeç",
-                            "Küfür et"
+                        "description": "İş ilanlarına baktın, hepsi 3+ yıl tecrübe istiyor.",
+                        "choices": [
+                            {
+                                "text": "Yine de başvur",
+                                "result_text": "CV'ni gönderdin ama 'İletildi' bildirimine bakarken bile umudun yoktu. Sanki boşluğa mektup atıyorsun.",
+                                "mental_delta": -2,
+                                "money_delta": 0,
+                                "outcome_type": "retry"
+                            },
+                            {
+                                "text": "Geç",
+                                "result_text": "İlanı kaydırdın ama aklın takılı kaldı. 'Belki de şansımı denemeliydim' pişmanlığıyla günü bitirdin.",
+                                "mental_delta": -3,
+                                "money_delta": 0,
+                                "outcome_type": "give_up"
+                            },
+                            {
+                                "text": "Sinirlen",
+                                "result_text": "Laptopu kapatırken 'Junior arıyorlar ama Senior istiyorlar!' diye bağırdın. Sinirden elindeki kahve kupasını devirdin.",
+                                "mental_delta": -5,
+                                "money_delta": -200,
+                                "outcome_type": "rage"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Staj başvurusu yaptın, 'tecrübe yetersiz' dediler.",
+                        "choices": [
+                            {
+                                "text": "Devam et",
+                                "result_text": "Dişlerini sıktın. 'Stajyerin de tecrübesi mi olurmuş!' diye söylenerek başka ilanlara bakmaya başladın.",
+                                "mental_delta": -1,
+                                "money_delta": 0,
+                                "outcome_type": "proceed"
+                            },
+                            {
+                                "text": "Vazgeç",
+                                "result_text": "Bilgisayarı kapattın. 'Zaten köle arıyorlar' diye kendini avutmaya çalışsan da için buruk kaldı.",
+                                "mental_delta": -3,
+                                "money_delta": 0,
+                                "outcome_type": "give_up"
+                            },
+                            {
+                                "text": "Sinirlen",
+                                "result_text": "Klavyeye yumruk attın. Tuşlardan biri fırladı. Şimdi hem işsizsin hem de klavyen bozuk.",
+                                "mental_delta": -7,
+                                "money_delta": -300,
+                                "outcome_type": "rage"
+                            }
+                        ]
+                    },
+                    {
+                        "description": "Marketten alışveriş yaparken cüzdanı evde unuttun, kasada fark ettin.",
+                        "choices": [
+                            {
+                                "text": "Tekrar git",
+                                "result_text": "Kasiyere 'Hemen geliyorum' dedin ama utancından geri dönemedin. Marketi değiştirmeye karar verdin.",
+                                "mental_delta": -3,
+                                "money_delta": 0,
+                                "outcome_type": "apologize"
+                            },
+                            {
+                                "text": "Vazgeç",
+                                "result_text": "Poşetleri orada bırakıp sessizce marketten çıktın. Arkandaki teyzelerin bakışlarını sırtında hissettin.",
+                                "mental_delta": -4,
+                                "money_delta": 0,
+                                "outcome_type": "give_up"
+                            },
+                            {
+                                "text": "Küfür et",
+                                "result_text": "Kendine kızarak 'Böyle kafanın...' diye söylenerek çıktın. Yolda sinirden kaldırım taşına tekme attın, ayağın acıdı.",
+                                "mental_delta": -5,
+                                "money_delta": 0,
+                                "outcome_type": "rage"
+                            }
                         ]
                     },
                     {
                         "description": "Otobüs geç kaldı, iş görüşmesi kaçtı.",
-                        "options": [
-                            "Kabul et",
-                            "Üzül",
-                            "Küfür et"
+                        "choices": [
+                            {
+                                "text": "Kabul et",
+                                "result_text": "Durağa çöktün. 'Kısmet değilmiş' dedin ama gözlerin doldu. Bir sigara daha yaktın.",
+                                "mental_delta": -4,
+                                "money_delta": 0,
+                                "outcome_type": "accept"
+                            },
+                            {
+                                "text": "Üzül",
+                                "result_text": "Ağlamamak için kendini zor tutarak eve döndün. Bütün gün 'Keşke taksiye binseydim' diye kendini yedin.",
+                                "mental_delta": -5,
+                                "money_delta": 0,
+                                "outcome_type": "emotional"
+                            },
+                            {
+                                "text": "Küfür et",
+                                "result_text": "Belediyeye, şoföre, trafiğe saydırdın. Yanındaki teyze sana ters ters baktı.",
+                                "mental_delta": -6,
+                                "money_delta": 0,
+                                "outcome_type": "rage"
+                            }
                         ]
                     },
                     {
                         "description": "İnternet kesildi, iş başvurusu yapamadın.",
-                        "options": [
-                            "Müşteri temsilcisini ara",
-                            "Modemi kapat aç",
-                            "Küfür et"
-                        ],
-                        "outcomes": {
-                            "Müşteri temsilcisini ara": {
-                                "text": [
-                                    "Müşteri temsilcisi sorunun altyapıdan kaynaklandığını söyledi, çözüm yok.",
-                                    "Müşteri hizmetlerine bağlanmak için 20 dakika bekledin, sonra hat düştü.",
-                                    "Temsilci 'bölgenizde çalışma var' dedi, ne zaman biteceği meçhul."
-                                ],
-                                "mental_delta": -2
+                        "choices": [
+                            {
+                                "text": "Müşteri temsilcisini ara",
+                                "result_text": "Müşteri hizmetlerine bağlandın. 'Bölgenizde çalışma var' yalanını dinleyip telefonu kapattın. Değişen hiçbir şey olmadı.",
+                                "mental_delta": -2,
+                                "money_delta": 0,
+                                "outcome_type": "proceed"
                             },
-                            "Modemi kapat aç": {
-                                "text": "Modemi açıp kapadın, ışıklar yandı söndü ama internet yine gelmedi.",
-                                "mental_delta": -1
+                            {
+                                "text": "Modemi kapat aç",
+                                "result_text": "Modemi 5 kere kapatıp açtın. Işıklar yanıp söndü ama internet gelmedi. Teknolojinin çaresizliğiyle baş başa kaldın.",
+                                "mental_delta": -3,
+                                "money_delta": 0,
+                                "outcome_type": "retry"
                             },
-                            "Küfür et": {
-                                "text": "Böyle firmanın a... diyerek rahatladın (biraz).",
-                                "mental_delta": 1
+                            {
+                                "text": "Küfür et",
+                                "result_text": "'Böyle firmanın...' diye bağırarak modeme vurdun. Elin acıdı, internet hala yok ve artık modemin kapağı çatlak.",
+                                "mental_delta": -6,
+                                "money_delta": 0,
+                                "outcome_type": "rage"
                             }
-                        }
+                        ]
                     },
                     {
                         "description": "Arkadaşların güçlü mentaline hayran kaldı, seni takdir etti.",
-                        "options": [
-                            "Teşekkür et",
-                            "Paylaş",
-                            "Motivasyon konuşması yap"
-                        ],
-                        "mental_delta": 5
-                    },
-                    {
-                        "description": "Sabah meditasyonu yaptın, zihnin biraz rahatladı.",
-                        "options": [
-                            "Nefes egzersizi yap",
-                            "Not tut",
-                            "Paylaş"
-                        ],
-                        "mental_delta": 3
+                        "choices": [
+                            {
+                                "text": "Teşekkür et",
+                                "result_text": "Utangaçça gülümsedin. 'Mecburiyetten güçlü duruyoruz be kanka' dedin içinden.",
+                                "mental_delta": 5,
+                                "money_delta": 0,
+                                "outcome_type": "celebrate"
+                            },
+                            {
+                                "text": "Paylaş",
+                                "result_text": "Bu anı sosyal medyada paylaştın. Gelen like'lar egonu okşadı, bir anlığına işsizliğini unuttun.",
+                                "mental_delta": 7,
+                                "money_delta": 0,
+                                "outcome_type": "celebrate"
+                            },
+                            {
+                                "text": "Motivasyon konuşması yap",
+                                "result_text": "Gaza gelip 'Asla pes etmeyin!' diye nutuk attın. Kendin bile inandın söylediklerine.",
+                                "mental_delta": 8,
+                                "money_delta": 0,
+                                "outcome_type": "celebrate"
+                            }
+                        ]
                     },
                     {
                         "description": "Hazırladığın CV dosyasını yanlışlıkla sildin.",
-                        "options": [
-                            "Tekrar hazırla",
-                            "Ara ver",
-                            "Ertele"
-                        ],
-                        "mental_delta": -2
+                        "choices": [
+                            {
+                                "text": "Tekrar hazırla",
+                                "result_text": "Derin bir nefes alıp baştan başladın. 'Bu sefer daha iyi olacak' diye kendini kandırdın.",
+                                "mental_delta": -2,
+                                "money_delta": 0,
+                                "outcome_type": "retry"
+                            },
+                            {
+                                "text": "Ara ver",
+                                "result_text": "Bilgisayarı bırakıp mutfağa gittin. Çay demledin ama sinirin geçmedi.",
+                                "mental_delta": -3,
+                                "money_delta": 0,
+                                "outcome_type": "accept"
+                            },
+                            {
+                                "text": "Ertele",
+                                "result_text": "'Yarın yaparım' deyip yattın. O 'yarın'ın gelmeyeceğini sen de biliyorsun.",
+                                "mental_delta": -4,
+                                "money_delta": 0,
+                                "outcome_type": "give_up"
+                            }
+                        ]
                     }
                 ],
                 "departments": {
                     "Bilgisayar Mühendisliği": [
                         {
                             "description": "GitHub'da projen star aldı, ama iş hala yok.",
-                            "options": [
-                                "Sevin",
-                                "Paylaş",
-                                "Umutsuzluğa kapıl"
+                            "choices": [
+                                {
+                                    "text": "Sevin",
+                                    "result_text": "Ekrana bakıp gülümsedin. 'En azından kodum çalışıyor, ben çalışmasam da' dedin.",
+                                    "mental_delta": 3,
+                                    "money_delta": 0,
+                                    "outcome_type": "celebrate"
+                                },
+                                {
+                                    "text": "Paylaş",
+                                    "result_text": "LinkedIn'de paylaştın. Recruiter'lar yine görmedi ama arkadaşların 'Helal' yazdı.",
+                                    "mental_delta": 4,
+                                    "money_delta": 0,
+                                    "outcome_type": "celebrate"
+                                },
+                                {
+                                    "text": "Umutsuzluğa kapıl",
+                                    "result_text": "'Star karın doyurmuyor' diyerek sekmeyi kapattın. Gerçekler yüzüne tokat gibi çarptı.",
+                                    "mental_delta": -4,
+                                    "money_delta": 0,
+                                    "outcome_type": "emotional"
+                                }
                             ]
                         },
                         {
                             "description": "Yeni framework çıktı, şirket onu istiyor, sen öğrenmedin.",
-                            "options": [
-                                "Hemen öğren",
-                                "Ertele",
-                                "Sinirlen"
+                            "choices": [
+                                {
+                                    "text": "Hemen öğren",
+                                    "result_text": "Sabahlayıp dökümantasyon okudun. Gözlerin kan çanağına döndü ama 'Hello World' yazabildin.",
+                                    "mental_delta": -2,
+                                    "money_delta": 0,
+                                    "outcome_type": "retry"
+                                },
+                                {
+                                    "text": "Ertele",
+                                    "result_text": "'Bu da geçer, jQuery gibi unutulur' diyerek kendini kandırdın.",
+                                    "mental_delta": -1,
+                                    "money_delta": 0,
+                                    "outcome_type": "give_up"
+                                },
+                                {
+                                    "text": "Sinirlen",
+                                    "result_text": "'Her gün yeni bir şey çıkıyor yeter be!' diye isyan ettin. Twitter'da framework'e sövdün.",
+                                    "mental_delta": -5,
+                                    "money_delta": 0,
+                                    "outcome_type": "rage"
+                                }
                             ]
                         }
                     ],
                     "İşletme": [
                         {
                             "description": "LinkedIn'de herkes başarı hikayesi paylaşıyor, sen sadece beğeniyorsun.",
-                            "options": [
-                                "Kutla",
-                                "Yorum yap",
-                                "Sinirlen"
-                            ],
-                            "outcomes": {
-                                "Kutla": {
-                                    "text": "'Tebrik ederim' yorumu attın ama içten içe kendini sorguladın.",
-                                    "mental_delta": -1
+                            "choices": [
+                                {
+                                    "text": "Kutla",
+                                    "result_text": "Zoraki bir 'Tebrik ederim' yorumu yazdın. İçinden 'Umarım kovulursun' dedin.",
+                                    "mental_delta": -3,
+                                    "money_delta": 0,
+                                    "outcome_type": "apologize"
                                 },
-                                "Yorum yap": {
-                                    "text": "Networking yapmaya çalıştın ama kimse dönmedi.",
-                                    "mental_delta": -1
+                                {
+                                    "text": "Yorum yap",
+                                    "result_text": "Networking yaparım umuduyla uzun uzun yorum yazdın. Kimse cevap vermedi, öylece kaldı.",
+                                    "mental_delta": -4,
+                                    "money_delta": 0,
+                                    "outcome_type": "retry"
                                 },
-                                "Sinirlen": {
-                                    "text": "'LinkedIn boş iş zaten' diyerek uygulamayı sildin.",
-                                    "mental_delta": 1
+                                {
+                                    "text": "Sinirlen",
+                                    "result_text": "'Hepiniz şov yapıyorsunuz!' diyerek LinkedIn uygulamasını sildin. 1 saat sonra geri yükledin.",
+                                    "mental_delta": -5,
+                                    "money_delta": 0,
+                                    "outcome_type": "rage"
                                 }
-                            }
+                            ]
                         }
                     ],
                     "Hukuk": [
                         {
                             "description": "Baro aidatını ödemeyi unuttun, uyarı geldi.",
-                            "options": [
-                                "Öde",
-                                "Ertele",
-                                "Sinirlen"
+                            "choices": [
+                                {
+                                    "text": "Öde",
+                                    "result_text": "Son paranı aidata yatırdın. Bu ay makarna yiyeceksin ama avukatlık onurun kurtuldu.",
+                                    "mental_delta": -3,
+                                    "money_delta": -500,
+                                    "outcome_type": "accept"
+                                },
+                                {
+                                    "text": "Ertele",
+                                    "result_text": "Uyarı kağıdını çekmeceye attın. Görmezden gelince borç yok olmuyor maalesef.",
+                                    "mental_delta": -2,
+                                    "money_delta": 0,
+                                    "outcome_type": "give_up"
+                                },
+                                {
+                                    "text": "Sinirlen",
+                                    "result_text": "'Ne veriyorsunuz ki ne istiyorsunuz!' diye baroyu arayıp bağırdın. Telefonu yüzüne kapattılar.",
+                                    "mental_delta": -6,
+                                    "money_delta": 0,
+                                    "outcome_type": "rage"
+                                }
                             ]
                         },
                         {
                             "description": "Adliyede eski arkadaşını gördün, o hakim olmuş.",
-                            "options": [
-                                "Tebrik et",
-                                "Kıskan",
-                                "Kaç"
+                            "choices": [
+                                {
+                                    "text": "Tebrik et",
+                                    "result_text": "Yanına gidip tebrik ettin. O sana tepeden bakarken sen yerin dibine girdin.",
+                                    "mental_delta": -5,
+                                    "money_delta": 0,
+                                    "outcome_type": "apologize"
+                                },
+                                {
+                                    "text": "Kıskan",
+                                    "result_text": "Uzaktan izleyip 'Torpillidir kesin' diye dedikodu yaptın. İçin soğumadı.",
+                                    "mental_delta": -6,
+                                    "money_delta": 0,
+                                    "outcome_type": "emotional"
+                                },
+                                {
+                                    "text": "Kaç",
+                                    "result_text": "Görmezden gelip koridoru değiştirdin. Tuvalete saklanıp gitmesini bekledin.",
+                                    "mental_delta": -4,
+                                    "money_delta": 0,
+                                    "outcome_type": "give_up"
+                                }
                             ]
                         }
                     ],
                     "Tıp": [
                         {
                             "description": "TUS çalışmaktan gözlerin bozuldu.",
-                            "options": [
-                                "Dinlen",
-                                "Devam et",
-                                "Doktora git"
+                            "choices": [
+                                {
+                                    "text": "Dinlen",
+                                    "result_text": "Gözlerini kapatıp uzandın. Rüyanda bile biyokimya formülleri gördün.",
+                                    "mental_delta": -2,
+                                    "money_delta": 0,
+                                    "outcome_type": "accept"
+                                },
+                                {
+                                    "text": "Devam et",
+                                    "result_text": "Göz damlası sıkıp çalışmaya devam ettin. Artık yazılar çift görünüyor.",
+                                    "mental_delta": -5,
+                                    "money_delta": 0,
+                                    "outcome_type": "retry"
+                                },
+                                {
+                                    "text": "Doktora git",
+                                    "result_text": "Göz doktoruna gittin. Doktor 'Çok çalışmaktan' dedi, ironiye acı acı güldün.",
+                                    "mental_delta": -3,
+                                    "money_delta": -200,
+                                    "outcome_type": "proceed"
+                                }
                             ]
                         },
                         {
                             "description": "Akrabalar sürekli 'şu tahlile bak' diye arıyor.",
-                            "options": [
-                                "Bak",
-                                "Meşgulüm de",
-                                "Engelle"
+                            "choices": [
+                                {
+                                    "text": "Bak",
+                                    "result_text": "Tahlile bakıp yorumladın. Şimdi de 'İlaç ne alayım?' diye sormaya başladılar.",
+                                    "mental_delta": -3,
+                                    "money_delta": 0,
+                                    "outcome_type": "accept"
+                                },
+                                {
+                                    "text": "Meşgulüm de",
+                                    "result_text": "'TUS çalışıyorum' dedin. 'Okudun da ne oldun' bakışı attılar.",
+                                    "mental_delta": -4,
+                                    "money_delta": 0,
+                                    "outcome_type": "give_up"
+                                },
+                                {
+                                    "text": "Engelle",
+                                    "result_text": "Halayı, dayıyı engelledin. Aile grubunda 'Hayırsız' ilan edildin.",
+                                    "mental_delta": 5,
+                                    "money_delta": 0,
+                                    "outcome_type": "rage"
+                                }
                             ]
                         }
                     ]
@@ -527,92 +605,191 @@
                 "general": [
                     {
                         "description": "Bu ay 10 iş görüşmesine gittin, hepsi reddetti.",
-                        "options": [
-                            "Devam et",
-                            "Vazgeç",
-                            "Sinirlen"
+                        "choices": [
+                            {
+                                "text": "Devam et",
+                                "result_text": "'Elbet biri olacak' diyerek kendini kandırmaya devam ettin. Umut fakirin ekmeği.",
+                                "mental_delta": -2,
+                                "money_delta": 0,
+                                "outcome_type": "retry"
+                            },
+                            {
+                                "text": "Vazgeç",
+                                "result_text": "Başvuruları durdurdun. Evde boş boş oturup Netflix izleyerek acını dindirmeye çalıştın.",
+                                "mental_delta": -5,
+                                "money_delta": 0,
+                                "outcome_type": "give_up"
+                            },
+                            {
+                                "text": "Sinirlen",
+                                "result_text": "Aynadaki yansımana bağırıp çağırdın. Komşular 'Deli mi var orada?' diye kapıya geldi.",
+                                "mental_delta": -8,
+                                "money_delta": 0,
+                                "outcome_type": "rage"
+                            }
                         ]
                     },
                     {
                         "description": "Arkadaşların iş buldu, evlendi, sen hala işsizsin.",
-                        "options": [
-                            "Kutla",
-                            "Kıskan",
-                            "Üzül"
+                        "choices": [
+                            {
+                                "text": "Kutla",
+                                "result_text": "Düğünlerine gidip çeyrek altın taktın. O çeyrek altını almak için telefonunu sattın.",
+                                "mental_delta": -6,
+                                "money_delta": -2000,
+                                "outcome_type": "apologize"
+                            },
+                            {
+                                "text": "Kıskan",
+                                "result_text": "Instagram hikayelerine bakıp 'Kesin boşanırlar' diye beddua ettin. Kendinden iğrendin.",
+                                "mental_delta": -7,
+                                "money_delta": 0,
+                                "outcome_type": "emotional"
+                            },
+                            {
+                                "text": "Üzül",
+                                "result_text": "Evde tek başına ağlayarak eski fotoğraflara baktın. 'Nerede hata yaptım?' sorusu beynini kemirdi.",
+                                "mental_delta": -5,
+                                "money_delta": 0,
+                                "outcome_type": "emotional"
+                            }
                         ]
                     },
                     {
                         "description": "Bu ay memlekete gittiniz, akrabalar sürekli iş sordu.",
-                        "options": [
-                            "Kabul et",
-                            "Utandın",
-                            "Kızgın ol"
+                        "choices": [
+                            {
+                                "text": "Kabul et",
+                                "result_text": "Başını önüne eğip 'Bakıyoruz işte' dedin. O bakışları seni delip geçti.",
+                                "mental_delta": -4,
+                                "money_delta": 0,
+                                "outcome_type": "accept"
+                            },
+                            {
+                                "text": "Utandın",
+                                "result_text": "Tuvalete kaçıp ağladın. Bayram ziyaretleri sana zehir oldu.",
+                                "mental_delta": -5,
+                                "money_delta": 0,
+                                "outcome_type": "emotional"
+                            },
+                            {
+                                "text": "Kızgın ol",
+                                "result_text": "'Size ne be!' diye sofrayı terk ettin. Annen arkandan terlik fırlattı.",
+                                "mental_delta": -6,
+                                "money_delta": 0,
+                                "outcome_type": "rage"
+                            }
                         ]
-                    },
-                    {
-                        "description": "Bu ay doğum günün geldi, kimse hatırlamadı.",
-                        "options": [
-                            "Üzül",
-                            "Kabul et",
-                            "Kızgın ol"
-                        ]
-                    },
-                    {
-                        "description": "Yeni tanıştığın mentor seni motive etti.",
-                        "options": [
-                            "Teşekkür et",
-                            "Not al",
-                            "Paylaş"
-                        ],
-                        "mental_delta": 4
-                    },
-                    {
-                        "description": "Gönüllü olduğun etkinlikte yeni insanlara destek oldun, ruhun hafifledi.",
-                        "options": [
-                            "Paylaş",
-                            "Hedef yaz",
-                            "Kutla"
-                        ],
-                        "mental_delta": 4
                     },
                     {
                         "description": "Elektrikler kesildi, tüm başvurularını ertelemek zorunda kaldın.",
-                        "options": [
-                            "Kitap oku",
-                            "Uyun",
-                            "Sinirlen"
-                        ],
-                        "mental_delta": -2
+                        "choices": [
+                            {
+                                "text": "Kitap oku",
+                                "result_text": "Mum ışığında kitap okumaya çalıştın, gözlerin bozuldu ama entelektüel hissettin.",
+                                "mental_delta": -1,
+                                "money_delta": 0,
+                                "outcome_type": "accept"
+                            },
+                            {
+                                "text": "Uyu",
+                                "result_text": "Karanlıkta yapacak bir şey yok diyip uyudun. Rüyanda elektriğin geldiğini gördün.",
+                                "mental_delta": -2,
+                                "money_delta": 0,
+                                "outcome_type": "give_up"
+                            },
+                            {
+                                "text": "Sinirlen",
+                                "result_text": "Elektrik idaresini arayıp küfür ettin. Sesin kaydedildi, belki dava açarlar.",
+                                "mental_delta": -5,
+                                "money_delta": 0,
+                                "outcome_type": "rage"
+                            }
+                        ]
                     }
                 ],
                 "departments": {
                     "Bilgisayar Mühendisliği": [
                         {
                             "description": "Hackathon'a katıldın, derece alamadın.",
-                            "options": [
-                                "Devam et",
-                                "Pes et",
-                                "Sinirlen"
+                            "choices": [
+                                {
+                                    "text": "Devam et",
+                                    "result_text": "'Önemli olan katılmaktı' yalanıyla kendini avuttun. Pizza bedavaydı en azından.",
+                                    "mental_delta": -2,
+                                    "money_delta": 0,
+                                    "outcome_type": "proceed"
+                                },
+                                {
+                                    "text": "Pes et",
+                                    "result_text": "'Ben bu işi yapamıyorum' diyerek kodları sildin. Depresyon loading...",
+                                    "mental_delta": -6,
+                                    "money_delta": 0,
+                                    "outcome_type": "give_up"
+                                },
+                                {
+                                    "text": "Sinirlen",
+                                    "result_text": "Jüriye 'Siz ne anlarsınız koddan!' diye çıkıştın. Seni güvenlik dışarı attı.",
+                                    "mental_delta": -7,
+                                    "money_delta": 0,
+                                    "outcome_type": "rage"
+                                }
                             ]
                         }
                     ],
                     "Hukuk": [
                         {
                             "description": "Staj yeri bulamadığın için baronun havuzuna düştün.",
-                            "options": [
-                                "Kabul et",
-                                "Tekrar ara",
-                                "Üzül"
+                            "choices": [
+                                {
+                                    "text": "Kabul et",
+                                    "result_text": "Kaderine razı oldun. 'Belki oradan bir şey çıkar' diye beklemeye başladın.",
+                                    "mental_delta": -3,
+                                    "money_delta": 0,
+                                    "outcome_type": "accept"
+                                },
+                                {
+                                    "text": "Tekrar ara",
+                                    "result_text": "Tanıdık aramaya başladın. Araya milletvekili bile soktun ama nafile.",
+                                    "mental_delta": -4,
+                                    "money_delta": 0,
+                                    "outcome_type": "retry"
+                                },
+                                {
+                                    "text": "Üzül",
+                                    "result_text": "Adliye koridorlarında çaresizce dolaştın. Mübaşir sana acıyarak baktı.",
+                                    "mental_delta": -5,
+                                    "money_delta": 0,
+                                    "outcome_type": "emotional"
+                                }
                             ]
                         }
                     ],
                     "Tıp": [
                         {
                             "description": "Mecburi hizmet kurasında istemediğin yer çıktı sandın (rüyaymış).",
-                            "options": [
-                                "Kalk ve çalış",
-                                "Su iç",
-                                "Geri uyu"
+                            "choices": [
+                                {
+                                    "text": "Kalk ve çalış",
+                                    "result_text": "Kan ter içinde uyandın. 'Daha kötüsü olabilirdi' diyerek derse oturdun.",
+                                    "mental_delta": -2,
+                                    "money_delta": 0,
+                                    "outcome_type": "retry"
+                                },
+                                {
+                                    "text": "Su iç",
+                                    "result_text": "Mutfağa gidip bir bardak su içtin. Ellerin titriyordu.",
+                                    "mental_delta": -3,
+                                    "money_delta": 0,
+                                    "outcome_type": "accept"
+                                },
+                                {
+                                    "text": "Geri uyu",
+                                    "result_text": "Tekrar uyumaya çalıştın ama kabus devam etti. Sabah yorgun kalktın.",
+                                    "mental_delta": -4,
+                                    "money_delta": 0,
+                                    "outcome_type": "give_up"
+                                }
                             ]
                         }
                     ]
@@ -623,94 +800,167 @@
                 "general": [
                     {
                         "description": "Bu yıl 100 iş görüşmesine gittin, hepsi reddetti.",
-                        "options": [
-                            "Devam et",
-                            "Vazgeç",
-                            "Sinirlen"
+                        "choices": [
+                            {
+                                "text": "Devam et",
+                                "result_text": "'Yılmak yok yola devam' dedin ama yolun sonu uçurum gibi görünüyor.",
+                                "mental_delta": -4,
+                                "money_delta": 0,
+                                "outcome_type": "retry"
+                            },
+                            {
+                                "text": "Vazgeç",
+                                "result_text": "Artık iş aramıyorsun. Evde bitki gibi yaşamaya başladın.",
+                                "mental_delta": -10,
+                                "money_delta": 0,
+                                "outcome_type": "give_up"
+                            },
+                            {
+                                "text": "Sinirlen",
+                                "result_text": "Bütün diplomalarını yırttın. Sonra pişman olup bantla yapıştırmaya çalıştın.",
+                                "mental_delta": -15,
+                                "money_delta": 0,
+                                "outcome_type": "rage"
+                            }
                         ]
                     },
                     {
                         "description": "Bu yıl aile baskısı arttı, 'ne zaman iş bulacaksın' diye sordular.",
-                        "options": [
-                            "Kabul et",
-                            "Utandın",
-                            "Kızgın ol"
+                        "choices": [
+                            {
+                                "text": "Kabul et",
+                                "result_text": "'Bulacağım baba' dedin sessizce. Babanın hayal kırıklığı bakışı seni bitirdi.",
+                                "mental_delta": -5,
+                                "money_delta": 0,
+                                "outcome_type": "accept"
+                            },
+                            {
+                                "text": "Utandın",
+                                "result_text": "Odana kapanıp günlerce çıkmadın. Yemekleri kapıdan aldın.",
+                                "mental_delta": -8,
+                                "money_delta": 0,
+                                "outcome_type": "emotional"
+                            },
+                            {
+                                "text": "Kızgın ol",
+                                "result_text": "Evde terör estirdin. Kapıları çarptın. Şimdi herkes sana küs.",
+                                "mental_delta": -10,
+                                "money_delta": 0,
+                                "outcome_type": "rage"
+                            }
                         ]
-                    },
-                    {
-                        "description": "Bu yıl arkadaşların evlendi, düğünlerde tüm paran gitti.",
-                        "options": [
-                            "Kabul et",
-                            "Utandın",
-                            "Kızgın ol"
-                        ]
-                    },
-                    {
-                        "description": "Dayanıklılığın sayesinde yıl sonu kendini daha güçlü hissettin.",
-                        "options": [
-                            "Kutla",
-                            "Plan yap",
-                            "Paylaş"
-                        ],
-                        "mental_delta": 5
-                    },
-                    {
-                        "description": "Psikolojik destek aldın, terapi sana iyi geldi.",
-                        "options": [
-                            "Devam et",
-                            "Not tut",
-                            "Arkadaşlarınla paylaş"
-                        ],
-                        "mental_delta": 6
-                    },
-                    {
-                        "description": "Uzun süre işsiz kaldığın için kendini çevrenden kopmuş hissettin.",
-                        "options": [
-                            "Kendine bak",
-                            "Görmezden gel",
-                            "Bağır"
-                        ],
-                        "mental_delta": -3
                     }
                 ],
                 "departments": {
                     "Bilgisayar Mühendisliği": [
                         {
                             "description": "Bir yıl boyunca bootcamp'te okudun, sertifika aldın, hala iş yok.",
-                            "options": [
-                                "Devam et",
-                                "Pes et",
-                                "Sinirlen"
+                            "choices": [
+                                {
+                                    "text": "Devam et",
+                                    "result_text": "Bir bootcamp'e daha kaydoldun. Sertifika koleksiyoncusu oldun çıktın.",
+                                    "mental_delta": -3,
+                                    "money_delta": -5000,
+                                    "outcome_type": "retry"
+                                },
+                                {
+                                    "text": "Pes et",
+                                    "result_text": "'Yazılım bitmiş' diyip bilgisayarı satışa koydun. Alıcı çıkmadı.",
+                                    "mental_delta": -8,
+                                    "money_delta": 0,
+                                    "outcome_type": "give_up"
+                                },
+                                {
+                                    "text": "Sinirlen",
+                                    "result_text": "Bootcamp hocasına mail atıp saydırdın. Seni engelledi.",
+                                    "mental_delta": -5,
+                                    "money_delta": 0,
+                                    "outcome_type": "rage"
+                                }
                             ]
                         }
                     ],
                     "İşletme": [
                         {
                             "description": "Yıl sonu raporlarını hobin olarak hazırladın, kimse okumadı.",
-                            "options": [
-                                "Paylaş",
-                                "Sakla",
-                                "Kız"
+                            "choices": [
+                                {
+                                    "text": "Paylaş",
+                                    "result_text": "Medium'da yayınladın. 3 kişi okudu, biri annen.",
+                                    "mental_delta": -2,
+                                    "money_delta": 0,
+                                    "outcome_type": "retry"
+                                },
+                                {
+                                    "text": "Sakla",
+                                    "result_text": "Dosyayı 'Gereksizler' klasörüne attın. Emeğine acıdın.",
+                                    "mental_delta": -3,
+                                    "money_delta": 0,
+                                    "outcome_type": "accept"
+                                },
+                                {
+                                    "text": "Kız",
+                                    "result_text": "'Değerimi bilmiyorlar' diye söylenip raporları sildin.",
+                                    "mental_delta": -5,
+                                    "money_delta": 0,
+                                    "outcome_type": "rage"
+                                }
                             ]
                         }
                     ],
                     "Hukuk": [
                         {
                             "description": "Bir yıl geçti, hala ruhsatını alamadın.",
-                            "options": [
-                                "Çalış",
-                                "Bekle",
-                                "Üzül"
+                            "choices": [
+                                {
+                                    "text": "Çalış",
+                                    "result_text": "Dosyaları tekrar inceledin. Hata sende değil sistemde ama bunu kimseye anlatamazsın.",
+                                    "mental_delta": -4,
+                                    "money_delta": 0,
+                                    "outcome_type": "retry"
+                                },
+                                {
+                                    "text": "Bekle",
+                                    "result_text": "Beklemekten ağaç oldun. Baro binasının önünde kamp kurmayı düşündün.",
+                                    "mental_delta": -5,
+                                    "money_delta": 0,
+                                    "outcome_type": "accept"
+                                },
+                                {
+                                    "text": "Üzül",
+                                    "result_text": "Avukat cübbene sarılıp ağladın. O cübbe sana çok büyük geldi.",
+                                    "mental_delta": -7,
+                                    "money_delta": 0,
+                                    "outcome_type": "emotional"
+                                }
                             ]
                         }
                     ],
                     "Tıp": [
                         {
                             "description": "Bir yıl daha TUS çalıştın, puanın değişmedi.",
-                            "options": [
-                                "Daha çok çalış",
-                                "Vazgeç",
-                                "Ağla"
+                            "choices": [
+                                {
+                                    "text": "Daha çok çalış",
+                                    "result_text": "Günde 25 saat çalışmaya karar verdin. Fizik kurallarına aykırı ama deniyorsun.",
+                                    "mental_delta": -6,
+                                    "money_delta": 0,
+                                    "outcome_type": "retry"
+                                },
+                                {
+                                    "text": "Vazgeç",
+                                    "result_text": "'Pratisyenlik de doktorluktur' diyip kitapları kaldırdın. İçin buruk.",
+                                    "mental_delta": -5,
+                                    "money_delta": 0,
+                                    "outcome_type": "give_up"
+                                },
+                                {
+                                    "text": "Ağla",
+                                    "result_text": "Dershanenin önünde hıçkıra hıçkıra ağladın. Güvenlik su getirdi.",
+                                    "mental_delta": -8,
+                                    "money_delta": 0,
+                                    "outcome_type": "emotional"
+                                }
                             ]
                         }
                     ]
@@ -723,100 +973,191 @@
                 "general": [
                     {
                         "description": "Sabah işe geç kaldın, patron kızdı.",
-                        "options": [
-                            "Özür dile",
-                            "Mazeret uydur",
-                            "Kabul et"
+                        "choices": [
+                            {
+                                "text": "Özür dile",
+                                "result_text": "Başını öne eğip özür diledin. Patron 'Bir daha olmasın' dedi, kendini ilkokul çocuğu gibi hissettin.",
+                                "mental_delta": -2,
+                                "money_delta": 0,
+                                "outcome_type": "apologize"
+                            },
+                            {
+                                "text": "Mazeret uydur",
+                                "result_text": "'Trafik vardı' yalanını attın. Patron inanmadı ama uzatmadı.",
+                                "mental_delta": -1,
+                                "money_delta": 0,
+                                "outcome_type": "proceed"
+                            },
+                            {
+                                "text": "Kabul et",
+                                "result_text": "'Evet geç kaldım' dedin. Cesaretin takdir edilmedi, fırça yedin.",
+                                "mental_delta": -3,
+                                "money_delta": 0,
+                                "outcome_type": "accept"
+                            }
                         ]
                     },
                     {
                         "description": "Toplantıda patronun fikri değişti, tüm projeyi baştan yaptın.",
-                        "options": [
-                            "Kabul et",
-                            "İtiraz et",
-                            "Küfür et"
-                        ]
-                    },
-                    {
-                        "description": "Müşteri aradı, şikayet etti, sen çözemedin.",
-                        "options": [
-                            "Özür dile",
-                            "Yöneticiye sor",
-                            "Kabul et"
-                        ]
-                    },
-                    {
-                        "description": "Akşam mesai saatinde çıkmak istedin, patron izin vermedi.",
-                        "options": [
-                            "Kabul et",
-                            "İtiraz et",
-                            "Küfür et"
+                        "choices": [
+                            {
+                                "text": "Kabul et",
+                                "result_text": "'Tabii efendim' diyerek masana döndün. İçinden 'Sabır' çektin.",
+                                "mental_delta": -3,
+                                "money_delta": 0,
+                                "outcome_type": "accept"
+                            },
+                            {
+                                "text": "İtiraz et",
+                                "result_text": "'Ama böyle konuşmamıştık' dedin. Patron 'Ben ne dersem o' bakışı attı.",
+                                "mental_delta": -2,
+                                "money_delta": 0,
+                                "outcome_type": "complain"
+                            },
+                            {
+                                "text": "Küfür et",
+                                "result_text": "Toplantı odasından çıkınca 'Böyle işin...' diye söylendin. HR seni uyardı.",
+                                "mental_delta": -5,
+                                "money_delta": 0,
+                                "outcome_type": "rage"
+                            }
                         ]
                     },
                     {
                         "description": "Maaş gecikti, patron 'biraz bekleyin' dedi.",
-                        "options": [
-                            "Kabul et",
-                            "İtiraz et",
-                            "Kızgın ol"
+                        "choices": [
+                            {
+                                "text": "Kabul et",
+                                "result_text": "'Tamam' dedin ama kredi kartı borcun beklemiyor. Makarna yemeye devam.",
+                                "mental_delta": -4,
+                                "money_delta": 0,
+                                "outcome_type": "accept"
+                            },
+                            {
+                                "text": "İtiraz et",
+                                "result_text": "'Kirayı ödeyemiyorum' dedin. Patron 'Hepimiz aynı gemideyiz' masalını anlattı.",
+                                "mental_delta": -5,
+                                "money_delta": 0,
+                                "outcome_type": "complain"
+                            },
+                            {
+                                "text": "Kızgın ol",
+                                "result_text": "Muhasebeye gidip bağırdın. Elin boş döndün, sadece sesin kısıldı.",
+                                "mental_delta": -6,
+                                "money_delta": 0,
+                                "outcome_type": "rage"
+                            }
                         ]
                     },
                     {
                         "description": "Ekip güçlü mentalini konuştu, sürpriz kahve ısmarladı.",
-                        "options": [
-                            "Teşekkür et",
-                            "Takıma moral konuşması yap",
-                            "Paylaş"
-                        ],
-                        "mental_delta": 5
-                    },
-                    {
-                        "description": "Öğle arasında kısa bir yoga yaptın, enerjin tazelendi.",
-                        "options": [
-                            "Devam et",
-                            "Arkadaşını çağır",
-                            "Sosyal medyada paylaş"
-                        ],
-                        "mental_delta": 3
-                    },
-                    {
-                        "description": "Sunum sırasında bilgisayar çöktü, herkes sana baktı.",
-                        "options": [
-                            "Toparlan",
-                            "Şaka yap",
-                            "Panikle"
-                        ],
-                        "mental_delta": -2
+                        "choices": [
+                            {
+                                "text": "Teşekkür et",
+                                "result_text": "'Çok incesiniz' dedin. Bedava kahve gününü kurtardı.",
+                                "mental_delta": 5,
+                                "money_delta": 0,
+                                "outcome_type": "celebrate"
+                            },
+                            {
+                                "text": "Takıma moral konuşması yap",
+                                "result_text": "Jordan Belfort taklidi yaptın. Herkes güldü, ortam yumuşadı.",
+                                "mental_delta": 7,
+                                "money_delta": 0,
+                                "outcome_type": "celebrate"
+                            },
+                            {
+                                "text": "Paylaş",
+                                "result_text": "Kahveyi story attın. 'Best team ever' yazdın ama aslında zam istiyorsun.",
+                                "mental_delta": 4,
+                                "money_delta": 0,
+                                "outcome_type": "celebrate"
+                            }
+                        ]
                     }
                 ],
                 "departments": {
                     "Bilgisayar Mühendisliği": [
                         {
                             "description": "Repo'da conflict çözerken yanlış branch'i sildin.",
-                            "options": [
-                                "Geri dön",
-                                "İtiraf et",
-                                "Kaç"
+                            "choices": [
+                                {
+                                    "text": "Geri dön",
+                                    "result_text": "Panikle 'undo' tuşuna bastın. Çalışmadı. Soğuk terler döktün.",
+                                    "mental_delta": -4,
+                                    "money_delta": 0,
+                                    "outcome_type": "retry"
+                                },
+                                {
+                                    "text": "İtiraf et",
+                                    "result_text": "Takım liderine gidip 'Ben bir halt ettim' dedin. 'Yedek var sakin ol' dedi.",
+                                    "mental_delta": -2,
+                                    "money_delta": 0,
+                                    "outcome_type": "apologize"
+                                },
+                                {
+                                    "text": "Kaç",
+                                    "result_text": "Bilgisayarı kilitleyip tuvalete kaçtın. Olayın unutulmasını bekledin.",
+                                    "mental_delta": -5,
+                                    "money_delta": 0,
+                                    "outcome_type": "give_up"
+                                }
                             ]
                         }
                     ],
                     "Hukuk": [
                         {
                             "description": "Duruşma sırası beklerken uyuyakaldın, mübaşir uyandırdı.",
-                            "options": [
-                                "Özür dile",
-                                "İnkar et",
-                                "Kaç"
+                            "choices": [
+                                {
+                                    "text": "Özür dile",
+                                    "result_text": "Kızararak özür diledin. Herkes sana güldü.",
+                                    "mental_delta": -3,
+                                    "money_delta": 0,
+                                    "outcome_type": "apologize"
+                                },
+                                {
+                                    "text": "İnkar et",
+                                    "result_text": "'Gözlerimi dinlendiriyordum' dedin. Kimse yemedi.",
+                                    "mental_delta": -2,
+                                    "money_delta": 0,
+                                    "outcome_type": "proceed"
+                                },
+                                {
+                                    "text": "Kaç",
+                                    "result_text": "Utançla salonu terk ettin. Müvekkil seni arıyor.",
+                                    "mental_delta": -5,
+                                    "money_delta": 0,
+                                    "outcome_type": "give_up"
+                                }
                             ]
                         }
                     ],
                     "Tıp": [
                         {
                             "description": "36 saatlik nöbet bitti, adını unuttun.",
-                            "options": [
-                                "Uyu",
-                                "Eve git",
-                                "Kahve iç"
+                            "choices": [
+                                {
+                                    "text": "Uyu",
+                                    "result_text": "Sedye bulup üzerine kıvrıldın. 10 dakika sonra başhemşire uyandırdı.",
+                                    "mental_delta": -3,
+                                    "money_delta": 0,
+                                    "outcome_type": "accept"
+                                },
+                                {
+                                    "text": "Eve git",
+                                    "result_text": "Zombi gibi eve yürüdün. Anahtarı deliğe sokman 5 dakika sürdü.",
+                                    "mental_delta": -2,
+                                    "money_delta": 0,
+                                    "outcome_type": "proceed"
+                                },
+                                {
+                                    "text": "Kahve iç",
+                                    "result_text": "Damardan kafein aldın. Kalbin tekliyor ama ayaktasın.",
+                                    "mental_delta": -4,
+                                    "money_delta": -50,
+                                    "outcome_type": "retry"
+                                }
                             ]
                         }
                     ]
@@ -827,95 +1168,140 @@
                 "general": [
                     {
                         "description": "Bu ay fazla mesai yaptın, ekstra para vermediler.",
-                        "options": [
-                            "Kabul et",
-                            "İtiraz et",
-                            "Kızgın ol"
+                        "choices": [
+                            {
+                                "text": "Kabul et",
+                                "result_text": "'Canınız sağ olsun' dedin. İçinden beddua ettin.",
+                                "mental_delta": -3,
+                                "money_delta": 0,
+                                "outcome_type": "accept"
+                            },
+                            {
+                                "text": "İtiraz et",
+                                "result_text": "'Hakkımı istiyorum' dedin. 'Kapı orada' dediler.",
+                                "mental_delta": -5,
+                                "money_delta": 0,
+                                "outcome_type": "complain"
+                            },
+                            {
+                                "text": "Kızgın ol",
+                                "result_text": "Ofisteki zımbayı çaldın. Adalet yerini buldu.",
+                                "mental_delta": -2,
+                                "money_delta": 0,
+                                "outcome_type": "rage"
+                            }
                         ]
                     },
                     {
                         "description": "Bu ay patron senden memnun kaldı, zam yok ama teşekkür etti.",
-                        "options": [
-                            "Sevin",
-                            "Kabul et",
-                            "Kızgın ol"
+                        "choices": [
+                            {
+                                "text": "Sevin",
+                                "result_text": "Teşekkürle fatura ödenmediğini hatırlayana kadar sevindin.",
+                                "mental_delta": -1,
+                                "money_delta": 0,
+                                "outcome_type": "celebrate"
+                            },
+                            {
+                                "text": "Kabul et",
+                                "result_text": "'Sağ olun' dedin. Gülüşün donuktu.",
+                                "mental_delta": -2,
+                                "money_delta": 0,
+                                "outcome_type": "accept"
+                            },
+                            {
+                                "text": "Kızgın ol",
+                                "result_text": "Arkadaşlarına 'Beni sömürüyorlar' diye dert yandın.",
+                                "mental_delta": -3,
+                                "money_delta": 0,
+                                "outcome_type": "rage"
+                            }
                         ]
-                    },
-                    {
-                        "description": "Bu ay projeleri yetiştiremedin, patron kızdı.",
-                        "options": [
-                            "Özür dile",
-                            "Kabul et",
-                            "Küfür et"
-                        ]
-                    },
-                    {
-                        "description": "Bu ay iş arkadaşın işten ayrıldı, iş yükün arttı.",
-                        "options": [
-                            "Kabul et",
-                            "İtiraz et",
-                            "Kızgın ol"
-                        ]
-                    },
-                    {
-                        "description": "Patron mental dayanıklılığını örnek gösterdi, tüm ekip alkışladı.",
-                        "options": [
-                            "Utangaçça gül",
-                            "Motivasyon konuşması yap",
-                            "Kutla"
-                        ],
-                        "mental_delta": 4
-                    },
-                    {
-                        "description": "Şirket psikoloğu ile yaptığın görüşme seni rahatlattı.",
-                        "options": [
-                            "Not al",
-                            "Arkadaşına öner",
-                            "Sessizce düşün"
-                        ],
-                        "mental_delta": 5
-                    },
-                    {
-                        "description": "Projede kullanılan sunucu çöktü ve hafta sonu çalışmak zorunda kaldın.",
-                        "options": [
-                            "Plan yap",
-                            "Şikayet et",
-                            "Sessiz kal"
-                        ],
-                        "mental_delta": -3
                     }
                 ],
                 "departments": {
                     "Bilgisayar Mühendisliği": [
                         {
                             "description": "Sprint sonunda tüm bug'lar sana kaldı.",
-                            "options": [
-                                "Çöz",
-                                "Ertele",
-                                "İtiraz et"
+                            "choices": [
+                                {
+                                    "text": "Çöz",
+                                    "result_text": "Hafta sonunu feda edip hepsini çözdün. Gözlerin kanadı.",
+                                    "mental_delta": -4,
+                                    "money_delta": 0,
+                                    "outcome_type": "retry"
+                                },
+                                {
+                                    "text": "Ertele",
+                                    "result_text": "'Sonraki sprinte kalsın' dedin. PM sana ters baktı.",
+                                    "mental_delta": -2,
+                                    "money_delta": 0,
+                                    "outcome_type": "accept"
+                                },
+                                {
+                                    "text": "İtiraz et",
+                                    "result_text": "'Ben mi yazdım bunları!' diye isyan ettin. Takım sessizliğe gömüldü.",
+                                    "mental_delta": -5,
+                                    "money_delta": 0,
+                                    "outcome_type": "complain"
+                                }
                             ]
                         }
                     ],
                     "Hukuk": [
                         {
                             "description": "Kazandığın davanın vekalet ücreti yattı.",
-                            "options": [
-                                "Harc",
-                                "Yatırım yap",
-                                "Kutla"
-                            ],
-                            "mental_delta": 5
+                            "choices": [
+                                {
+                                    "text": "Harc",
+                                    "result_text": "Hemen alışverişe çıktın. Para geldiği gibi gitti.",
+                                    "mental_delta": 5,
+                                    "money_delta": -1000,
+                                    "outcome_type": "celebrate"
+                                },
+                                {
+                                    "text": "Yatırım yap",
+                                    "result_text": "Altın aldın. Garantici avukat olmak bunu gerektirir.",
+                                    "mental_delta": 3,
+                                    "money_delta": 0,
+                                    "outcome_type": "proceed"
+                                },
+                                {
+                                    "text": "Kutla",
+                                    "result_text": "Rakı masası kurdun. Müvekkili de çağırdın.",
+                                    "mental_delta": 6,
+                                    "money_delta": -500,
+                                    "outcome_type": "celebrate"
+                                }
+                            ]
                         }
                     ],
                     "Tıp": [
                         {
                             "description": "Hasta yakını sana baklava getirdi.",
-                            "options": [
-                                "Ye",
-                                "Dağıt",
-                                "Teşekkür et"
-                            ],
-                            "mental_delta": 5
+                            "choices": [
+                                {
+                                    "text": "Ye",
+                                    "result_text": "Diyete yarın başlarsın diyip gömüldün. Mutluluk şekerde.",
+                                    "mental_delta": 4,
+                                    "money_delta": 0,
+                                    "outcome_type": "celebrate"
+                                },
+                                {
+                                    "text": "Dağıt",
+                                    "result_text": "Hemşirelere dağıttın. 'Melek doktor' oldun.",
+                                    "mental_delta": 5,
+                                    "money_delta": 0,
+                                    "outcome_type": "celebrate"
+                                },
+                                {
+                                    "text": "Teşekkür et",
+                                    "result_text": "Kibaca teşekkür edip odana koydun. Sonra gizlice yedin.",
+                                    "mental_delta": 3,
+                                    "money_delta": 0,
+                                    "outcome_type": "accept"
+                                }
+                            ]
                         }
                     ]
                 }
@@ -925,102 +1311,167 @@
                 "general": [
                     {
                         "description": "Bu yıl işte çok çalıştın, zam alamadın.",
-                        "options": [
-                            "Kabul et",
-                            "İtiraz et",
-                            "Kızgın ol"
-                        ]
-                    },
-                    {
-                        "description": "Bu yıl patron senden memnun kaldı, küçük bir zam aldın.",
-                        "options": [
-                            "Sevin",
-                            "Kabul et",
-                            "Yetersiz bul"
+                        "choices": [
+                            {
+                                "text": "Kabul et",
+                                "result_text": "Boynunu büküp devam ettin. Kölelik düzeni değişmez.",
+                                "mental_delta": -5,
+                                "money_delta": 0,
+                                "outcome_type": "accept"
+                            },
+                            {
+                                "text": "İtiraz et",
+                                "result_text": "Odaya girip hakkını aradın. 'Kriz var' dediler, inandın.",
+                                "mental_delta": -4,
+                                "money_delta": 0,
+                                "outcome_type": "complain"
+                            },
+                            {
+                                "text": "Kızgın ol",
+                                "result_text": "İş ilanlarına bakmaya başladın. Seni hak etmiyorlar.",
+                                "mental_delta": -3,
+                                "money_delta": 0,
+                                "outcome_type": "rage"
+                            }
                         ]
                     },
                     {
                         "description": "Bu yıl iş arkadaşların terfi aldı, sen alamadın.",
-                        "options": [
-                            "Kabul et",
-                            "Kıskan",
-                            "Kızgın ol"
+                        "choices": [
+                            {
+                                "text": "Kabul et",
+                                "result_text": "'Onlar yalaka' diyerek kendini avuttun.",
+                                "mental_delta": -4,
+                                "money_delta": 0,
+                                "outcome_type": "accept"
+                            },
+                            {
+                                "text": "Kıskan",
+                                "result_text": "Terfi alan arkadaşının kutlamasında pastadan yemedin.",
+                                "mental_delta": -6,
+                                "money_delta": 0,
+                                "outcome_type": "emotional"
+                            },
+                            {
+                                "text": "Kızgın ol",
+                                "result_text": "Patrona 'Ben de çalışıyorum!' diye mail attın. Yanıt gelmedi.",
+                                "mental_delta": -5,
+                                "money_delta": 0,
+                                "outcome_type": "rage"
+                            }
                         ]
-                    },
-                    {
-                        "description": "Bu yıl iş yerinde çok çalıştın, sosyal hayatın bitti.",
-                        "options": [
-                            "Kabul et",
-                            "İtiraz et",
-                            "Kızgın ol"
-                        ]
-                    },
-                    {
-                        "description": "Yıl sonu değerlendirmesinde güçlü mental dayanıklılığın ödüllendirildi.",
-                        "options": [
-                            "Kutla",
-                            "Paylaş",
-                            "Sessizce gülümse"
-                        ],
-                        "mental_delta": 5
-                    },
-                    {
-                        "description": "Şirket, çalışanların mental sağlığı için sana terapi paketi hediye etti.",
-                        "options": [
-                            "Katıl",
-                            "Arkadaşını da yazdır",
-                            "Sessizce kabul et"
-                        ],
-                        "mental_delta": 7
-                    },
-                    {
-                        "description": "Projede yapılan hatadan seni sorumlu tuttular, bütün yılın stresini hissettin.",
-                        "options": [
-                            "Düzelt",
-                            "Savun",
-                            "İçe at"
-                        ],
-                        "mental_delta": -4
                     }
                 ],
                 "departments": {
                     "Bilgisayar Mühendisliği": [
                         {
                             "description": "Yıl sonu değerlendirmesinde kod review yorumların kitap oldu.",
-                            "options": [
-                                "Oku",
-                                "Atla",
-                                "Kız"
+                            "choices": [
+                                {
+                                    "text": "Oku",
+                                    "result_text": "Hepsini okuyup ders çıkardın. Artık daha iyi bir yazılımcısın (sanırım).",
+                                    "mental_delta": 2,
+                                    "money_delta": 0,
+                                    "outcome_type": "proceed"
+                                },
+                                {
+                                    "text": "Atla",
+                                    "result_text": "Okumadan 'Tamam düzelteceğim' dedin. Düzeltmedin.",
+                                    "mental_delta": 0,
+                                    "money_delta": 0,
+                                    "outcome_type": "accept"
+                                },
+                                {
+                                    "text": "Kız",
+                                    "result_text": "'Benim tarzım böyle!' diye kendini savundun. Senior sana güldü.",
+                                    "mental_delta": -3,
+                                    "money_delta": 0,
+                                    "outcome_type": "rage"
+                                }
                             ]
                         }
                     ],
                     "İşletme": [
                         {
                             "description": "CEO sunumunu sen hazırladın, ama sahneye o çıktı.",
-                            "options": [
-                                "Sevin",
-                                "İtiraz et",
-                                "Kız"
+                            "choices": [
+                                {
+                                    "text": "Sevin",
+                                    "result_text": "Alkışları izleyip 'Benim eserim' diye gurur duydun. Gizli kahraman.",
+                                    "mental_delta": 3,
+                                    "money_delta": 0,
+                                    "outcome_type": "celebrate"
+                                },
+                                {
+                                    "text": "İtiraz et",
+                                    "result_text": "'Bari adımı ansaydı' dedin. Kimse duymadı.",
+                                    "mental_delta": -2,
+                                    "money_delta": 0,
+                                    "outcome_type": "complain"
+                                },
+                                {
+                                    "text": "Kız",
+                                    "result_text": "Sunum dosyasının yedeğini sildin. İntikam soğuk yenen bir yemektir.",
+                                    "mental_delta": 1,
+                                    "money_delta": 0,
+                                    "outcome_type": "rage"
+                                }
                             ]
                         }
                     ],
                     "Hukuk": [
                         {
                             "description": "Yılın en çok dava kazanan avukatı ödülünü (kendi kendine) verdin.",
-                            "options": [
-                                "Sevin",
-                                "Gül",
-                                "Ağla"
+                            "choices": [
+                                {
+                                    "text": "Sevin",
+                                    "result_text": "Aynanın karşısında ödül konuşması yaptın. Biraz acıklıydı.",
+                                    "mental_delta": 2,
+                                    "money_delta": 0,
+                                    "outcome_type": "celebrate"
+                                },
+                                {
+                                    "text": "Gül",
+                                    "result_text": "Kendi haline güldün. Deliriyor olabilirsin.",
+                                    "mental_delta": 1,
+                                    "money_delta": 0,
+                                    "outcome_type": "celebrate"
+                                },
+                                {
+                                    "text": "Ağla",
+                                    "result_text": "Ödül töreni hayali bitti, gerçekler geri geldi. Ağladın.",
+                                    "mental_delta": -4,
+                                    "money_delta": 0,
+                                    "outcome_type": "emotional"
+                                }
                             ]
                         }
                     ],
                     "Tıp": [
                         {
                             "description": "Bu yıl o kadar çok nöbet tuttun ki, hastanede sana oda verdiler.",
-                            "options": [
-                                "Taşın",
-                                "Reddet",
-                                "Uyu"
+                            "choices": [
+                                {
+                                    "text": "Taşın",
+                                    "result_text": "Eşyalarını hastaneye taşıdın. Kiradan kurtuldun ama hayattan da koptun.",
+                                    "mental_delta": -5,
+                                    "money_delta": 5000,
+                                    "outcome_type": "accept"
+                                },
+                                {
+                                    "text": "Reddet",
+                                    "result_text": "'Evim evim güzel evim' diyerek eve kaçtın. Sadece uyumaya gidiyorsun ama olsun.",
+                                    "mental_delta": 2,
+                                    "money_delta": 0,
+                                    "outcome_type": "proceed"
+                                },
+                                {
+                                    "text": "Uyu",
+                                    "result_text": "Odada uyuyakaldın. Uyandığında yıl bitmişti.",
+                                    "mental_delta": 1,
+                                    "money_delta": 0,
+                                    "outcome_type": "accept"
+                                }
                             ]
                         }
                     ]
